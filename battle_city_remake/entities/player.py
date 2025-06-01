@@ -1,13 +1,14 @@
 import pygame
-from config import *
-from utils.logger import any_error_logger, log
+from config import COLOR_RED, PLAYER_SPEED, PLAYER_SIZE
+from utils.logger import log
 
 class Player:
     def __init__(self, x, y):
         self.rect = pygame.Rect(x, y, PLAYER_SIZE, PLAYER_SIZE)
-        self.direction = (0, -1)  # directed to the upper side as default
+        self.health = 3
+        self.direction = (0, -1)  
 
-def move(self, keys, obstacles):
+    def move(self, keys, obstacles):
         dx = dy = 0
 
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
@@ -28,6 +29,9 @@ def move(self, keys, obstacles):
         if dx != 0 or dy != 0:
             if not any(new_rect.colliderect(o.rect) for o in obstacles):
                 self.rect = new_rect
-                log(f"{PLAYER_NAME} moved to ({self.rect.x}, {self.rect.y})")
+                log(f"➡️ Player moved to ({self.rect.x}, {self.rect.y})")
             else:
-                log("{PLAYER_NAME} hit an obstacle!")
+                log("❌ Player hit an obstacle!")
+
+    def draw(self, surface):
+        pygame.draw.rect(surface, COLOR_RED, self.rect)

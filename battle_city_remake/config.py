@@ -25,3 +25,8 @@ OBSTACLE_SIZE = 40
 
 LOG_TO_FILE = True  # Якщо хочеш логувати в файл, змінити на True
 LOG_FILE_PATH = "Battle-City-Remake/battle_city_remake/logs/game_log.log"
+# Кольори
+COLOR_BLACK = (0, 0, 0)
+COLOR_RED = (255, 0, 0)
+COLOR_WHITE = (255, 255, 255)
+COLOR_GRAY = (100, 100, 100)
