@@ -1,5 +1,5 @@
 import pygame
-from config import WHITE
+from config import COLOR_WHITE
 
 class Bullet:
     def __init__(self, x, y, dx, dy, speed=7):
@@ -13,4 +13,4 @@ class Bullet:
         self.rect.y += self.dy * self.speed
 
     def draw(self, surface):
-        pygame.draw.rect(surface, WHITE, self.rect)
+        pygame.draw.rect(surface, COLOR_WHITE, self.rect)

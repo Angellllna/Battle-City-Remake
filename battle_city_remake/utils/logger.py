@@ -18,17 +18,6 @@ def log(message):
     else:
         print(full_message)
 
-# def in_logger_error(e: Exception):
-#     log_error = traceback.format_exc()
-#     log_error_message = f"""[{timestamp}] An Error in Logger has been Occurred! Exception Traceback: \n{log_error} 
-#     \n{PLAYER_NAME} has left the game."""
-
-#     if LOG_TO_FILE:
-#         with open(LOG_FILE_PATH, "a") as file:
-#             file.write(log_error_message + "\n")
-#     else:
-#         print(log_error_message)
-
 def any_error_logger(exc_type, exc_value, exc_traceback):
     if issubclass(exc_type, KeyboardInterrupt):
         sys.__excepthook__(exc_type, exc_value, exc_traceback)

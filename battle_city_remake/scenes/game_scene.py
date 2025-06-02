@@ -4,7 +4,7 @@ from entities.player import Player
 from entities.obstacle import Obstacle
 from entities.bullet import Bullet
 from entities.enemy import Enemy
-from utils.logger import any_error_logger, log
+from utils.logger import log
 from scenes.game_over_scene import GameOverScene
 
 
@@ -86,11 +86,11 @@ class GameScene:
                 break
 
         if self.player.health <= 0:
-            log("☠️ No health — Game Over")
+            log("No health — Game Over")
             self.next_scene = GameOverScene(self.screen)
 
     def draw(self):
-        self.screen.fill(BLACK)
+        self.screen.fill(COLOR_BLACK)
 
         for obstacle in self.obstacles:
             obstacle.draw(self.screen)

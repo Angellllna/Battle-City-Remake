@@ -14,8 +14,8 @@ class MenuScene:
     def handle_event(self, event):
         from scenes.game_scene import GameScene
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_RETURN:  # Enter
-                log("🟢 Player started the game from menu")
+            if event.key == pygame.K_RETURN or event.key == pygame.K_z:  # Enter
+                log("Player started the game from menu")
                 self.next_scene = GameScene(self.screen)
 
     def update(self):

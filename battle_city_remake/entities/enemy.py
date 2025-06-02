@@ -1,13 +1,12 @@
 import pygame
 import random
-import config
 from config import *
 
 
 class Enemy:
     def __init__(self, x, y, direction="horizontal"):
         self.rect = pygame.Rect(x, y, OBSTACLE_SIZE, OBSTACLE_SIZE)
-        self.color = GRAY
+        self.color = COLOR_GRAY
         self.speed = PLAYER_SPEED - 1  # повільніше за гравця
         self.direction = direction  # 'horizontal' or 'vertical'
 

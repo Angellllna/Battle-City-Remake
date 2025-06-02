@@ -1,5 +1,5 @@
 import pygame
-from config import COLOR_RED, PLAYER_SPEED, PLAYER_SIZE
+from config import PLAYER_COLOR, PLAYER_SPEED, PLAYER_SIZE
 from utils.logger import log
 
 class Player:
@@ -29,9 +29,9 @@ class Player:
         if dx != 0 or dy != 0:
             if not any(new_rect.colliderect(o.rect) for o in obstacles):
                 self.rect = new_rect
-                log(f"➡️ Player moved to ({self.rect.x}, {self.rect.y})")
+                log(f"Player moved to ({self.rect.x}, {self.rect.y})")
             else:
-                log("❌ Player hit an obstacle!")
+                log("Player hit an obstacle!")
 
     def draw(self, surface):
-        pygame.draw.rect(surface, COLOR_RED, self.rect)
+        pygame.draw.rect(surface, PLAYER_COLOR, self.rect)
