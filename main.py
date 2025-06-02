@@ -18,7 +18,11 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            current_scene.handle_event(event)
+            else:
+                next_scene = current_scene.handle_event(event)
+                if next_scene:
+                    current_scene = next_scene
+
 
         next_scene = current_scene.update()
         if next_scene:
