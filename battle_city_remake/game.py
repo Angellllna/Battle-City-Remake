@@ -1,6 +1,6 @@
 import pygame
 import sys
-from config import WIN_WIDTH, WIN_HEIGHT, FPS_BARRIER, PLAYER_NAME, COLOR_WHITE
+from config import WIN_WIDTH, WIN_HEIGHT, FPS_BARRIER, PLAYER_NAME, COLOR_WHITE, SHOW_FPS
 from scenes.menu_scene import MenuScene
 from utils.logger import any_error_logger, log
 
@@ -17,7 +17,7 @@ class FpsCounter:
 
     def draw(self):
         fps_text = self.font.render(f'FPS: {self.fps:.0f}', True, COLOR_WHITE)
-        self.screen.blit(fps_text, (10, 40))
+        self.screen.blit(fps_text, (745, 10))
 
 def game():
     pygame.init()
@@ -27,8 +27,9 @@ def game():
     pygame.display.set_caption("Battle City Remake")
     fps_counter = FpsCounter(screen)
     clock = pygame.time.Clock()
+    fps_log_printed = False
 
-    log(f"{PLAYER_NAME} has joined the game!")
+    log(f"\n=====================================\n{PLAYER_NAME} has joined the game!")
 
     # Початкова сцена — меню
     curr_scene = MenuScene(screen)
@@ -44,15 +45,20 @@ def game():
         new_scene = curr_scene.update()
         if new_scene:
             curr_scene = new_scene
-
+        
         fps_counter.update()
         curr_scene.draw()
 
-        fps_counter.draw()
+        if SHOW_FPS:
+            fps_counter.draw()
+            if not fps_log_printed:
+                log(f'{PLAYER_NAME} has used FPS Counter :)')
+                fps_log_printed = True
+
         pygame.display.flip()
         clock.tick(FPS_BARRIER)
 
-    log(f"{PLAYER_NAME} has left the game")
+    log(f"{PLAYER_NAME} has left the game\n=====================================\n")
     pygame.quit()
     sys.exit()
 

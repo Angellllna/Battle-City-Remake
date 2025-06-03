@@ -1,6 +1,6 @@
 import pygame
 
-from config import COLOR_BLACK, COLOR_WHITE
+from config import COLOR_BLACK, COLOR_WHITE, PLAYER_NAME
 from utils.logger import log
 
 
@@ -15,7 +15,7 @@ class MenuScene:
         from scenes.game_scene import GameScene
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_RETURN or event.key == pygame.K_z:  # Enter
-                log("Player started the game from menu")
+                log(f"{PLAYER_NAME} started the game from menu")
                 self.next_scene = GameScene(self.screen)
 
     def update(self):
