@@ -14,37 +14,37 @@ class GameScene:
         self.font = pygame.font.SysFont("arial", 24)
         self.player = Player(380, 275)  # Центр ігрового поля
         self.obstacles = [
-    # ліва і права стінки
-    Obstacle(100, 50), Obstacle(100, 100), Obstacle(100, 150),
-    Obstacle(100, 400), Obstacle(100, 450),
-    Obstacle(100, 500), Obstacle(100, 550), Obstacle(100, 0),
+            # ліва і права стінки
+            Obstacle(100, 50), Obstacle(100, 100), Obstacle(100, 150),
+            Obstacle(100, 400), Obstacle(100, 450),
+            Obstacle(100, 500), Obstacle(100, 550), Obstacle(100, 0),
     
-    Obstacle(0, 210), Obstacle(0, 260), Obstacle(0, 310), Obstacle(0, 360),
+            Obstacle(0, 210), Obstacle(0, 260), Obstacle(0, 310), Obstacle(0, 360),
 
-    Obstacle(650, 50), Obstacle(650, 100), Obstacle(650, 150),
-    Obstacle(650, 400), Obstacle(650, 450),
-    Obstacle(650, 500), Obstacle(650, 550), Obstacle(650, 0),
+            Obstacle(650, 50), Obstacle(650, 100), Obstacle(650, 150),
+            Obstacle(650, 400), Obstacle(650, 450),
+            Obstacle(650, 500), Obstacle(650, 550), Obstacle(650, 0),
     
-    Obstacle(760, 360), Obstacle(760, 310), Obstacle(760, 260), Obstacle(760, 210),
+            Obstacle(760, 360), Obstacle(760, 310), Obstacle(760, 260), Obstacle(760, 210),
 
-    # центральні вертикальні блоки
-    Obstacle(250, 100), Obstacle(250, 150), Obstacle(250, 200), Obstacle(250, 250),
-    Obstacle(250, 300), Obstacle(250, 350), Obstacle(250, 400), Obstacle(250, 450),
+            # центральні вертикальні блоки
+            Obstacle(250, 100), Obstacle(250, 150), Obstacle(250, 200), Obstacle(250, 250),
+            Obstacle(250, 300), Obstacle(250, 350), Obstacle(250, 400), Obstacle(250, 450),
 
-    Obstacle(500, 100), Obstacle(500, 150), Obstacle(500, 200), Obstacle(500, 250),
-    Obstacle(500, 300), Obstacle(500, 350), Obstacle(500, 400), Obstacle(500, 450),
+            Obstacle(500, 100), Obstacle(500, 150), Obstacle(500, 200), Obstacle(500, 250),
+            Obstacle(500, 300), Obstacle(500, 350), Obstacle(500, 400), Obstacle(500, 450),
     
 
-    # верхні горизонтальні блоки
-    Obstacle(350, 50), Obstacle(400, 50),
-    Obstacle(350, 100), Obstacle(400, 100),
-    Obstacle(350, 150), Obstacle(400, 150),
+            # верхні горизонтальні блоки
+            Obstacle(350, 50), Obstacle(400, 50),
+            Obstacle(350, 100), Obstacle(400, 100),
+            Obstacle(350, 150), Obstacle(400, 150),
 
-    # нижні горизонтальні блоки
-    Obstacle(350, 400), Obstacle(400, 400),
-    Obstacle(350, 450), Obstacle(400, 450),
-    Obstacle(350, 500), Obstacle(375, 500), Obstacle(400, 500),
-]
+            # нижні горизонтальні блоки
+            Obstacle(350, 400), Obstacle(400, 400),
+            Obstacle(350, 450), Obstacle(400, 450),
+            Obstacle(350, 500), Obstacle(375, 500), Obstacle(400, 500),
+        ]
         self.enemies = [Enemy(200, 550, direction="vertical"), Enemy(550, 550, direction="vertical"),
                         Enemy(600, 0),Enemy(150, 550),Enemy(50, 550, direction="vertical"), Enemy(700, 550, direction="vertical")]
         self.bullets = []
