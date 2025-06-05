@@ -26,7 +26,6 @@ def main():
                 if next_scene:
                     current_scene = next_scene
 
-
         next_scene = current_scene.update()
         if next_scene:
             current_scene = next_scene

@@ -59,6 +59,9 @@ class GameScene:
         self.enemies = [Enemy(200, 550, direction="vertical"), Enemy(550, 550, direction="vertical"),
                         Enemy(600, 0),Enemy(150, 550),Enemy(50, 550, direction="vertical"), Enemy(700, 550, direction="vertical")]
         self.bullets = []
+        if not pygame.mixer.music.get_busy():
+            pygame.mixer.music.load("sounds/mainTheme.mp3")
+            pygame.mixer.music.play(-1)
 
     def handle_event(self, event):
         if event.type == pygame.KEYDOWN:
@@ -76,7 +79,7 @@ class GameScene:
         self.player.move(keys, self.obstacles)
         
         self.update_bullets()
-
+        
         for enemy in self.enemies[:]:
             enemy.move(self.obstacles)
 
@@ -105,9 +108,11 @@ class GameScene:
                 log(f"❤️ Гравець ранений! Здоров'я: {self.player.health}")
                 if self.player.health <= 0:
                     log("💀 Гравець помер, переход в GameOverScene")
+                    pygame.mixer.music.stop()
                     return GameOverScene(self.screen)
         if not self.enemies:
             log("🏆 Всі вороги знищені, переход в GameWinScene")
+            pygame.mixer.music.stop()
             return GameWinScene(self.screen)
 
         return None
@@ -137,6 +142,12 @@ class GameScene:
         for shield in self.shields:
             shield.draw(self.screen)
 
+        if self.player.health > 2:
+            health_color = (0, 255, 0)  # зелений
+        elif self.player.health == 2:
+            health_color = (255, 255, 0)  # жовтий
+        else:
+            health_color = (255, 0, 0)  # червоний
 
-        health_text = self.font.render(f"Здоров'я: {self.player.health}", True, (255, 0, 0))
+        health_text = self.font.render(f"Здоров'я: {self.player.health}", True, health_color)
         self.screen.blit(health_text, (10, 10))
