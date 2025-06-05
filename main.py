@@ -7,11 +7,14 @@ from utils.logger import log
 def main():
     log("🚀 Game started")
     pygame.init()
+    pygame.mixer.init()
     screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
     pygame.display.set_caption("Battle City Remake")
     clock = pygame.time.Clock()
 
     current_scene = MenuScene(screen)
+    startup_sound = pygame.mixer.Sound("sounds/theme.mp3")
+    startup_sound.play()
 
     running = True
     while running:

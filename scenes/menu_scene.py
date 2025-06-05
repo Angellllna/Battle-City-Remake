@@ -23,7 +23,7 @@ class MenuScene:
         # настройка ремейку
         self.remake_base_size = 50
         self.remake_amplitude = 5
-        self.remake_speed = 2
+        self.remake_speed = 3
         self.start_ticks = pygame.time.get_ticks()
 
         self.remake_font_name = "arial"

@@ -7,14 +7,18 @@ class GameWinScene:
     def __init__(self, screen):
         self.screen = screen
         self.font = pygame.font.SysFont("arial", 36)
-        self.title_text = self.font.render("🏆 Ви перемогли!", True, COLOR_WHITE)
-        self.info_text = self.font.render("Натисніть ENTER, щоб повернутись у меню", True, COLOR_WHITE)
+        self.title_text = self.font.render("Ви перемогли!", True, (0,255,0))
+        self.info_text = self.font.render("Натисніть ENTER, щоб повернутись у меню", True, (0,255,0))
+        win_sound = pygame.mixer.Sound("sounds\win.mp3")
+        win_sound.play()
         self.next_scene = None
 
     def handle_event(self, event):
         if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
             log("🔁 Повернення у меню з екрану перемоги")
             self.next_scene = MenuScene(self.screen)
+            startup_sound = pygame.mixer.Sound("sounds/theme.mp3")
+            startup_sound.play()
 
     def update(self):
         return self.next_scene

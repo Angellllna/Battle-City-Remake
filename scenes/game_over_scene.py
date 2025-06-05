@@ -7,8 +7,10 @@ class GameOverScene:
     def __init__(self, screen):
         self.screen = screen
         self.font = pygame.font.SysFont("arial", 36)
-        self.title_text = self.font.render("💀 Гру завершено", True, COLOR_WHITE)
-        self.info_text = self.font.render("Натисніть ENTER, щоб повернутись у меню", True, COLOR_WHITE)
+        self.title_text = self.font.render("Ви програли!", True, (255,0,0))
+        self.info_text = self.font.render("Натисніть ENTER, щоб повернутись у меню", True, (255,0,0))
+        lose_sound = pygame.mixer.Sound("sounds\lose.mp3")
+        lose_sound.play()
         self.next_scene = None
 
     def handle_event(self, event):
@@ -16,6 +18,8 @@ class GameOverScene:
             if event.key == pygame.K_RETURN:
                 log("🔁 Повернення у меню з Game Over сцени")
                 self.next_scene = MenuScene(self.screen)
+                startup_sound = pygame.mixer.Sound("sounds/theme.mp3")
+                startup_sound.play()
 
     def update(self):
         if self.next_scene:

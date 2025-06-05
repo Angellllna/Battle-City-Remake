@@ -1,17 +1,21 @@
 import pygame
 from config import COLOR_BLACK
+import config
+from config import WINDOW_WIDTH, WINDOW_HEIGHT
 from entities.player import Player
 from entities.obstacle import Obstacle
 from entities.enemy import Enemy
 from entities.bullet import Bullet
 from scenes.game_over_scene import GameOverScene
 from scenes.game_win_scene import GameWinScene
+from entities.shield import Shield
 from utils.logger import log
 # GameScene - основна ігрова сцена, де відбувається геймплей
 class GameScene:
     def __init__(self, screen):
         self.screen = screen
         self.font = pygame.font.SysFont("arial", 24)
+        self.shoot_sound = pygame.mixer.Sound("sounds\laserShoot.wav")
         self.player = Player(380, 275)  # Центр ігрового поля
         self.obstacles = [
             # ліва і права стінки
@@ -44,7 +48,14 @@ class GameScene:
             Obstacle(350, 400), Obstacle(400, 400),
             Obstacle(350, 450), Obstacle(400, 450),
             Obstacle(350, 500), Obstacle(375, 500), Obstacle(400, 500),
+            Obstacle(650, 280), Obstacle(100, 280),
         ]
+        self.shields = [
+            Shield(250, 50),
+            Shield(250, 500),
+            Shield(500, 50),
+            Shield(500, 500),
+            ]
         self.enemies = [Enemy(200, 550, direction="vertical"), Enemy(550, 550, direction="vertical"),
                         Enemy(600, 0),Enemy(150, 550),Enemy(50, 550, direction="vertical"), Enemy(700, 550, direction="vertical")]
         self.bullets = []
@@ -54,6 +65,7 @@ class GameScene:
             if event.key == pygame.K_SPACE:
                 bullet = self.player.shoot()
                 self.bullets.append(bullet)
+                self.shoot_sound.play()
             elif event.key == pygame.K_ESCAPE:
                 log("🚪 Вихід в GameOverScene на ESC")
                 return GameOverScene(self.screen)
@@ -62,9 +74,18 @@ class GameScene:
     def update(self):
         keys = pygame.key.get_pressed()
         self.player.move(keys, self.obstacles)
+        
+        self.update_bullets()
 
-        for enemy in self.enemies:
+        for enemy in self.enemies[:]:
             enemy.move(self.obstacles)
+
+            # Зіткнення з щитом — знищення ворога
+            for shield in self.shields:
+                if enemy.rect.colliderect(shield.rect):
+                    self.enemies.remove(enemy)
+                    log("🛡️ Enemy destroyed by shield")
+                    break
 
         for bullet in self.bullets[:]:
             bullet.move()
@@ -76,8 +97,8 @@ class GameScene:
                     self.enemies.remove(enemy)
                     if bullet in self.bullets:
                         self.bullets.remove(bullet)
+                    log("💥 Bullet hit enemy!")
                     break
-
         for enemy in self.enemies:
             if self.player.rect.colliderect(enemy.rect):
                 self.player.health -= 1
@@ -85,12 +106,24 @@ class GameScene:
                 if self.player.health <= 0:
                     log("💀 Гравець помер, переход в GameOverScene")
                     return GameOverScene(self.screen)
-
         if not self.enemies:
             log("🏆 Всі вороги знищені, переход в GameWinScene")
             return GameWinScene(self.screen)
 
         return None
+    def update_bullets(self):
+        for bullet in self.bullets[:]:
+            bullet.move()
+
+            if (bullet.rect.x < 0 or bullet.rect.x > WINDOW_WIDTH or
+                bullet.rect.y < 0 or bullet.rect.y > WINDOW_HEIGHT):
+                self.bullets.remove(bullet)
+                continue  
+
+            if any(bullet.rect.colliderect(obs.rect) for obs in self.obstacles):
+                self.bullets.remove(bullet)
+                log("🧱 Bullet hit a wall and was destroyed")
+                continue
 
     def draw(self):
         self.screen.fill(COLOR_BLACK)
@@ -101,6 +134,9 @@ class GameScene:
         for bullet in self.bullets:
             bullet.draw(self.screen)
         self.player.draw(self.screen)
+        for shield in self.shields:
+            shield.draw(self.screen)
+
 
         health_text = self.font.render(f"Здоров'я: {self.player.health}", True, (255, 0, 0))
         self.screen.blit(health_text, (10, 10))
