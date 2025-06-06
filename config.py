@@ -1,0 +1,22 @@
+# DEFAULT FILE ⚠️
+
+# Розміри вікна
+WINDOW_WIDTH = 800
+WINDOW_HEIGHT = 600
+
+# Частота кадрів
+FPS = 60
+
+# Кольори
+COLOR_BLACK = (0, 0, 0)
+COLOR_RED = (255, 0, 0)
+COLOR_WHITE = (255, 255, 255)
+COLOR_GRAY = (100, 100, 100)
+
+# Гравець
+PLAYER_SIZE = 40
+PLAYER_SPEED = 5
+
+# Перешкоди
+OBSTACLE_COLOR = COLOR_WHITE
+OBSTACLE_SIZE = 50
