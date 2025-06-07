@@ -1,0 +1,33 @@
+import pygame
+from config import COLOR_BLACK, COLOR_WHITE
+from scenes.menu_scene import MenuScene
+from utils.logger import log
+
+class GameWinScene:
+    def __init__(self, screen):
+        self.screen = screen
+        self.font = pygame.font.SysFont("arial", 36)
+        self.title_text = self.font.render("Ви перемогли!", True, (0,255,0))
+        self.info_text = self.font.render("Натисніть ENTER, щоб повернутись у меню", True, (0,255,0))
+        if not pygame.mixer.music.get_busy():
+            music = pygame.mixer.music("sounds\win.mp3")
+            music.play()
+        self.next_scene = None
+
+    def handle_event(self, event):
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
+            log("🔁 Повернення у меню з екрану перемоги")
+            self.next_scene = MenuScene(self.screen)
+            if not pygame.mixer.music.get_busy():
+                music = pygame.mixer.music("sounds/theme.mp3")
+                music.play()
+
+    def update(self):
+        return self.next_scene
+
+    def draw(self):
+        self.screen.fill(COLOR_BLACK)
+        title_rect = self.title_text.get_rect(center=(self.screen.get_width() // 2, self.screen.get_height() // 2 - 30))
+        info_rect = self.info_text.get_rect(center=(self.screen.get_width() // 2, self.screen.get_height() // 2 + 30))
+        self.screen.blit(self.title_text, title_rect)
+        self.screen.blit(self.info_text, info_rect)
