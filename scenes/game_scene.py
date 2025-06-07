@@ -1,7 +1,8 @@
 import pygame
+import time
 from config import COLOR_BLACK
 import config
-from config import WINDOW_WIDTH, WINDOW_HEIGHT
+from config import WINDOW_WIDTH, WINDOW_HEIGHT, MAP1
 from entities.player import Player
 from entities.obstacle import Obstacle
 from entities.enemy import Enemy
@@ -14,51 +15,33 @@ from utils.logger import log
 class GameScene:
     def __init__(self, screen):
         self.screen = screen
+        self.last_hit_time = 0
+        self.invulnerability_duration = 1.5  # Секунди невразливості після удару
         self.font = pygame.font.SysFont("arial", 24)
         self.shoot_sound = pygame.mixer.Sound("sounds\laserShoot.wav")
-        self.player = Player(380, 275)  # Центр ігрового поля
-        self.obstacles = [
-            # ліва і права стінки
-            Obstacle(100, 50), Obstacle(100, 100), Obstacle(100, 150),
-            Obstacle(100, 400), Obstacle(100, 450),
-            Obstacle(100, 500), Obstacle(100, 550), Obstacle(100, 0),
-    
-            Obstacle(0, 210), Obstacle(0, 260), Obstacle(0, 310), Obstacle(0, 360),
-
-            Obstacle(650, 50), Obstacle(650, 100), Obstacle(650, 150),
-            Obstacle(650, 400), Obstacle(650, 450),
-            Obstacle(650, 500), Obstacle(650, 550), Obstacle(650, 0),
-    
-            Obstacle(760, 360), Obstacle(760, 310), Obstacle(760, 260), Obstacle(760, 210),
-
-            # центральні вертикальні блоки
-            Obstacle(250, 100), Obstacle(250, 150), Obstacle(250, 200), Obstacle(250, 250),
-            Obstacle(250, 300), Obstacle(250, 350), Obstacle(250, 400), Obstacle(250, 450),
-
-            Obstacle(500, 100), Obstacle(500, 150), Obstacle(500, 200), Obstacle(500, 250),
-            Obstacle(500, 300), Obstacle(500, 350), Obstacle(500, 400), Obstacle(500, 450),
-    
-
-            # верхні горизонтальні блоки
-            Obstacle(350, 50), Obstacle(400, 50),
-            Obstacle(350, 100), Obstacle(400, 100),
-            Obstacle(350, 150), Obstacle(400, 150),
-
-            # нижні горизонтальні блоки
-            Obstacle(350, 400), Obstacle(400, 400),
-            Obstacle(350, 450), Obstacle(400, 450),
-            Obstacle(350, 500), Obstacle(375, 500), Obstacle(400, 500),
-            Obstacle(650, 280), Obstacle(100, 280),
-        ]
-        self.shields = [
-            Shield(250, 50),
-            Shield(250, 500),
-            Shield(500, 50),
-            Shield(500, 500),
-            ]
-        self.enemies = [Enemy(200, 550, direction="vertical"), Enemy(550, 550, direction="vertical"),
-                        Enemy(600, 0),Enemy(150, 550),Enemy(50, 550, direction="vertical"), Enemy(700, 550, direction="vertical")]
+        tile_size = 50
+        self.player = Player(380, 280)
+        self.obstacles = []
+        self.shields = []
+        self.enemies = [Enemy(750, 275, direction="horizontal"),
+                        Enemy(10, 275, direction="horizontal"),]  
         self.bullets = []
+        for row_index, row in enumerate(MAP1):
+            for col_index, cell in enumerate(row):
+                x = col_index * tile_size
+                y = row_index * tile_size
+                if cell == "wl":
+                    self.obstacles.append(Obstacle(x, y))
+                elif cell == "sd":
+                    self.shields.append(Shield(x, y))
+                elif cell == "e1":
+                    self.enemies.append(Enemy(x, y, direction="vertical"))
+                elif cell == "e2":
+                    self.enemies.append(Enemy(x, y, direction="vertical"))
+                elif cell == "e3":
+                    self.enemies.append(Enemy(x, y, direction="chase"))
+                elif cell == "pl":
+                    self.player = Player(x, y)
         if not pygame.mixer.music.get_busy():
             pygame.mixer.music.load("sounds/mainTheme.mp3")
             pygame.mixer.music.play(-1)
@@ -102,14 +85,17 @@ class GameScene:
                         self.bullets.remove(bullet)
                     log("💥 Bullet hit enemy!")
                     break
+        current_time = time.time()
         for enemy in self.enemies:
             if self.player.rect.colliderect(enemy.rect):
-                self.player.health -= 1
-                log(f"❤️ Гравець ранений! Здоров'я: {self.player.health}")
-                if self.player.health <= 0:
-                    log("💀 Гравець помер, переход в GameOverScene")
-                    pygame.mixer.music.stop()
-                    return GameOverScene(self.screen)
+                if current_time - self.last_hit_time >= self.invulnerability_duration:
+                    self.player.health -= 1
+                    self.last_hit_time = current_time
+                    log(f"❤️ Гравець ранений! Здоров'я: {self.player.health}")
+                    if self.player.health <= 0:
+                        log("💀 Гравець помер, переход в GameOverScene")
+                        pygame.mixer.music.stop()
+                        return GameOverScene(self.screen)
         if not self.enemies:
             log("🏆 Всі вороги знищені, переход в GameWinScene")
             pygame.mixer.music.stop()

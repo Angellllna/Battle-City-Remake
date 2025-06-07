@@ -2,6 +2,7 @@ import pygame
 import math
 from config import COLOR_BLACK, COLOR_WHITE
 from utils.logger import log
+from entities.menu_tanks import Tank
 
 class MenuScene:
     def __init__(self, screen):
@@ -9,6 +10,11 @@ class MenuScene:
         self.font = pygame.font.SysFont("arial", 36)
         self.title_text = self.font.render("Натисніть ENTER, щоб почати", True, (0, 255, 0))
         self.next_scene = None
+        self.tank1 = Tank(100, 400, (255, 0, 0))   # красный
+        self.tank2 = Tank(600, 400, (0, 0, 255))   # синий
+        if self.tank1.x < self.tank2.x:
+            self.tank1.direction = "right"
+            self.tank2.direction = "left"
 
         # Загружаемо лого
         try:
@@ -38,6 +44,15 @@ class MenuScene:
     def update(self):
         if self.next_scene:
             return self.next_scene
+        self.tank1.update(self.tank2)
+        self.tank2.update(self.tank1)
+
+        if self.tank1.check_hit(self.tank2):
+            log("💥 Tank 1 hit Tank 2!")
+
+        if self.tank2.check_hit(self.tank1):
+            log("💥 Tank 2 hit Tank 1!")
+
 
     def draw(self):
         self.screen.fill(COLOR_BLACK)
@@ -56,3 +71,6 @@ class MenuScene:
             self.screen.blit(rotated_text, rotated_rect)
         text_rect = self.title_text.get_rect(center=(self.screen.get_width() // 2, self.screen.get_height() // 2 + 100))
         self.screen.blit(self.title_text, text_rect)
+        self.tank1.draw(self.screen)
+        self.tank2.draw(self.screen)
+
