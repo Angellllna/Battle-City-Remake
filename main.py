@@ -1,16 +1,26 @@
 import pygame
 from entities.player import Player
+from entities.flag import Flag
+from entities.defend_flag import DefendFlag
 from map import create_test_map
 from entities.obstacle import BushBlock
+from entities.enemy import Enemy
 
 pygame.init()
 screen = pygame.display.set_mode((512, 448))
 pygame.display.set_caption("Battle City Remake")
 clock = pygame.time.Clock()
 
-player = Player(position=(100, 100), speed=2)
+player = Player(position=(100, 300), speed=2)
+flag = Flag(x=100, y=300)  # Прапор гравця
+defend_flag = DefendFlag(x=224, y=416)  # Захисний прапор (внизу)
+enemy = Enemy(position=(400, 100))
+
 obstacles = create_test_map()
 last_pressed_direction = pygame.Vector2(0, 0)
+
+# Поки що ворогів нема — для тесту можемо тимчасово дати "гравця" як ворога
+enemy_tanks = [player]  # Тест: гравець буде вважатися ворогом
 
 running = True
 while running:
@@ -43,7 +53,13 @@ while running:
     player.move(last_pressed_direction.x, last_pressed_direction.y, obstacles)
     player.update_bullets(screen.get_rect())
 
-    # Перевірка зіткнень куль
+    flag.check_capture(player)
+    defend_flag.check_capture(enemy_tanks)
+
+    if defend_flag.captured:
+        print("⚠️ Базу захоплено! Гру програно.")
+        running = False
+
     for bullet in player.bullets[:]:
         for obstacle in obstacles[:]:
             target_rects = obstacle.get_collision_rects() if hasattr(obstacle, "get_collision_rects") else [obstacle.rect]
@@ -54,22 +70,32 @@ while running:
                     if hasattr(obstacle, "hit") and obstacle.hit(bullet):
                         obstacles.remove(obstacle)
                     break
-
-
+                
+    enemy.move_towards(flag.rect.center)
+    # Малювання
     screen.fill((0, 0, 0))
 
-    # Малюємо всі об'єкти крім кущів
     for ob in obstacles:
         if not isinstance(ob, BushBlock):
             ob.draw(screen)
 
+     # Захисний прапор — під гравцем
+    enemy.draw(screen)
+    
+    
     player.update()
-    player.draw(screen)
 
-    # Кущі поверх гравця
+ 
+    
+    player.draw(screen)
+    
+    defend_flag.draw(screen)
+    
     for ob in obstacles:
         if isinstance(ob, BushBlock):
             ob.draw(screen)
+
+    flag.draw(screen)  # Захоплюваний прапор — над гравцем
 
     pygame.display.flip()
     clock.tick(60)

@@ -25,6 +25,6 @@ def create_test_map():
 
     # Кущі
     for x in range(150, 182, 16):
-        obstacles.append(BushBlock(x, 250))
+        obstacles.append(BushBlock(250, 250))
 
     return obstacles

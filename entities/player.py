@@ -2,6 +2,7 @@ import pygame
 import math
 from entities.bullet import Bullet
 
+
 class Player:
     def __init__(self, position, speed=2):
         self.rect = pygame.Rect(position[0], position[1], 26, 26)
@@ -24,6 +25,17 @@ class Player:
         self.target_angle = 0
         self.rotation_speed = 10
 
+        # Віддача
+        self.recoil_offset = pygame.Vector2(0, 0)
+        self.recoil_amount = 5
+        self.recoil_return_speed = 1
+
+        # Спалах пострілу
+        self.muzzle_flash_image = pygame.image.load("assets/muzzle_flash.png").convert_alpha()
+        self.show_muzzle_flash = False
+        self.muzzle_flash_timer = 0
+        self.muzzle_flash_duration = 100  # мс
+
     def move(self, dx, dy, obstacles):
         self.moving = dx != 0 or dy != 0
         if self.moving:
@@ -42,6 +54,7 @@ class Player:
                     elif new_rect.colliderect(obstacle.rect):
                         return
             self.rect = new_rect
+        
 
     def get_angle_from_direction(self, direction):
         angle = math.degrees(math.atan2(-direction.y, direction.x)) - 90
@@ -50,7 +63,7 @@ class Player:
     def update(self):
         now = pygame.time.get_ticks()
 
-        # Обробка анімації руху
+        # Анімація руху
         if self.moving and now - self.animation_timer > self.animation_delay:
             self.image_index = (self.image_index + 1) % len(self.images)
             self.animation_timer = now
@@ -66,15 +79,31 @@ class Player:
             self.current_angle += self.rotation_speed * (1 if diff > 0 else -1)
             self.current_angle %= 360
 
-        # Повертаємо танк
+        # Застосування повороту
         self.image = pygame.transform.rotate(self.image, self.current_angle)
-        self.rect = self.image.get_rect(center=self.rect.center)
+
+        # Відновлення після віддачі
+        if self.recoil_offset.length_squared() > 0:
+            self.recoil_offset -= self.recoil_offset.normalize() * self.recoil_return_speed
+            if self.recoil_offset.length() < self.recoil_return_speed:
+                self.recoil_offset = pygame.Vector2(0, 0)
+
+        # Спалах пострілу таймер
+        if self.show_muzzle_flash and now - self.muzzle_flash_timer > self.muzzle_flash_duration:
+            self.show_muzzle_flash = False
 
     def shoot(self):
         if self.direction.length_squared() == 0:
             return
         bullet = Bullet(self.rect.centerx - 2, self.rect.centery - 2, self.direction.normalize())
         self.bullets.append(bullet)
+
+        # Віддача
+        self.recoil_offset = -self.direction.normalize() * self.recoil_amount
+
+        # Спалах пострілу
+        self.show_muzzle_flash = True
+        self.muzzle_flash_timer = pygame.time.get_ticks()
 
     def update_bullets(self, screen_rect):
         for bullet in self.bullets[:]:
@@ -83,7 +112,18 @@ class Player:
                 self.bullets.remove(bullet)
 
     def draw(self, surface):
-        img_rect = self.image.get_rect(center=self.rect.center)
+        # Позиція з урахуванням recoil
+        draw_pos = pygame.Vector2(self.rect.center) + self.recoil_offset
+        img_rect = self.image.get_rect(center=draw_pos)
         surface.blit(self.image, img_rect.topleft)
+
+        # Спалах пострілу
+        if self.show_muzzle_flash:
+            muzzle_offset = self.direction.normalize() * 20
+            flash_pos = pygame.Vector2(self.rect.center) + self.recoil_offset + muzzle_offset
+            flash_rect = self.muzzle_flash_image.get_rect(center=flash_pos)
+            surface.blit(self.muzzle_flash_image, flash_rect.topleft)
+
+        # Кулі
         for bullet in self.bullets:
             pygame.draw.rect(surface, (255, 255, 0), bullet.rect)

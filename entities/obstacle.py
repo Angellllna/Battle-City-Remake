@@ -1,7 +1,7 @@
 import pygame
 
 class Obstacle:
-    def __init__(self, x, y, width=26, height=26, color=(100, 0, 0), destructible=False, hp=1, blocks_movement=True, blocks_bullets=True):
+    def __init__(self, x, y, width=32, height=32, color=(100, 0, 0), destructible=False, hp=1, blocks_movement=True, blocks_bullets=True):
         self.rect = pygame.Rect(x, y, width, height)
         self.color = color
         self.destructible = destructible
@@ -33,7 +33,7 @@ class Obstacle:
 
 class SteelBlock(Obstacle):
     def __init__(self, x, y):
-        super().__init__(x, y, width=26, height=26, color=(150, 150, 150), destructible=False)
+        super().__init__(x, y, width=32, height=32, color=(150, 150, 150), destructible=False)
         self.image = pygame.image.load("assets/steel.png").convert_alpha()
         self.image = pygame.transform.scale(self.image, (self.rect.width, self.rect.height))
 
@@ -44,7 +44,7 @@ class SteelBlock(Obstacle):
 
 class WaterBlock(Obstacle):
     def __init__(self, x, y):
-        super().__init__(x, y, color=(0, 0, 255), destructible=False, blocks_movement=True, blocks_bullets=False)
+        super().__init__(x, y, width=32, height=32, color=(0, 0, 255), destructible=False, blocks_movement=True, blocks_bullets=False)
 
         self.images = [
             pygame.image.load("assets/water1.png").convert_alpha(),
@@ -68,7 +68,7 @@ class WaterBlock(Obstacle):
 
 class BushBlock(Obstacle):
     def __init__(self, x, y):
-        super().__init__(x, y, color=(34, 139, 34), destructible=False, blocks_movement=False, blocks_bullets=False)
+        super().__init__(x, y, width=32, height=32, color=(34, 139, 34), destructible=False, blocks_movement=False, blocks_bullets=False)
         self.image = pygame.image.load("assets/bush.png").convert_alpha()
         self.image = pygame.transform.scale(self.image, (self.rect.width, self.rect.height))
 
