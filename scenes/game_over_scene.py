@@ -10,7 +10,7 @@ class GameOverScene:
         self.title_text = self.font.render("Ви програли!", True, (255,0,0))
         self.info_text = self.font.render("Натисніть ENTER, щоб повернутись у меню", True, (255,0,0))
         if not pygame.mixer.music.get_busy():
-            music = pygame.mixer.music("sounds\lose.mp3")
+            music = pygame.mixer.music("Battle-City-Remake\sounds\lose.mp3")
             music.play()
         self.next_scene = None
 
@@ -19,7 +19,7 @@ class GameOverScene:
             if event.key == pygame.K_RETURN:
                 log("🔁 Повернення у меню з Game Over сцени")
                 if not pygame.mixer.music.get_busy():
-                    music = pygame.mixer.music("sounds/theme.mp3")
+                    music = pygame.mixer.music("Battle-City-Remake/sounds/theme.mp3")
                     music.play()
                 self.next_scene = MenuScene(self.screen)
                 

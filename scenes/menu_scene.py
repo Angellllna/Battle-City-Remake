@@ -12,7 +12,7 @@ class MenuScene:
 
         # Загружаемо лого
         try:
-            self.logo = pygame.image.load("logo.png").convert_alpha()
+            self.logo = pygame.image.load("Battle-City-Remake\logo.png").convert_alpha()
             logo_width = 400
             logo_height = 200
             self.logo = pygame.transform.scale(self.logo, (logo_width, logo_height))

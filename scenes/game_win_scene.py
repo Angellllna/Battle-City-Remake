@@ -10,7 +10,7 @@ class GameWinScene:
         self.title_text = self.font.render("Ви перемогли!", True, (0,255,0))
         self.info_text = self.font.render("Натисніть ENTER, щоб повернутись у меню", True, (0,255,0))
         if not pygame.mixer.music.get_busy():
-            music = pygame.mixer.music("sounds\win.mp3")
+            music = pygame.mixer.music("Battle-City-Remake\sounds\win.mp3")
             music.play()
         self.next_scene = None
 
@@ -19,7 +19,7 @@ class GameWinScene:
             log("🔁 Повернення у меню з екрану перемоги")
             self.next_scene = MenuScene(self.screen)
             if not pygame.mixer.music.get_busy():
-                music = pygame.mixer.music("sounds/theme.mp3")
+                music = pygame.mixer.music("Battle-City-Remake/sounds/theme.mp3")
                 music.play()
 
     def update(self):

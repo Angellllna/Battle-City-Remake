@@ -13,7 +13,7 @@ def main():
     clock = pygame.time.Clock()
 
     current_scene = MenuScene(screen)
-    music = pygame.mixer.Sound("sounds/theme.mp3")
+    music = pygame.mixer.Sound("Battle-City-Remake/sounds/theme.mp3")
     music.play()
 
     running = True
@@ -26,7 +26,7 @@ def main():
                 if next_scene:
                     pygame.mixer.stop()
                     current_scene = next_scene
-
+  
         next_scene = current_scene.update()
         if next_scene:
             pygame.mixer.stop()
