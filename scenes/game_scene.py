@@ -1,6 +1,8 @@
 import pygame
 import time
 from config import COLOR_BLACK
+from entities.flag import *
+from entities.defend_flag import *
 import config
 from config import WINDOW_WIDTH, WINDOW_HEIGHT, MAP1
 from entities.player import Player
@@ -20,12 +22,15 @@ class GameScene:
         self.font = pygame.font.SysFont("arial", 24)
         self.shoot_sound = pygame.mixer.Sound("sounds\laserShoot.wav")
         tile_size = 50
+        self.captured_flags = 0
         self.player = Player(380, 280)
         self.obstacles = []
         self.shields = []
         self.enemies = [Enemy(750, 275, direction="horizontal"),
                         Enemy(10, 275, direction="horizontal"),]  
         self.bullets = []
+        self.flags = [Flag(380, 560), Flag(380, 60)]  # Два прапори для захоплення
+        #self.defend_flag = DefendFlag(380, 560)
         for row_index, row in enumerate(MAP1):
             for col_index, cell in enumerate(row):
                 x = col_index * tile_size
@@ -54,6 +59,7 @@ class GameScene:
                 self.shoot_sound.play()
             elif event.key == pygame.K_ESCAPE:
                 log("🚪 Вихід в GameOverScene на ESC")
+                pygame.mixer.music.stop()
                 return GameOverScene(self.screen)
         return None
 
@@ -100,6 +106,21 @@ class GameScene:
             log("🏆 Всі вороги знищені, переход в GameWinScene")
             pygame.mixer.music.stop()
             return GameWinScene(self.screen)
+        for flag in self.flags:
+            flag.check_capture(self.player)
+            if flag.captured and not hasattr(flag, "counted"):
+                self.captured_flags += 1
+                flag.counted = True
+                log(f"🚩 Прапор захоплено! Загалом: {self.captured_flags}")
+        if all(flag.captured for flag in self.flags):
+            log("🏁 Усі прапори захоплено! Перемога!")
+            pygame.mixer.music.stop()
+            return GameWinScene(self.screen)
+        # Оновлення прапорів
+        for flag in self.flags:
+            flag.check_capture(self.player)
+
+        #self.defend_flag.check_capture(self.enemies)
 
         return None
     def update_bullets(self):
@@ -127,6 +148,10 @@ class GameScene:
         self.player.draw(self.screen)
         for shield in self.shields:
             shield.draw(self.screen)
+        for flag in self.flags:
+            flag.draw(self.screen)
+
+        #self.defend_flag.draw(self.screen)
 
         if self.player.health > 2:
             health_color = (0, 255, 0)  # зелений
@@ -137,3 +162,5 @@ class GameScene:
 
         health_text = self.font.render(f"Здоров'я: {self.player.health}", True, health_color)
         self.screen.blit(health_text, (10, 10))
+        flags_text = self.font.render(f"Захоплено прапорів: {self.captured_flags}", True, (0,255,0))
+        self.screen.blit(flags_text, (10, 40))

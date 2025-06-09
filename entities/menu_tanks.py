@@ -27,17 +27,15 @@ class Tank:
         elif self.direction == "right":
             self.x += self.speed
 
-        # случайная смена направления
         if random.random() < 0.02:
             self.direction = random.choice(["up", "down", "left", "right"])
 
-        # границы экрана
-        self.x = max(0, min(self.x, 800 - self.width))  # assuming screen width = 800
-        self.y = max(0, min(self.y, 600 - self.height)) # assuming screen height = 600
+        self.x = max(0, min(self.x, 800 - self.width)) 
+        self.y = max(0, min(self.y, 600 - self.height)) 
 
     def shoot(self):
         now = pygame.time.get_ticks()
-        if now - self.last_shot_time > 1000:  # 1 выстрел в секунду
+        if now - self.last_shot_time > 1000:  
             dx, dy = 0, 0
             if self.direction == "up": dy = -5
             elif self.direction == "down": dy = 5
@@ -47,7 +45,7 @@ class Tank:
             self.last_shot_time = now
     def shoot_at(self, target):
         now = pygame.time.get_ticks()
-        if now - self.last_shot_time > 1000:  # 1 выстрел в секунду
+        if now - self.last_shot_time > 1000:  
             dx = target.x + target.width // 2 - (self.x + self.width // 2)
             dy = target.y + target.height // 2 - (self.y + self.height // 2)
             distance = math.hypot(dx, dy)

@@ -24,7 +24,7 @@ def main():
             else:
                 next_scene = current_scene.handle_event(event)
                 if next_scene:
-                    startup_sound.stop()  # Останавливаем музыку перед сменой сцены
+                    startup_sound.stop()
                     current_scene = next_scene
 
         next_scene = current_scene.update()
