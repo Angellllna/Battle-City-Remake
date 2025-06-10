@@ -1,3 +1,4 @@
+#Battle-City-Remake\entities\defend_flag.py
 import pygame
 
 class DefendFlag:

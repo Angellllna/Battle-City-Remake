@@ -1,5 +1,5 @@
+# Battle-City-Remake\entities\flag.pyimport pygame
 import pygame
-
 class Flag:
     def __init__(self, x, y):
         # Червоні (за замовчуванням)

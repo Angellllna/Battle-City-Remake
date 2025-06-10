@@ -3,10 +3,11 @@ from entities.player import Player
 from entities.flag import Flag
 from entities.defend_flag import DefendFlag
 from map import create_test_map
-from entities.obstacle import BushBlock
-from entities.enemy import Enemy
+from entities.obstacle import BushBlock, SteelBlock
+
 
 pygame.init()
+pygame.mixer.init()
 screen = pygame.display.set_mode((512, 448))
 pygame.display.set_caption("Battle City Remake")
 clock = pygame.time.Clock()
@@ -14,7 +15,7 @@ clock = pygame.time.Clock()
 player = Player(position=(100, 300), speed=2)
 flag = Flag(x=100, y=300)  # Прапор гравця
 defend_flag = DefendFlag(x=224, y=416)  # Захисний прапор (внизу)
-enemy = Enemy(position=(400, 100))
+
 
 obstacles = create_test_map()
 last_pressed_direction = pygame.Vector2(0, 0)
@@ -49,6 +50,11 @@ while running:
             }
             if event.key in key_to_dir and last_pressed_direction == key_to_dir[event.key]:
                 last_pressed_direction = pygame.Vector2(0, 0)
+                
+                
+    # for ob in obstacles:
+    #     if isinstance(ob, BushBlock) and player.rect.colliderect(ob.rect):
+    #         ob.trigger_shake()
 
     player.move(last_pressed_direction.x, last_pressed_direction.y, obstacles)
     player.update_bullets(screen.get_rect())
@@ -58,7 +64,7 @@ while running:
 
     if defend_flag.captured:
         print("⚠️ Базу захоплено! Гру програно.")
-        running = False
+        
 
     for bullet in player.bullets[:]:
         for obstacle in obstacles[:]:
@@ -70,23 +76,17 @@ while running:
                     if hasattr(obstacle, "hit") and obstacle.hit(bullet):
                         obstacles.remove(obstacle)
                     break
+    
                 
-    enemy.move_towards(flag.rect.center)
-    # Малювання
+
     screen.fill((0, 0, 0))
 
     for ob in obstacles:
         if not isinstance(ob, BushBlock):
             ob.draw(screen)
-
-     # Захисний прапор — під гравцем
-    enemy.draw(screen)
-    
-    
+            
     player.update()
 
- 
-    
     player.draw(screen)
     
     defend_flag.draw(screen)

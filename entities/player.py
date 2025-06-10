@@ -36,6 +36,14 @@ class Player:
         self.muzzle_flash_timer = 0
         self.muzzle_flash_duration = 100  # мс
 
+        # Звук пострілу
+        self.shoot_sound = pygame.mixer.Sound("assets/shoot.mp3")
+        self.shoot_channel = pygame.mixer.Channel(2)
+
+        # Звук мотора
+        self.engine_sound = pygame.mixer.Sound("assets/engine.mp3")
+        self.engine_channel = pygame.mixer.Channel(1)
+
     def move(self, dx, dy, obstacles):
         self.moving = dx != 0 or dy != 0
         if self.moving:
@@ -54,7 +62,6 @@ class Player:
                     elif new_rect.colliderect(obstacle.rect):
                         return
             self.rect = new_rect
-        
 
     def get_angle_from_direction(self, direction):
         angle = math.degrees(math.atan2(-direction.y, direction.x)) - 90
@@ -63,7 +70,7 @@ class Player:
     def update(self):
         now = pygame.time.get_ticks()
 
-        # Анімація руху
+        # Анімація
         if self.moving and now - self.animation_timer > self.animation_delay:
             self.image_index = (self.image_index + 1) % len(self.images)
             self.animation_timer = now
@@ -79,18 +86,25 @@ class Player:
             self.current_angle += self.rotation_speed * (1 if diff > 0 else -1)
             self.current_angle %= 360
 
-        # Застосування повороту
         self.image = pygame.transform.rotate(self.image, self.current_angle)
 
-        # Відновлення після віддачі
+        # Віддача
         if self.recoil_offset.length_squared() > 0:
             self.recoil_offset -= self.recoil_offset.normalize() * self.recoil_return_speed
             if self.recoil_offset.length() < self.recoil_return_speed:
                 self.recoil_offset = pygame.Vector2(0, 0)
 
-        # Спалах пострілу таймер
+        # Спалах пострілу
         if self.show_muzzle_flash and now - self.muzzle_flash_timer > self.muzzle_flash_duration:
             self.show_muzzle_flash = False
+
+        # Звук мотора
+        if self.moving:
+            if not self.engine_channel.get_busy():
+                self.engine_channel.play(self.engine_sound, loops=-1)
+        else:
+            if self.engine_channel.get_busy():
+                self.engine_channel.stop()
 
     def shoot(self):
         if self.direction.length_squared() == 0:
@@ -105,6 +119,9 @@ class Player:
         self.show_muzzle_flash = True
         self.muzzle_flash_timer = pygame.time.get_ticks()
 
+        # Звук пострілу через канал
+        self.shoot_channel.play(self.shoot_sound)
+
     def update_bullets(self, screen_rect):
         for bullet in self.bullets[:]:
             bullet.move()
@@ -112,18 +129,15 @@ class Player:
                 self.bullets.remove(bullet)
 
     def draw(self, surface):
-        # Позиція з урахуванням recoil
         draw_pos = pygame.Vector2(self.rect.center) + self.recoil_offset
         img_rect = self.image.get_rect(center=draw_pos)
         surface.blit(self.image, img_rect.topleft)
 
-        # Спалах пострілу
         if self.show_muzzle_flash:
             muzzle_offset = self.direction.normalize() * 20
             flash_pos = pygame.Vector2(self.rect.center) + self.recoil_offset + muzzle_offset
             flash_rect = self.muzzle_flash_image.get_rect(center=flash_pos)
             surface.blit(self.muzzle_flash_image, flash_rect.topleft)
 
-        # Кулі
         for bullet in self.bullets:
             pygame.draw.rect(surface, (255, 255, 0), bullet.rect)

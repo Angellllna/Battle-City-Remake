@@ -29,16 +29,65 @@ class Obstacle:
 
 
 
-
-
 class SteelBlock(Obstacle):
     def __init__(self, x, y):
         super().__init__(x, y, width=32, height=32, color=(150, 150, 150), destructible=False)
+
+        # Зображення сталі
         self.image = pygame.image.load("assets/steel.png").convert_alpha()
         self.image = pygame.transform.scale(self.image, (self.rect.width, self.rect.height))
 
+        # Іскра
+        self.spark_image = pygame.image.load("assets/spark.png").convert_alpha()
+        self.spark_image = pygame.transform.scale(self.spark_image, (self.rect.width, self.rect.height))
+
+        self.spark_visible = False
+        self.spark_timer = 0
+        self.spark_duration = 100  # мс
+        self.spark_offset = (0, 0)
+
+        # 🎵 Звук удару
+        self.hit_sound = pygame.mixer.Sound("assets/hit-metal.mp3")
+
+    def hit(self, bullet=None):
+        if bullet:
+            bx, by = bullet.rect.center
+            sx, sy = self.rect.center
+
+            offset_x = bx - sx
+            offset_y = by - sy
+
+            if abs(offset_x) > abs(offset_y):
+                self.spark_offset = (-self.rect.width // 2, 0) if offset_x < 0 else (self.rect.width // 2, 0)
+            else:
+                self.spark_offset = (0, -self.rect.height // 2) if offset_y < 0 else (0, self.rect.height // 2)
+        else:
+            self.spark_offset = (0, 0)
+
+        self.spark_visible = True
+        self.spark_timer = pygame.time.get_ticks()
+
+        # ▶️ Програти звук
+        self.hit_sound.play()
+
+        return False
+
     def draw(self, surface):
         surface.blit(self.image, self.rect.topleft)
+
+        if self.spark_visible:
+            now = pygame.time.get_ticks()
+            if now - self.spark_timer < self.spark_duration:
+                spark_pos = (
+                    self.rect.centerx + self.spark_offset[0] - self.rect.width // 2,
+                    self.rect.centery + self.spark_offset[1] - self.rect.height // 2
+                )
+                surface.blit(self.spark_image, spark_pos)
+            else:
+                self.spark_visible = False
+
+
+
 
 
 
