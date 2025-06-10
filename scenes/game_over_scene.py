@@ -9,16 +9,10 @@ class GameOverScene:
         self.font = pygame.font.SysFont("arial", 36)
         self.text = self.font.render("Game Over! Press ENTER to return to menu", True, COLOR_WHITE)
         self.next_scene = None
-        try:
-            self.music = pygame.mixer.Sound("Battle-City-Remake/sounds/lose.mp3")
-            self.music.play()
-        except pygame.error as e:
-            log(f"⚠️ Failed to load game over sound: {e}")
 
     def handle_event(self, event):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_RETURN:
-                log("🟢 Returning to menu from GameOverScene")
                 pygame.mixer.stop()
                 self.next_scene = MenuScene(self.screen)
 

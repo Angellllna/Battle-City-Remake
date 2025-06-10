@@ -9,11 +9,6 @@ class GameWinScene:
         self.font = pygame.font.SysFont("arial", 36)
         self.text = self.font.render("You Win! Press ENTER to return to menu", True, COLOR_WHITE)
         self.next_scene = None
-        try:
-            self.music = pygame.mixer.Sound("Battle-City-Remake/sounds/win.mp3")
-            self.music.play()
-        except pygame.error as e:
-            log(f"⚠️ Failed to load game win sound: {e}")
 
     def handle_event(self, event):
         if event.type == pygame.KEYDOWN:

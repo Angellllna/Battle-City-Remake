@@ -5,7 +5,7 @@ class Particle:
     def __init__(self, mx, my, image, speed_x=random.uniform(-2, 2), speed_y=random.uniform(-2, 2), size=random.randint(4, 16), color=(random.randint(90, 170), random.randint(0, 40), random.randint(190, 255))):
         self.rect = pygame.Rect(mx, my, size, size)
         try:
-            self.image = pygame.image.load(f"Battle-City-Remake/textures/{image}.png").convert_alpha()
+            self.image = pygame.image.load(f"textures/{image}.png").convert_alpha()
             self.image = pygame.transform.scale(self.image, (size, size))
         except pygame.error as e:
             print(f"Error loading particle image: {e}")

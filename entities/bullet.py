@@ -7,7 +7,7 @@ class Bullet:
         self.direction = direction
         self.speed = speed
         try:
-            self.image = pygame.image.load("Battle-City-Remake/textures/bullet.png").convert_alpha()
+            self.image = pygame.image.load("textures/bullet.png").convert_alpha()
             self.image = pygame.transform.scale(self.image, (10, 10))
             self.image.fill((255, 255, 255), special_flags=pygame.BLEND_RGBA_MULT)
         except pygame.error as e:
@@ -26,12 +26,13 @@ class Bullet:
             pygame.draw.rect(surface, self.color, self.rect)
 
 class Missile:
-    def __init__(self, x, y, direction, speed=5):
+    def __init__(self, x, y, direction, speed=5, damage=1):
         self.rect = pygame.Rect(x, y, 10, 10)
         self.direction = direction
         self.speed = speed
+        self.damage = damage
         try:
-            self.image = pygame.image.load("Battle-City-Remake/textures/bullet.png").convert_alpha()
+            self.image = pygame.image.load("textures/bullet.png").convert_alpha()
             self.image = pygame.transform.scale(self.image, (10, 10))
             self.image.fill((255, 150, 150), special_flags=pygame.BLEND_RGBA_MULT)
         except pygame.error as e:

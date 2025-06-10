@@ -6,16 +6,15 @@ from entities.enemy import Enemy, ChasingEnemy, RandomShootingEnemy, ShootingEne
 from entities.bullet import Bullet, Missile
 from entities.particle import Particle
 from scenes.game_over_scene import GameOverScene
-from scenes.game_win_scene import GameWinScene
 from utils.logger import log
 import random
 
 class GameScene:
     def __init__(self, screen):
         self.screen = screen
-        self.font = pygame.font.SysFont("arial", 24)
+        self.font = pygame.font.SysFont("arial", 24, bold=True)
         try:
-            self.shoot_sound = pygame.mixer.Sound("Battle-City-Remake/sounds/laserShoot.wav")
+            self.shoot_sound = pygame.mixer.Sound("sounds/laserShoot.wav")
         except pygame.error as e:
             log(f"⚠️ Failed to load shoot sound: {e}")
             self.shoot_sound = None
@@ -23,6 +22,8 @@ class GameScene:
         self.particles = []
         self.flags = []
         self.tank_factories = []
+        self.destroyed_enemies = 0
+        self.start_time = pygame.time.get_ticks()
 
         tile_size = OBSTACLE_SIZE
         self.obstacles = []
@@ -81,6 +82,15 @@ class GameScene:
                         self.enemies.append(Enemy(x, y, direction="random"))
         self.bullets = []
 
+    def get_game_level(self):
+        elapsed_time = (pygame.time.get_ticks() - self.start_time) // 1000
+        if elapsed_time < 60:
+            return 1
+        elif elapsed_time < 120:
+            return 2
+        else:
+            return 3
+
     def handle_event(self, event):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
@@ -111,7 +121,6 @@ class GameScene:
         self.player.move(dx, dy, self.obstacles, keys)
         maze_matrix = self.update_maze_matrix()
 
-        # Check flags for capture and recapture
         all_flags_captured = all(flag.captured for flag in self.flags)
         for flag in self.flags:
             flag.check_capture(self.enemies)
@@ -121,11 +130,12 @@ class GameScene:
             pygame.mixer.stop()
             return GameOverScene(self.screen)
 
+        game_level = self.get_game_level()
         for factory in self.tank_factories:
-            new_enemy = factory.update(self.enemies, self.flags)
+            new_enemy = factory.update(self.enemies, self.flags, game_level)
             if new_enemy:
                 self.enemies.append(new_enemy)
-                log(f"🏭 Factory spawned new enemy: {new_enemy.__class__.__name__}")
+                log(f"🏭 Factory spawned new enemy: {new_enemy.__class__.__name__} (Level {game_level})")
 
         for bullet in self.bullets[:]:
             bullet.move()
@@ -175,7 +185,7 @@ class GameScene:
                         break
                 else:
                     if missile.rect.colliderect(self.player.collision_rect) and self.immortal_time <= 0:
-                        self.player.health -= 1
+                        self.player.health -= missile.damage
                         log(f"🚀 Player hit by missile! Health: {self.player.health}")
                         self.immortal_time = IMMORTAL_TIME
                         for _ in range(5):
@@ -202,18 +212,25 @@ class GameScene:
             for shield in self.shields:
                 if enemy.collision_rect.colliderect(shield.rect):
                     self.enemies.remove(enemy)
+                    self.destroyed_enemies += 1
                     for _ in range(5):
                         self.particles.append(Particle(enemy.collision_rect.centerx, enemy.collision_rect.centery, "particle", random.uniform(-2, 2), random.uniform(-2, 2), random.randint(4, 16), (240, 100, 40)))
                         self.particles.append(Particle(enemy.collision_rect.centerx, enemy.collision_rect.centery, "particle", random.uniform(-1, 1), random.uniform(-1, 1), random.randint(8, 24), (40, 40, 40)))
-                    log("🛡️ Enemy destroyed by shield")
+                    log(f"🛡️ Enemy destroyed by shield. Total destroyed: {self.destroyed_enemies}")
                     break
             for bullet in self.bullets[:]:
                 if bullet.rect.colliderect(enemy.collision_rect):
-                    for _ in range(5):
-                        self.particles.append(Particle(bullet.rect.centerx, bullet.rect.centery, "particle", bullet.direction.x * -1 + random.uniform(-1, 1), bullet.direction.y * -1 + random.uniform(-1, 1), random.randint(4, 16), (random.randint(90, 170), random.randint(0, 40), random.randint(0, 10))))
-                    self.enemies.remove(enemy)
+                    if enemy.hit():
+                        for _ in range(5):
+                            self.particles.append(Particle(bullet.rect.centerx, bullet.rect.centery, "particle", bullet.direction.x * -1 + random.uniform(-1, 1), bullet.direction.y * -1 + random.uniform(-1, 1), random.randint(4, 16), (random.randint(90, 170), random.randint(0, 40), random.randint(0, 10))))
+                        self.enemies.remove(enemy)
+                        self.destroyed_enemies += 1
+                        log(f"💥 Bullet hit enemy! Enemy destroyed. Total destroyed: {self.destroyed_enemies}")
+                    else:
+                        for _ in range(5):
+                            self.particles.append(Particle(bullet.rect.centerx, bullet.rect.centery, "particle", bullet.direction.x * -1 + random.uniform(-1, 1), bullet.direction.y * -1 + random.uniform(-1, 1), random.randint(4, 16), (random.randint(90, 170), random.randint(0, 40), random.randint(0, 10))))
+                        log(f"💥 Bullet hit enemy! Enemy health: {enemy.health}")
                     self.bullets.remove(bullet)
-                    log("💥 Bullet hit enemy!")
                     break
             if self.player.collision_rect.colliderect(enemy.collision_rect) and self.immortal_time <= 0:
                 self.player.health -= 1
@@ -233,11 +250,6 @@ class GameScene:
 
         if self.immortal_time > 0:
             self.immortal_time -= 1
-
-        if not self.enemies:
-            log("🏆 All enemies defeated and factories depleted, switching to GameWinScene")
-            pygame.mixer.stop()
-            return GameWinScene(self.screen)
 
         return None
 
@@ -262,7 +274,15 @@ class GameScene:
         self.player.draw(self.screen)
         health_color = (0, 255, 0) if self.player.health > 2 else (255, 255, 0) if self.player.health == 2 else (255, 0, 0)
         health_text = self.font.render(f"Health: {self.player.health}", True, health_color)
-        self.screen.blit(health_text, (10, 10))
+        self.screen.blit(health_text, (10, 0))
+        elapsed_time = (pygame.time.get_ticks() - self.start_time) // 1000
+        minutes = elapsed_time // 60
+        seconds = elapsed_time % 60
+        timer_text = self.font.render(f"Time: {minutes:02d}:{seconds:02d}", True, (255, 255, 255))
+        self.screen.blit(timer_text, (340, 0))
+        enemy_text = self.font.render(f"Enemies Destroyed: {self.destroyed_enemies}", True, (255, 255, 255))
+        self.screen.blit(enemy_text, (520, 0))
+        game_level = self.get_game_level()
 
     def update_maze_matrix(self):
         tile_size = OBSTACLE_SIZE

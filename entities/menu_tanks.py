@@ -39,8 +39,8 @@ class Tank:
         self.shots = []
         try:
             self.images = [
-                pygame.image.load("Battle-City-Remake/textures/tank81.png").convert_alpha(),
-                pygame.image.load("Battle-City-Remake/textures/tank82.png").convert_alpha()
+                pygame.image.load("textures/tank331.png").convert_alpha(),
+                pygame.image.load("textures/tank332.png").convert_alpha()
             ]
             self.images = [pygame.transform.scale(img, (self.width, self.height)) for img in self.images]
             for img in self.images:

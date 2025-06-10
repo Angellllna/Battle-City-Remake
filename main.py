@@ -2,6 +2,8 @@ import pygame
 import sys
 from config import WINDOW_WIDTH, WINDOW_HEIGHT, FPS
 from scenes.menu_scene import MenuScene
+from scenes.game_over_scene import GameOverScene
+from scenes.game_win_scene import GameWinScene
 from utils.logger import log
 
 def main():
@@ -13,7 +15,7 @@ def main():
     clock = pygame.time.Clock()
     current_scene = MenuScene(screen)
     try:
-        music = pygame.mixer.Sound("Battle-City-Remake/sounds/theme.mp3")
+        music = pygame.mixer.Sound("sounds/theme.mp3")
         music.play(-1)
     except pygame.error as e:
         log(f"⚠️ Failed to load menu theme: {e}")
@@ -28,10 +30,10 @@ def main():
                 if next_scene:
                     pygame.mixer.stop()
                     current_scene = next_scene
-                    if not isinstance(current_scene, MenuScene):
+                    if not isinstance(current_scene, MenuScene) or not isinstance(current_scene, GameOverScene) or not isinstance(current_scene, GameWinScene):
                         try:
-                            pygame.mixer.music.load("Battle-City-Remake/sounds/mainTheme.mp3")
-                            pygame.mixer.music.play(-1)
+                            pygame.mixer.music.load("sounds/mainTheme.mp3")
+                            pygame.mixer.music.play(1)
                         except pygame.error as e:
                             log(f"⚠️ Failed to load main theme: {e}")
   
@@ -39,16 +41,28 @@ def main():
         if next_scene:
             pygame.mixer.stop()
             current_scene = next_scene
-            if isinstance(current_scene, MenuScene):
+            if isinstance(current_scene, GameWinScene):
                 try:
-                    music = pygame.mixer.Sound("Battle-City-Remake/sounds/theme.mp3")
-                    music.play(-1)
+                    pygame.mixer.music.load("sounds/win.mp3")
+                    pygame.mixer.music.play(1)
+                except pygame.error as e:
+                    log(f"⚠️ Failed to load menu theme: {e}")
+            elif isinstance(current_scene, GameOverScene):
+                try:
+                    pygame.mixer.music.load("sounds/lose.mp3")
+                    pygame.mixer.music.play(1)
+                except pygame.error as e:
+                    log(f"⚠️ Failed to load menu theme: {e}")
+            elif isinstance(current_scene, MenuScene):
+                try:
+                    pygame.mixer.music.load("sounds/theme.mp3")
+                    pygame.mixer.music.play(1)
                 except pygame.error as e:
                     log(f"⚠️ Failed to load menu theme: {e}")
             else:
                 try:
-                    pygame.mixer.music.load("Battle-City-Remake/sounds/mainTheme.mp3")
-                    pygame.mixer.music.play(-1)
+                    pygame.mixer.music.load("sounds/mainTheme.mp3")
+                    pygame.mixer.music.play(1)
                 except pygame.error as e:
                     log(f"⚠️ Failed to load main theme: {e}")
 

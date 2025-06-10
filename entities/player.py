@@ -13,8 +13,8 @@ class Player:
 
         try:
             self.images = [
-                pygame.image.load("Battle-City-Remake/textures/tank81.png").convert_alpha(),
-                pygame.image.load("Battle-City-Remake/textures/tank82.png").convert_alpha()
+                pygame.image.load("textures/tank111.png").convert_alpha(),
+                pygame.image.load("textures/tank112.png").convert_alpha()
             ]
             self.images = [pygame.transform.scale(img, (PLAYER_SIZE, PLAYER_SIZE)) for img in self.images]
         except pygame.error as e:

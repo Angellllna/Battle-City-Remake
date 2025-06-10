@@ -6,27 +6,32 @@ from config import OBSTACLE_SIZE, COLOR_GRAY, PLAYER_SPEED, WINDOW_WIDTH, WINDOW
 from entities.bullet import Missile
 
 class Enemy:
-    def __init__(self, x, y, direction="horizontal"):
+    def __init__(self, x, y, direction="horizontal", level=1):
         self.collision_rect = pygame.Rect(x, y, PLAYER_SIZE, PLAYER_SIZE)
-        self.speed = PLAYER_SPEED - 1
+        self.base_speed = PLAYER_SPEED - 1
+        self.speed = self.base_speed * (1.0 + 0.2 * (level - 1))
         self.direction = direction
+        self.level = level
+        self.health = level
+        self.damage = level  # Health scales with level (1 for level 1, 2 for level 2, 3 for level 3)
         try:
             if self.direction == "random":
+                texture_prefix = f"tank2{self.level}"
                 self.images = [
-                    pygame.image.load("Battle-City-Remake/textures/tank21.png").convert_alpha(),
-                    pygame.image.load("Battle-City-Remake/textures/tank22.png").convert_alpha()
+                    pygame.image.load(f"textures/{texture_prefix}1.png").convert_alpha(),
+                    pygame.image.load(f"textures/{texture_prefix}2.png").convert_alpha()
                 ]
             else:
                 self.images = [
-                    pygame.image.load("Battle-City-Remake/textures/tank11.png").convert_alpha(),
-                    pygame.image.load("Battle-City-Remake/textures/tank12.png").convert_alpha()
+                    pygame.image.load(f"textures/tank111.png").convert_alpha(),
+                    pygame.image.load(f"textures/tank112.png").convert_alpha()
                 ]
             self.images = [pygame.transform.scale(img, (PLAYER_SIZE, PLAYER_SIZE)) for img in self.images]
             if self.direction == "random":
                 for img in self.images:
                     img.fill((140, 100, 255), special_flags=pygame.BLEND_RGBA_MULT)
         except pygame.error as e:
-            print(f"Error loading enemy tank images: {e}")
+            print(f"Error loading enemy tank images for level {self.level}: {e}")
             self.images = [pygame.Surface((PLAYER_SIZE, PLAYER_SIZE)) for _ in range(2)]
             for img in self.images:
                 img.fill(COLOR_GRAY if self.direction != "random" else (140, 100, 255))
@@ -46,6 +51,10 @@ class Enemy:
         self.max_recent_directions = 3
         if self.direction == "random":
             self.move_type = random.randint(1, 4)
+
+    def hit(self):
+        self.health -= 1
+        return self.health <= 0  # Returns True if the enemy should be destroyed
 
     def move(self, obstacles):
         if self.direction != "random":
@@ -257,31 +266,34 @@ class Enemy:
         self.update_animation()
 
     def shoot(self):
-        return Missile(self.collision_rect.centerx - 4, self.collision_rect.centery - 4, self.vector_direction)
+        return Missile(self.collision_rect.centerx - 4, self.collision_rect.centery - 4, self.vector_direction, damage=self.damage)
 
     def draw(self, surface):
         img_rect = self.image.get_rect(center=self.collision_rect.center)
         surface.blit(self.image, img_rect.topleft)
 
 class ChasingEnemy(Enemy):
-    def __init__(self, x, y):
-        super().__init__(x, y, direction="chasing")
+    def __init__(self, x, y, level=1):
+        super().__init__(x, y, direction="chasing", level=level)
+        self.health = self.health - 1
         try:
+            texture_prefix = f"tank3{self.level}"
             self.images = [
-                pygame.image.load("Battle-City-Remake/textures/tank41.png").convert_alpha(),
-                pygame.image.load("Battle-City-Remake/textures/tank42.png").convert_alpha()
+                pygame.image.load(f"textures/{texture_prefix}1.png").convert_alpha(),
+                pygame.image.load(f"textures/{texture_prefix}2.png").convert_alpha()
             ]
             self.images = [pygame.transform.scale(img, (PLAYER_SIZE, PLAYER_SIZE)) for img in self.images]
             for img in self.images:
                 img.fill((150, 50, 50), special_flags=pygame.BLEND_RGBA_MULT)
         except pygame.error as e:
-            print(f"Error loading chasing enemy tank images: {e}")
+            print(f"Error loading chasing enemy tank images for level {self.level}: {e}")
             self.images = [pygame.Surface((PLAYER_SIZE, PLAYER_SIZE)) for _ in range(2)]
             for img in self.images:
                 img.fill((150, 50, 50))
         self.image_index = 0
         self.image = self.images[self.image_index]
-        self.shoot_cooldown = 60
+        self.base_shoot_cooldown = 60
+        self.shoot_cooldown = self.base_shoot_cooldown * (1.0 - 0.1 * (level - 1))
         self.cooldown_timer = 0
         self.vector_direction = pygame.Vector2(0, -1)
         self.obstacles = []
@@ -304,24 +316,29 @@ class ChasingEnemy(Enemy):
         return None
 
 class RandomShootingEnemy(Enemy):
-    def __init__(self, x, y):
-        super().__init__(x, y, direction="random")
+    def __init__(self, x, y, level=1):
+        super().__init__(x, y, direction="random", level=level)
+        self.damage = 1
+        self.health + 1
+        self.speed = self.speed * (1.0 - 0.1 * self.level)
         try:
+            texture_prefix = f"tank2{self.level}"
             self.images = [
-                pygame.image.load("Battle-City-Remake/textures/tank31.png").convert_alpha(),
-                pygame.image.load("Battle-City-Remake/textures/tank32.png").convert_alpha()
+                pygame.image.load(f"textures/{texture_prefix}1.png").convert_alpha(),
+                pygame.image.load(f"textures/{texture_prefix}2.png").convert_alpha()
             ]
             self.images = [pygame.transform.scale(img, (PLAYER_SIZE, PLAYER_SIZE)) for img in self.images]
             for img in self.images:
                 img.fill((100, 150, 100), special_flags=pygame.BLEND_RGBA_MULT)
         except pygame.error as e:
-            print(f"Error loading random shooting enemy tank images: {e}")
+            print(f"Error loading random shooting enemy tank images for level {self.level}: {e}")
             self.images = [pygame.Surface((PLAYER_SIZE, PLAYER_SIZE)) for _ in range(2)]
             for img in self.images:
                 img.fill((100, 150, 100))
         self.image_index = 0
         self.image = self.images[self.image_index]
-        self.shoot_cooldown = 90
+        self.base_shoot_cooldown = 90
+        self.shoot_cooldown = self.base_shoot_cooldown * (1.0 - 0.1 * (level - 1))
         self.cooldown_timer = 0
         self.vector_direction = pygame.Vector2(0, -1)
         self.obstacles = []
@@ -344,24 +361,26 @@ class RandomShootingEnemy(Enemy):
         return None
 
 class ShootingEnemy(Enemy):
-    def __init__(self, x, y, direction="horizontal"):
-        super().__init__(x, y, direction=direction)
+    def __init__(self, x, y, direction="horizontal", level=1):
+        super().__init__(x, y, direction=direction, level=level)
         try:
+            texture_prefix = f"tank5{self.level}"
             self.images = [
-                pygame.image.load("Battle-City-Remake/textures/tank51.png").convert_alpha(),
-                pygame.image.load("Battle-City-Remake/textures/tank52.png").convert_alpha()
+                pygame.image.load(f"textures/tank111.png").convert_alpha(),
+                pygame.image.load(f"textures/tank112.png").convert_alpha()
             ]
             self.images = [pygame.transform.scale(img, (PLAYER_SIZE, PLAYER_SIZE)) for img in self.images]
             for img in self.images:
                 img.fill((200, 100, 50), special_flags=pygame.BLEND_RGBA_MULT)
         except pygame.error as e:
-            print(f"Error loading shooting enemy tank images: {e}")
+            print(f"Error loading shooting enemy tank images for level {self.level}: {e}")
             self.images = [pygame.Surface((PLAYER_SIZE, PLAYER_SIZE)) for _ in range(2)]
             for img in self.images:
                 img.fill((200, 100, 50))
         self.image_index = 0
         self.image = self.images[self.image_index]
-        self.shoot_cooldown = 120
+        self.base_shoot_cooldown = 120
+        self.shoot_cooldown = self.base_shoot_cooldown * (1.0 - 0.1 * (level - 1))
         self.cooldown_timer = 0
         self.vector_direction = pygame.Vector2(1 if direction == "horizontal" else 0, 1 if direction == "vertical" else 0)
         self.obstacles = []
@@ -384,27 +403,32 @@ class ShootingEnemy(Enemy):
         return None
 
 class BaseChasingShootingEnemy(Enemy):
-    def __init__(self, x, y, flags):
-        super().__init__(x, y, direction="base_chasing")
+    def __init__(self, x, y, flags, level=1, can_shoot=True):
+        super().__init__(x, y, direction="base_chasing", level=level)
         self.flags = flags
         self.target_flag = None
+        self.can_shoot = can_shoot
+        self.health = 1
+        self.damage = 1
         self.choose_target_flag()
         try:
+            texture_prefix = f"tank1{self.level}"
             self.images = [
-                pygame.image.load("Battle-City-Remake/textures/tank61.png").convert_alpha(),
-                pygame.image.load("Battle-City-Remake/textures/tank62.png").convert_alpha()
+                pygame.image.load(f"textures/{texture_prefix}1.png").convert_alpha(),
+                pygame.image.load(f"textures/{texture_prefix}2.png").convert_alpha()
             ]
             self.images = [pygame.transform.scale(img, (PLAYER_SIZE, PLAYER_SIZE)) for img in self.images]
             for img in self.images:
                 img.fill((50, 100, 200), special_flags=pygame.BLEND_RGBA_MULT)
         except pygame.error as e:
-            print(f"Error loading base chasing enemy tank images: {e}")
+            print(f"Error loading base chasing enemy tank images for level {self.level}: {e}")
             self.images = [pygame.Surface((PLAYER_SIZE, PLAYER_SIZE)) for _ in range(2)]
             for img in self.images:
                 img.fill((50, 100, 200))
         self.image_index = 0
         self.image = self.images[self.image_index]
-        self.shoot_cooldown = 60
+        self.base_shoot_cooldown = 60
+        self.shoot_cooldown = self.base_shoot_cooldown * (1.0 - 0.1 * (level - 1))
         self.cooldown_timer = 0
         self.vector_direction = pygame.Vector2(0, -1)
         self.obstacles = []
@@ -434,36 +458,41 @@ class BaseChasingShootingEnemy(Enemy):
                 self.move_toward_target(self.target_flag.rect, maze_matrix, obstacles, 0)
             else:
                 self.move_toward_target(player.collision_rect, maze_matrix, obstacles, 1)
-        if self.cooldown_timer > 0:
-            self.cooldown_timer -= 1
-        if self.cooldown_timer == 0 and self.has_line_of_sight(player, obstacles):
-            dx = player.collision_rect.centerx - self.collision_rect.centerx
-            dy = player.collision_rect.centery - self.collision_rect.centery
-            direction = pygame.Vector2(dx, dy)
-            if direction.length_squared() > 0:
-                self.vector_direction = direction.normalize()
-                self.target_angle = self.get_angle_from_direction(self.vector_direction)
-                missile = self.shoot()
-                self.cooldown_timer = self.shoot_cooldown
-                return missile
+        if self.can_shoot:
+            if self.cooldown_timer > 0:
+                self.cooldown_timer -= 1
+            if self.cooldown_timer == 0 and self.has_line_of_sight(player, obstacles):
+                dx = player.collision_rect.centerx - self.collision_rect.centerx
+                dy = player.collision_rect.centery - self.collision_rect.centery
+                direction = pygame.Vector2(dx, dy)
+                if direction.length_squared() > 0:
+                    self.vector_direction = direction.normalize()
+                    self.target_angle = self.get_angle_from_direction(self.vector_direction)
+                    missile = self.shoot()
+                    self.cooldown_timer = self.shoot_cooldown
+                    return missile
         return None
 
 class FlagChasingEnemy(Enemy):
-    def __init__(self, x, y, flags):
-        super().__init__(x, y, direction="flag_chasing")
+    def __init__(self, x, y, flags, level=1):
+        super().__init__(x, y, direction="flag_chasing", level=level)
         self.flags = flags
         self.target_flag = None
+        self.health = 1
+        self.damage = 1
+        self.speed = self.speed * (1.2 + 0.1 * self.level)
         self.choose_target_flag()
         try:
+            texture_prefix = f"tank1{self.level}"
             self.images = [
-                pygame.image.load("Battle-City-Remake/textures/tank71.png").convert_alpha(),
-                pygame.image.load("Battle-City-Remake/textures/tank72.png").convert_alpha()
+                pygame.image.load(f"textures/{texture_prefix}1.png").convert_alpha(),
+                pygame.image.load(f"textures/{texture_prefix}2.png").convert_alpha()
             ]
             self.images = [pygame.transform.scale(img, (PLAYER_SIZE, PLAYER_SIZE)) for img in self.images]
             for img in self.images:
                 img.fill((100, 100, 100), special_flags=pygame.BLEND_RGBA_MULT)
         except pygame.error as e:
-            print(f"Error loading flag chasing enemy tank images: {e}")
+            print(f"Error loading flag chasing enemy tank images for level {self.level}: {e}")
             self.images = [pygame.Surface((PLAYER_SIZE, PLAYER_SIZE)) for _ in range(2)]
             for img in self.images:
                 img.fill((100, 100, 100))
