@@ -74,7 +74,7 @@ class GameScene:
                     self.enemies.remove(enemy)
                     if bullet in self.bullets:
                         self.bullets.remove(bullet)
-                    log("Bullet hit enemy!")
+                    log("Bullet hit an enemy!")
                     break
 
     def check_collision_with_enemies(self):

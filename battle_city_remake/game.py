@@ -1,8 +1,9 @@
 import pygame
 import sys
-from config import WIN_WIDTH, WIN_HEIGHT, FPS_BARRIER, PLAYER_NAME, COLOR_WHITE, SHOW_FPS
+from config import WIN_WIDTH, WIN_HEIGHT, FPS_BARRIER, PLAYER_NAME, FPS_COLOR, FPS_X, FPS_Y, SHOW_FPS
 from scenes.menu_scene import MenuScene
 from utils.logger import any_error_logger, log
+from random import randint
 
 class FpsCounter:
     def __init__(self, screen):
@@ -16,8 +17,8 @@ class FpsCounter:
         self.clock.tick(FPS_BARRIER)
 
     def draw(self):
-        fps_text = self.font.render(f'FPS: {self.fps:.0f}', True, COLOR_WHITE)
-        self.screen.blit(fps_text, (745, 10))
+        fps_text = self.font.render(f'FPS: {self.fps:.0f}', True, FPS_COLOR)
+        self.screen.blit(fps_text, (FPS_X, FPS_Y))
 
 def game():
     pygame.init()
@@ -25,9 +26,13 @@ def game():
 
     screen = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
     pygame.display.set_caption("Battle City Remake")
-    fps_counter = FpsCounter(screen)
     clock = pygame.time.Clock()
+
+    fps_counter = FpsCounter(screen)
     fps_log_printed = False
+
+    rand_num = randint(0, 10000)
+
 
     log(f"\n=====================================\n{PLAYER_NAME} has joined the game!")
 
@@ -54,6 +59,13 @@ def game():
             if not fps_log_printed:
                 log(f'{PLAYER_NAME} has used FPS Counter :)')
                 fps_log_printed = True
+        
+        if rand_num == 7831:
+            log('he he\n dis play will posted to locial nuws!\n Cal -1782930727\n message bai ze stronest fairy')
+
+        elif rand_num == 144:
+            log('dont listen to this, this is scam, i checked. how? secret ;)')
+
 
         pygame.display.flip()
         clock.tick(FPS_BARRIER)
@@ -61,7 +73,6 @@ def game():
     log(f"{PLAYER_NAME} has left the game\n=====================================\n")
     pygame.quit()
     sys.exit()
-
 
 
 if __name__ == "__main__":

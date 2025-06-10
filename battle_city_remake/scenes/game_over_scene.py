@@ -14,7 +14,7 @@ class GameOverScene:
     def handle_event(self, event):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_RETURN:
-                log("Повернення у меню з Game Over сцени")
+                log("Returned to the game from 'GAME OVER' screen!")
                 self.next_scene = MenuScene(self.screen)
 
     def update(self):
