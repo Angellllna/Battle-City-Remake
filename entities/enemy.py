@@ -1,37 +1,20 @@
-# DEFAULT FILE ⚠️
-
 import pygame
-import random
-from config import OBSTACLE_SIZE, COLOR_GRAY, PLAYER_SPEED, WINDOW_WIDTH, WINDOW_HEIGHT
+import math
+from entities.obstacle import Shield
 
 class Enemy:
-    def __init__(self, x, y, direction="horizontal"):
-        self.rect = pygame.Rect(x, y, OBSTACLE_SIZE, OBSTACLE_SIZE)
-        self.color = COLOR_GRAY
-        self.speed = PLAYER_SPEED - 1  # повільніше за гравця
-        self.direction = direction  # 'horizontal' or 'vertical'
+    def __init__(self, position, speed=1):
+        self.rect = pygame.Rect(position[0], position[1], 26, 26)
+        self.speed = speed
+        self.image = pygame.image.load("assets/enemy.png").convert_alpha()
+        self.image = pygame.transform.scale(self.image, (26, 26))
 
-    def move(self, obstacles):
-        dx = dy = 0
-
-        if self.direction == "horizontal":
-            dx = self.speed
-        elif self.direction == "vertical":
-            dy = self.speed
-
-        new_rect = self.rect.move(dx, dy)
-
-        # Перевірка на зіткнення з перешкодою або вихід за межі екрана
-        hit_wall = (
-            new_rect.left < 0 or new_rect.right > WINDOW_WIDTH or
-            new_rect.top < 0 or new_rect.bottom > WINDOW_HEIGHT
-        )
-        hit_obstacle = any(new_rect.colliderect(o.rect) for o in obstacles)
-
-        if hit_wall or hit_obstacle:
-            self.speed *= -1  # Розвертаємось
-        else:
-            self.rect = new_rect
+    def move_towards(self, target_pos):
+        direction = pygame.Vector2(target_pos[0] - self.rect.centerx, target_pos[1] - self.rect.centery)
+        if direction.length_squared() != 0:
+            direction = direction.normalize()
+            self.rect.x += int(direction.x * self.speed)
+            self.rect.y += int(direction.y * self.speed)
 
     def draw(self, surface):
-        pygame.draw.rect(surface, self.color, self.rect)
+        surface.blit(self.image, self.rect.topleft)
