@@ -1,127 +1,500 @@
 import pygame
+import heapq
+import random
+import math
 from config import OBSTACLE_SIZE, COLOR_GRAY, PLAYER_SPEED, WINDOW_WIDTH, WINDOW_HEIGHT, PLAYER_SIZE
 from entities.bullet import Missile
 
 class Enemy:
     def __init__(self, x, y, direction="horizontal"):
-        self.rect = pygame.Rect(x, y, PLAYER_SIZE, PLAYER_SIZE)
-        self.color = COLOR_GRAY
+        self.collision_rect = pygame.Rect(x, y, PLAYER_SIZE, PLAYER_SIZE)
         self.speed = PLAYER_SPEED - 1
         self.direction = direction
+        try:
+            if self.direction == "random":
+                self.images = [
+                    pygame.image.load("Battle-City-Remake/textures/tank21.png").convert_alpha(),
+                    pygame.image.load("Battle-City-Remake/textures/tank22.png").convert_alpha()
+                ]
+            else:
+                self.images = [
+                    pygame.image.load("Battle-City-Remake/textures/tank11.png").convert_alpha(),
+                    pygame.image.load("Battle-City-Remake/textures/tank12.png").convert_alpha()
+                ]
+            self.images = [pygame.transform.scale(img, (PLAYER_SIZE, PLAYER_SIZE)) for img in self.images]
+            if self.direction == "random":
+                for img in self.images:
+                    img.fill((140, 100, 255), special_flags=pygame.BLEND_RGBA_MULT)
+        except pygame.error as e:
+            print(f"Error loading enemy tank images: {e}")
+            self.images = [pygame.Surface((PLAYER_SIZE, PLAYER_SIZE)) for _ in range(2)]
+            for img in self.images:
+                img.fill(COLOR_GRAY if self.direction != "random" else (140, 100, 255))
+        self.image_index = 0
+        self.image = self.images[self.image_index]
+        self.animation_timer = 0
+        self.animation_delay = 200
+        self.moving = False
+        self.current_angle = 0
+        self.target_angle = 0
+        self.rotation_speed = 10
+        self.vector_direction = pygame.Vector2(1 if direction == "horizontal" else 0, 1 if direction == "vertical" else 0)
+        self.move_type = None
+        self.move_timer = 0
+        self.move_duration = 300
+        self.recent_directions = []
+        self.max_recent_directions = 3
+        if self.direction == "random":
+            self.move_type = random.randint(1, 4)
 
     def move(self, obstacles):
-        dx = dy = 0
-        if self.direction == "horizontal":
-            dx = self.speed
-        elif self.direction == "vertical":
-            dy = self.speed
-
-        new_rect = self.rect.move(dx, dy)
-        hit_wall = (
-            new_rect.left < 0 or new_rect.right > WINDOW_WIDTH or
-            new_rect.top < 0 or new_rect.bottom > WINDOW_HEIGHT
-        )
-        hit_obstacle = False
-        for obstacle in obstacles:
-            if obstacle.blocks_movement:
-                if new_rect.colliderect(obstacle.rect):
+        if self.direction != "random":
+            dx = dy = 0
+            if self.direction == "horizontal":
+                dx = self.speed
+            elif self.direction == "vertical":
+                dy = self.speed
+            new_rect = self.collision_rect.move(dx, dy)
+            hit_wall = (
+                new_rect.left < 0 or new_rect.right > WINDOW_WIDTH or
+                new_rect.top < 0 or new_rect.bottom > WINDOW_HEIGHT
+            )
+            hit_obstacle = False
+            for obstacle in obstacles:
+                if obstacle.blocks_movement and new_rect.colliderect(obstacle.rect):
                     hit_obstacle = True
                     break
-            if hit_obstacle:
-                break
-
-        if hit_wall or hit_obstacle:
-            self.speed *= -1
+            if hit_wall or hit_obstacle:
+                self.speed *= -1
+                dx = -dx
+                dy = -dy
+            else:
+                self.collision_rect = new_rect
+                self.moving = True
+            if dx != 0 or dy != 0:
+                self.vector_direction = pygame.Vector2(dx, dy).normalize()
+            self.target_angle = self.get_angle_from_direction(self.vector_direction)
+            self.update_animation()
         else:
-            self.rect = new_rect
+            if self.move_timer <= 0:
+                available_directions = [1, 2, 3, 4]
+                available_directions = [d for d in available_directions if d not in self.recent_directions]
+                if not available_directions:
+                    self.recent_directions.clear()
+                    available_directions = [1, 2, 3, 4]
+                self.move_type = random.choice(available_directions)
+                self.recent_directions.append(self.move_type)
+                if len(self.recent_directions) > self.max_recent_directions:
+                    self.recent_directions.pop(0)
+                self.move_timer = self.move_duration
+            dx = dy = 0
+            if self.move_type == 1:
+                dx = self.speed
+            elif self.move_type == 2:
+                dy = self.speed
+            elif self.move_type == 3:
+                dx = -self.speed
+            elif self.move_type == 4:
+                dy = -self.speed
+            new_rect = self.collision_rect.move(dx, dy)
+            hit_wall = (
+                new_rect.left < 0 or new_rect.right > WINDOW_WIDTH or
+                new_rect.top < 0 or new_rect.bottom > WINDOW_HEIGHT
+            )
+            hit_obstacle = False
+            for obstacle in obstacles:
+                if obstacle.blocks_movement and new_rect.colliderect(obstacle.rect):
+                    hit_obstacle = True
+                    break
+            if hit_wall or hit_obstacle:
+                new_rect_x = self.collision_rect.move(dx, 0)
+                new_rect_y = self.collision_rect.move(0, dy)
+                can_move_x = True
+                can_move_y = True
+                for obstacle in obstacles:
+                    if obstacle.blocks_movement:
+                        if new_rect_x.colliderect(obstacle.rect):
+                            can_move_x = False
+                        if new_rect_y.colliderect(obstacle.rect):
+                            can_move_y = False
+                if can_move_x and dx != 0:
+                    self.collision_rect = new_rect_x
+                    self.moving = True
+                    self.vector_direction = pygame.Vector2(dx, 0).normalize()
+                elif can_move_y and dy != 0:
+                    self.collision_rect = new_rect_y
+                    self.moving = True
+                    self.vector_direction = pygame.Vector2(0, dy).normalize()
+                else:
+                    self.move_timer = 0
+                    self.moving = False
+            else:
+                self.collision_rect = new_rect
+                self.moving = True
+                if dx != 0 or dy != 0:
+                    self.vector_direction = pygame.Vector2(dx, dy).normalize()
+            self.move_timer -= 1
+            self.target_angle = self.get_angle_from_direction(self.vector_direction)
+            self.update_animation()
 
-    def find_path(self, maze, start, end):
+    def get_angle_from_direction(self, direction):
+        angle = math.degrees(math.atan2(-direction.y, direction.x)) - 90
+        return angle % 360
+
+    def update_animation(self):
+        now = pygame.time.get_ticks()
+        if self.moving and now - self.animation_timer > self.animation_delay:
+            self.image_index = (self.image_index + 1) % len(self.images)
+            self.animation_timer = now
+        diff = (self.target_angle - self.current_angle) % 360
+        if diff > 180:
+            diff -= 360
+        if abs(diff) < self.rotation_speed:
+            self.current_angle = self.target_angle
+        else:
+            self.current_angle += self.rotation_speed * (1 if diff > 0 else -1)
+            self.current_angle %= 360
+        self.image = pygame.transform.rotate(self.images[self.image_index], self.current_angle)
+
+    def a_star_pathfinding(self, maze, start, end):
         rows, cols = len(maze), len(maze[0])
-        queue = [start]
-        visited = {start}
-        parent = {start: None}
-        while queue:
-            x, y = queue.pop(0)
-            if (x, y) == end:
+        open_set = [(0, start)]
+        came_from = {}
+        g_score = {start: 0}
+        f_score = {start: self.heuristic(start, end)}
+        while open_set:
+            current_f, current = heapq.heappop(open_set)
+            if current == end:
                 path = []
-                current = (x, y)
-                while current is not None:
+                while current in came_from:
                     path.append(current)
-                    current = parent[current]
+                    current = came_from[current]
+                print(f"Path found for {self.__class__.__name__}: {path[::-1]}")
                 return path[::-1]
             for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
-                nx, ny = x + dx, y + dy
-                if (0 <= nx < rows and 0 <= ny < cols and
-                    maze[nx][ny] == 0 and (nx, ny) not in visited):
-                    queue.append((nx, ny))
-                    visited.add((nx, ny))
-                    parent[(nx, ny)] = (x, y)
+                neighbor = (current[0] + dx, current[1] + dy)
+                if 0 <= neighbor[0] < rows and 0 <= neighbor[1] < cols and maze[neighbor[0]][neighbor[1]] == 0:
+                    tentative_g_score = g_score[current] + 1
+                    if neighbor not in g_score or tentative_g_score < g_score[neighbor]:
+                        came_from[neighbor] = current
+                        g_score[neighbor] = tentative_g_score
+                        f_score[neighbor] = tentative_g_score + self.heuristic(neighbor, end)
+                        heapq.heappush(open_set, (f_score[neighbor], neighbor))
+        print(f"No path found for {self.__class__.__name__} from {start} to {end}")
         return [start]
 
-    def move_toward_player(self, player, maze_matrix):
+    def heuristic(self, a, b):
+        return abs(a[0] - b[0]) + abs(a[1] - b[1])
+
+    def has_line_of_sight(self, player, obstacles):
+        start = pygame.Vector2(self.collision_rect.center)
+        end = pygame.Vector2(player.collision_rect.center)
+        steps = int(start.distance_to(end) / 5)
+        if steps == 0:
+            return True
+        direction = (end - start).normalize()
+        for i in range(steps):
+            point = start + direction * (i * 5)
+            for obstacle in obstacles:
+                if obstacle.blocks_bullets and obstacle.rect.collidepoint(point):
+                    return False
+        return True
+
+    def move_toward_target(self, target_rect, maze_matrix, obstacles, range_to):
         tile_size = OBSTACLE_SIZE
         rows, cols = len(maze_matrix), len(maze_matrix[0])
-    
-        start_x = self.rect.centerx // tile_size
-        start_y = self.rect.centery // tile_size
+        start_x = self.collision_rect.centerx // tile_size
+        start_y = self.collision_rect.centery // tile_size
         start_x = max(0, min(start_x, cols - 1))
         start_y = max(0, min(start_y, rows - 1))
         start = (start_y, start_x)
-    
-        end_x = player.rect.centerx // tile_size
-        end_y = player.rect.centery // tile_size
+        end_x = target_rect.centerx // tile_size
+        end_y = target_rect.centery // tile_size
         end_x = max(0, min(end_x, cols - 1))
         end_y = max(0, min(end_y, rows - 1))
         end = (end_y, end_x)
-    
-        self.path = self.find_path(maze_matrix, start, end)
-        if len(self.path) > 1:
-            next_cell = self.path[1]
-            dx = (next_cell[1] * tile_size + tile_size // 2) - self.rect.centerx
-            dy = (next_cell[0] * tile_size + tile_size // 2) - self.rect.centery
-            new_rect = self.rect.copy()
+        self.path = self.a_star_pathfinding(maze_matrix, start, end)
+        if len(self.path) > range_to:
+            next_cell = self.path[range_to]
+            dx = (next_cell[1] * tile_size + tile_size // 2) - self.collision_rect.centerx
+            dy = (next_cell[0] * tile_size + tile_size // 2) - self.collision_rect.centery
+            new_rect = self.collision_rect.copy()
             if abs(dx) > abs(dy):
                 new_rect.x += self.speed if dx > 0 else -self.speed
             else:
                 new_rect.y += self.speed if dy > 0 else -self.speed
+            collision = False
+            for obstacle in obstacles:
+                if obstacle.blocks_movement and new_rect.colliderect(obstacle.rect):
+                    collision = True
+                    break
+            if not collision:
+                self.collision_rect = new_rect
+                self.moving = True
+                self.vector_direction = pygame.Vector2(dx, dy).normalize() if dx != 0 or dy != 0 else self.vector_direction
+            else:
+                new_rect_x = self.collision_rect.move(self.speed if dx > 0 else -self.speed, 0)
+                new_rect_y = self.collision_rect.move(0, self.speed if dy > 0 else -self.speed)
+                can_move_x = True
+                can_move_y = True
+                for obstacle in obstacles:
+                    if obstacle.blocks_movement:
+                        if new_rect_x.colliderect(obstacle.rect):
+                            can_move_x = False
+                        if new_rect_y.colliderect(obstacle.rect):
+                            can_move_y = False
+                if can_move_x:
+                    self.collision_rect = new_rect_x
+                    self.moving = True
+                    self.vector_direction = pygame.Vector2(self.speed if dx > 0 else -self.speed, 0).normalize()
+                elif can_move_y:
+                    self.collision_rect = new_rect_y
+                    self.moving = True
+                    self.vector_direction = pygame.Vector2(0, self.speed if dy > 0 else -self.speed).normalize()
+                else:
+                    self.moving = False
+            self.target_angle = self.get_angle_from_direction(self.vector_direction)
+        self.update_animation()
 
-            for obstacle in self.obstacles:
-                if obstacle.blocks_movement:
-                    if new_rect.colliderect(obstacle.rect):
-                        return
-            self.rect = new_rect
+    def shoot(self):
+        return Missile(self.collision_rect.centerx - 4, self.collision_rect.centery - 4, self.vector_direction)
 
     def draw(self, surface):
-        pygame.draw.rect(surface, self.color, self.rect)
+        img_rect = self.image.get_rect(center=self.collision_rect.center)
+        surface.blit(self.image, img_rect.topleft)
 
 class ChasingEnemy(Enemy):
     def __init__(self, x, y):
         super().__init__(x, y, direction="chasing")
-        self.color = (150, 50, 50)
+        try:
+            self.images = [
+                pygame.image.load("Battle-City-Remake/textures/tank41.png").convert_alpha(),
+                pygame.image.load("Battle-City-Remake/textures/tank42.png").convert_alpha()
+            ]
+            self.images = [pygame.transform.scale(img, (PLAYER_SIZE, PLAYER_SIZE)) for img in self.images]
+            for img in self.images:
+                img.fill((150, 50, 50), special_flags=pygame.BLEND_RGBA_MULT)
+        except pygame.error as e:
+            print(f"Error loading chasing enemy tank images: {e}")
+            self.images = [pygame.Surface((PLAYER_SIZE, PLAYER_SIZE)) for _ in range(2)]
+            for img in self.images:
+                img.fill((150, 50, 50))
+        self.image_index = 0
+        self.image = self.images[self.image_index]
         self.shoot_cooldown = 60
         self.cooldown_timer = 0
-        self.direction = pygame.Vector2(0, -1)
+        self.vector_direction = pygame.Vector2(0, -1)
         self.obstacles = []
 
     def update(self, player, maze_matrix, obstacles):
-        self.move_toward_player(player, maze_matrix)
-        
+        self.obstacles = obstacles
+        self.move_toward_target(player.collision_rect, maze_matrix, obstacles, 1)
         if self.cooldown_timer > 0:
             self.cooldown_timer -= 1
-        
-        if self.cooldown_timer == 0:
-            dx = player.rect.centerx - self.rect.centerx
-            dy = player.rect.centery - self.rect.centery
+        if self.cooldown_timer == 0 and self.has_line_of_sight(player, obstacles):
+            dx = player.collision_rect.centerx - self.collision_rect.centerx
+            dy = player.collision_rect.centery - self.collision_rect.centery
             direction = pygame.Vector2(dx, dy)
             if direction.length_squared() > 0:
-                self.direction = direction.normalize()
-            missile = self.shoot()
-            self.cooldown_timer = self.shoot_cooldown
-            return missile
+                self.vector_direction = direction.normalize()
+                self.target_angle = self.get_angle_from_direction(self.vector_direction)
+                missile = self.shoot()
+                self.cooldown_timer = self.shoot_cooldown
+                return missile
         return None
 
-    def shoot(self):
-        return Missile(self.rect.centerx - 4, self.rect.centery - 4, self.direction)
+class RandomShootingEnemy(Enemy):
+    def __init__(self, x, y):
+        super().__init__(x, y, direction="random")
+        try:
+            self.images = [
+                pygame.image.load("Battle-City-Remake/textures/tank31.png").convert_alpha(),
+                pygame.image.load("Battle-City-Remake/textures/tank32.png").convert_alpha()
+            ]
+            self.images = [pygame.transform.scale(img, (PLAYER_SIZE, PLAYER_SIZE)) for img in self.images]
+            for img in self.images:
+                img.fill((100, 150, 100), special_flags=pygame.BLEND_RGBA_MULT)
+        except pygame.error as e:
+            print(f"Error loading random shooting enemy tank images: {e}")
+            self.images = [pygame.Surface((PLAYER_SIZE, PLAYER_SIZE)) for _ in range(2)]
+            for img in self.images:
+                img.fill((100, 150, 100))
+        self.image_index = 0
+        self.image = self.images[self.image_index]
+        self.shoot_cooldown = 90
+        self.cooldown_timer = 0
+        self.vector_direction = pygame.Vector2(0, -1)
+        self.obstacles = []
 
-    def move(self, obstacles):
-        pass
+    def update(self, player, maze_matrix, obstacles):
+        self.obstacles = obstacles
+        self.move(obstacles)
+        if self.cooldown_timer > 0:
+            self.cooldown_timer -= 1
+        if self.cooldown_timer == 0 and self.has_line_of_sight(player, obstacles):
+            dx = player.collision_rect.centerx - self.collision_rect.centerx
+            dy = player.collision_rect.centery - self.collision_rect.centery
+            direction = pygame.Vector2(dx, dy)
+            if direction.length_squared() > 0:
+                self.vector_direction = direction.normalize()
+                self.target_angle = self.get_angle_from_direction(self.vector_direction)
+                missile = self.shoot()
+                self.cooldown_timer = self.shoot_cooldown
+                return missile
+        return None
+
+class ShootingEnemy(Enemy):
+    def __init__(self, x, y, direction="horizontal"):
+        super().__init__(x, y, direction=direction)
+        try:
+            self.images = [
+                pygame.image.load("Battle-City-Remake/textures/tank51.png").convert_alpha(),
+                pygame.image.load("Battle-City-Remake/textures/tank52.png").convert_alpha()
+            ]
+            self.images = [pygame.transform.scale(img, (PLAYER_SIZE, PLAYER_SIZE)) for img in self.images]
+            for img in self.images:
+                img.fill((200, 100, 50), special_flags=pygame.BLEND_RGBA_MULT)
+        except pygame.error as e:
+            print(f"Error loading shooting enemy tank images: {e}")
+            self.images = [pygame.Surface((PLAYER_SIZE, PLAYER_SIZE)) for _ in range(2)]
+            for img in self.images:
+                img.fill((200, 100, 50))
+        self.image_index = 0
+        self.image = self.images[self.image_index]
+        self.shoot_cooldown = 120
+        self.cooldown_timer = 0
+        self.vector_direction = pygame.Vector2(1 if direction == "horizontal" else 0, 1 if direction == "vertical" else 0)
+        self.obstacles = []
+
+    def update(self, player, maze_matrix, obstacles):
+        self.obstacles = obstacles
+        self.move(obstacles)
+        if self.cooldown_timer > 0:
+            self.cooldown_timer -= 1
+        if self.cooldown_timer == 0 and self.has_line_of_sight(player, obstacles):
+            dx = player.collision_rect.centerx - self.collision_rect.centerx
+            dy = player.collision_rect.centery - self.collision_rect.centery
+            direction = pygame.Vector2(dx, dy)
+            if direction.length_squared() > 0:
+                self.vector_direction = direction.normalize()
+                self.target_angle = self.get_angle_from_direction(self.vector_direction)
+                missile = self.shoot()
+                self.cooldown_timer = self.shoot_cooldown
+                return missile
+        return None
+
+class BaseChasingShootingEnemy(Enemy):
+    def __init__(self, x, y, flags):
+        super().__init__(x, y, direction="base_chasing")
+        self.flags = flags
+        self.target_flag = None
+        self.choose_target_flag()
+        try:
+            self.images = [
+                pygame.image.load("Battle-City-Remake/textures/tank61.png").convert_alpha(),
+                pygame.image.load("Battle-City-Remake/textures/tank62.png").convert_alpha()
+            ]
+            self.images = [pygame.transform.scale(img, (PLAYER_SIZE, PLAYER_SIZE)) for img in self.images]
+            for img in self.images:
+                img.fill((50, 100, 200), special_flags=pygame.BLEND_RGBA_MULT)
+        except pygame.error as e:
+            print(f"Error loading base chasing enemy tank images: {e}")
+            self.images = [pygame.Surface((PLAYER_SIZE, PLAYER_SIZE)) for _ in range(2)]
+            for img in self.images:
+                img.fill((50, 100, 200))
+        self.image_index = 0
+        self.image = self.images[self.image_index]
+        self.shoot_cooldown = 60
+        self.cooldown_timer = 0
+        self.vector_direction = pygame.Vector2(0, -1)
+        self.obstacles = []
+
+    def choose_target_flag(self):
+        if not self.flags:
+            self.target_flag = None
+            return
+        min_distance = float('inf')
+        for flag in self.flags:
+            if not flag.captured:
+                distance = math.sqrt(
+                    (self.collision_rect.centerx - flag.rect.centerx) ** 2 +
+                    (self.collision_rect.centery - flag.rect.centery) ** 2
+                )
+                if distance < min_distance:
+                    min_distance = distance
+                    self.target_flag = flag
+
+    def update(self, player, maze_matrix, obstacles):
+        self.obstacles = obstacles
+        if self.target_flag and not self.target_flag.captured:
+            self.move_toward_target(self.target_flag.rect, maze_matrix, obstacles, 0)
+        else:
+            self.choose_target_flag()
+            if self.target_flag:
+                self.move_toward_target(self.target_flag.rect, maze_matrix, obstacles, 0)
+            else:
+                self.move_toward_target(player.collision_rect, maze_matrix, obstacles, 1)
+        if self.cooldown_timer > 0:
+            self.cooldown_timer -= 1
+        if self.cooldown_timer == 0 and self.has_line_of_sight(player, obstacles):
+            dx = player.collision_rect.centerx - self.collision_rect.centerx
+            dy = player.collision_rect.centery - self.collision_rect.centery
+            direction = pygame.Vector2(dx, dy)
+            if direction.length_squared() > 0:
+                self.vector_direction = direction.normalize()
+                self.target_angle = self.get_angle_from_direction(self.vector_direction)
+                missile = self.shoot()
+                self.cooldown_timer = self.shoot_cooldown
+                return missile
+        return None
+
+class FlagChasingEnemy(Enemy):
+    def __init__(self, x, y, flags):
+        super().__init__(x, y, direction="flag_chasing")
+        self.flags = flags
+        self.target_flag = None
+        self.choose_target_flag()
+        try:
+            self.images = [
+                pygame.image.load("Battle-City-Remake/textures/tank71.png").convert_alpha(),
+                pygame.image.load("Battle-City-Remake/textures/tank72.png").convert_alpha()
+            ]
+            self.images = [pygame.transform.scale(img, (PLAYER_SIZE, PLAYER_SIZE)) for img in self.images]
+            for img in self.images:
+                img.fill((100, 100, 100), special_flags=pygame.BLEND_RGBA_MULT)
+        except pygame.error as e:
+            print(f"Error loading flag chasing enemy tank images: {e}")
+            self.images = [pygame.Surface((PLAYER_SIZE, PLAYER_SIZE)) for _ in range(2)]
+            for img in self.images:
+                img.fill((100, 100, 100))
+        self.image_index = 0
+        self.image = self.images[self.image_index]
+        self.vector_direction = pygame.Vector2(0, -1)
+        self.obstacles = []
+
+    def choose_target_flag(self):
+        if not self.flags:
+            self.target_flag = None
+            return
+        min_distance = float('inf')
+        for flag in self.flags:
+            if not flag.captured:
+                distance = math.sqrt(
+                    (self.collision_rect.centerx - flag.rect.centerx) ** 2 +
+                    (self.collision_rect.centery - flag.rect.centery) ** 2
+                )
+                if distance < min_distance:
+                    min_distance = distance
+                    self.target_flag = flag
+
+    def update(self, player, maze_matrix, obstacles):
+        self.obstacles = obstacles
+        if self.target_flag and not self.target_flag.captured:
+            self.move_toward_target(self.target_flag.rect, maze_matrix, obstacles, 0)
+        else:
+            self.choose_target_flag()
+            if self.target_flag:
+                self.move_toward_target(self.target_flag.rect, maze_matrix, obstacles, 0)
+            else:
+                self.move_toward_target(player.collision_rect, maze_matrix, obstacles, 1)
+        return None

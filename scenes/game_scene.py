@@ -1,13 +1,12 @@
 import pygame
 from config import COLOR_BLACK, WINDOW_WIDTH, WINDOW_HEIGHT, IMMORTAL_TIME, MAP1, OBSTACLE_SIZE
 from entities.player import Player
-from entities.obstacle import Obstacle, SteelBlock, WaterBlock, BushBlock
-from entities.enemy import Enemy, ChasingEnemy
+from entities.obstacle import Obstacle, SteelBlock, WaterBlock, BushBlock, Shield, DefendFlag, TankFactory
+from entities.enemy import Enemy, ChasingEnemy, RandomShootingEnemy, ShootingEnemy, BaseChasingShootingEnemy, FlagChasingEnemy
 from entities.bullet import Bullet, Missile
 from entities.particle import Particle
 from scenes.game_over_scene import GameOverScene
 from scenes.game_win_scene import GameWinScene
-from entities.shield import Shield
 from utils.logger import log
 import random
 
@@ -20,15 +19,22 @@ class GameScene:
         except pygame.error as e:
             log(f"⚠️ Failed to load shoot sound: {e}")
             self.shoot_sound = None
-        self.player = Player((380, 275))
         self.immortal_time = 0
         self.particles = []
+        self.flags = []
+        self.tank_factories = []
 
         tile_size = OBSTACLE_SIZE
         self.obstacles = []
         self.shields = []
         self.enemies = []
         self.missiles = []
+        for row_index, row in enumerate(MAP1):
+            for col_index, cell in enumerate(row):
+                x = (col_index - 1) * tile_size
+                y = (row_index - 1) * tile_size
+                if cell == "fl":
+                    self.flags.append(DefendFlag(x, y))
         for row_index, row in enumerate(MAP1):
             for col_index, cell in enumerate(row):
                 x = (col_index - 1) * tile_size
@@ -41,23 +47,39 @@ class GameScene:
                     self.obstacles.append(WaterBlock(x, y))
                 elif cell == "bu":
                     self.obstacles.append(BushBlock(x, y))
+                elif cell == "pl":
+                    self.player = Player((x, y))
                 elif cell == "sd":
                     self.shields.append(Shield(x, y))
+                elif cell == "tf":
+                    self.tank_factories.append(TankFactory(x, y))
                 elif cell == "e1":
                     self.enemies.append(Enemy(x, y, direction="horizontal"))
                 elif cell == "e2":
                     self.enemies.append(Enemy(x, y, direction="vertical"))
                 elif cell == "e3":
                     self.enemies.append(ChasingEnemy(x, y))
-                elif cell == "pl":
-                    self.player = Player((x, y))
+                elif cell == "e4":
+                    self.enemies.append(Enemy(x, y, direction="random"))
+                elif cell == "e5":
+                    self.enemies.append(RandomShootingEnemy(x, y))
+                elif cell == "e6":
+                    self.enemies.append(ShootingEnemy(x, y, direction="horizontal"))
+                elif cell == "e7":
+                    self.enemies.append(ShootingEnemy(x, y, direction="vertical"))
+                elif cell == "e8":
+                    if self.flags:
+                        self.enemies.append(BaseChasingShootingEnemy(x, y, self.flags))
+                    else:
+                        log("⚠️ Flags not defined before e8 enemy placement")
+                        self.enemies.append(Enemy(x, y, direction="random"))
+                elif cell == "e9":
+                    if self.flags:
+                        self.enemies.append(FlagChasingEnemy(x, y, self.flags))
+                    else:
+                        log("⚠️ Flags not defined before e9 enemy placement")
+                        self.enemies.append(Enemy(x, y, direction="random"))
         self.bullets = []
-        try:
-            if not pygame.mixer.music.get_busy():
-                pygame.mixer.music.load("Battle-City-Remake/sounds/mainTheme.mp3")
-                pygame.mixer.music.play(-1)
-        except pygame.error as e:
-            log(f"⚠️ Failed to load main theme: {e}")
 
     def handle_event(self, event):
         if event.type == pygame.KEYDOWN:
@@ -65,8 +87,8 @@ class GameScene:
                 bullet = self.player.shoot()
                 if bullet:
                     self.bullets.append(bullet)
-                    for _ in range (5):
-                        self.particles.append(Particle(self.player.rect.centerx, self.player.rect.centery, "particle", self.player.direction[0] + random.uniform(-1 , 1), self.player.direction[1] + random.uniform(-1 , 1), random.randint(4, 16), (80, 80, 80)))
+                    for _ in range(5):
+                        self.particles.append(Particle(self.player.collision_rect.centerx, self.player.collision_rect.centery, "particle", self.player.direction[0] + random.uniform(-1, 1), self.player.direction[1] + random.uniform(-1, 1), random.randint(4, 16), (80, 80, 80)))
                     if self.shoot_sound:
                         self.shoot_sound.play()
             elif event.key == pygame.K_ESCAPE:
@@ -88,6 +110,22 @@ class GameScene:
             dx = 1
         self.player.move(dx, dy, self.obstacles, keys)
         maze_matrix = self.update_maze_matrix()
+
+        # Check flags for capture and recapture
+        all_flags_captured = all(flag.captured for flag in self.flags)
+        for flag in self.flags:
+            flag.check_capture(self.enemies)
+            flag.check_recapture(self.player)
+        if all_flags_captured:
+            log("🚩 All flags captured, switching to GameOverScene")
+            pygame.mixer.stop()
+            return GameOverScene(self.screen)
+
+        for factory in self.tank_factories:
+            new_enemy = factory.update(self.enemies, self.flags)
+            if new_enemy:
+                self.enemies.append(new_enemy)
+                log(f"🏭 Factory spawned new enemy: {new_enemy.__class__.__name__}")
 
         for bullet in self.bullets[:]:
             bullet.move()
@@ -124,64 +162,65 @@ class GameScene:
                         self.missiles.remove(missile)
                         log("🧱 Missile hit obstacle")
                         break
-            for shield in self.shields:
-                if missile.rect.colliderect(shield.rect):
-                    for _ in range (5):
-                        self.particles.append(Particle(shield.rect.centerx, shield.rect.centery, "particle", random.uniform(-2 , 2), random.uniform(-2 , 2), random.randint(4, 16), (20, 60, 240)))
-                    for _ in range (5):
-                        self.particles.append(Particle(missile.rect.centerx, missile.rect.centery, "particle", missile.direction.x * -1 + random.uniform(-1 , 1), missile.direction.y * -1 + random.uniform(-1 , 1), random.randint(4, 16), (240, 100, 40)))
-                    self.shields.remove(shield)
-                    self.missiles.remove(missile)
-                    log("🛡️ Missile hit shield")
-                    break
-            if missile.rect.colliderect(self.player.rect) and self.immortal_time <= 0:
-                self.player.health -= 1
-                log(f"🚀 Player hit by missile! Health: {self.player.health}")
-                self.immortal_time = IMMORTAL_TIME
-                for _ in range (5):
-                    self.particles.append(Particle(missile.rect.centerx, missile.rect.centery, "particle", missile.direction.x * -1 + random.uniform(-1 , 1), missile.direction.y * -1 + random.uniform(-1 , 1), random.randint(4, 16), (240, 100, 40)))
-                self.missiles.remove(missile)
-                if self.player.health <= 0:
-                    log("💀 Player died, switching to GameOverScene")
-                    pygame.mixer.stop()
-                    return GameOverScene(self.screen)
+            else:
+                for shield in self.shields:
+                    if missile.rect.colliderect(shield.rect):
+                        for _ in range(5):
+                            self.particles.append(Particle(shield.rect.centerx, shield.rect.centery, "particle", random.uniform(-2, 2), random.uniform(-2, 2), random.randint(4, 16), (20, 60, 240)))
+                        for _ in range(5):
+                            self.particles.append(Particle(missile.rect.centerx, missile.rect.centery, "particle", missile.direction.x * -1 + random.uniform(-1, 1), missile.direction.y * -1 + random.uniform(-1, 1), random.randint(4, 16), (240, 100, 40)))
+                        self.shields.remove(shield)
+                        self.missiles.remove(missile)
+                        log("🛡️ Missile hit shield")
+                        break
+                else:
+                    if missile.rect.colliderect(self.player.collision_rect) and self.immortal_time <= 0:
+                        self.player.health -= 1
+                        log(f"🚀 Player hit by missile! Health: {self.player.health}")
+                        self.immortal_time = IMMORTAL_TIME
+                        for _ in range(5):
+                            self.particles.append(Particle(missile.rect.centerx, missile.rect.centery, "particle", missile.direction.x * -1 + random.uniform(-1, 1), missile.direction.y * -1 + random.uniform(-1, 1), random.randint(4, 16), (240, 100, 40)))
+                        self.missiles.remove(missile)
+                        if self.player.health <= 0:
+                            log("💀 Player died, switching to GameOverScene")
+                            pygame.mixer.stop()
+                            return GameOverScene(self.screen)
 
         for enemy in self.enemies[:]:
-            if isinstance(enemy, ChasingEnemy):
+            if isinstance(enemy, (ChasingEnemy, RandomShootingEnemy, ShootingEnemy, BaseChasingShootingEnemy)):
                 maze_matrix = self.update_maze_matrix()
-                enemy.obstacles = self.obstacles
                 missile = enemy.update(self.player, maze_matrix, self.obstacles)
                 if missile:
                     self.missiles.append(missile)
                     if self.shoot_sound:
                         self.shoot_sound.play()
+            elif isinstance(enemy, FlagChasingEnemy):
+                maze_matrix = self.update_maze_matrix()
+                enemy.update(self.player, maze_matrix, self.obstacles)
             else:
                 enemy.move(self.obstacles)
-
             for shield in self.shields:
-                if enemy.rect.colliderect(shield.rect):
+                if enemy.collision_rect.colliderect(shield.rect):
                     self.enemies.remove(enemy)
-                    for _ in range (5):
-                        self.particles.append(Particle(enemy.rect.centerx, enemy.rect.centery, "particle", random.uniform(-2 , 2), random.uniform(-2 , 2), random.randint(4, 16), (240, 100, 40)))
-                        self.particles.append(Particle(enemy.rect.centerx, enemy.rect.centery, "particle", random.uniform(-1 , 1), random.uniform(-1 , 1), random.randint(8, 24), (40, 40, 40)))
+                    for _ in range(5):
+                        self.particles.append(Particle(enemy.collision_rect.centerx, enemy.collision_rect.centery, "particle", random.uniform(-2, 2), random.uniform(-2, 2), random.randint(4, 16), (240, 100, 40)))
+                        self.particles.append(Particle(enemy.collision_rect.centerx, enemy.collision_rect.centery, "particle", random.uniform(-1, 1), random.uniform(-1, 1), random.randint(8, 24), (40, 40, 40)))
                     log("🛡️ Enemy destroyed by shield")
                     break
-
             for bullet in self.bullets[:]:
-                if bullet.rect.colliderect(enemy.rect):
-                    for _ in range (5):
-                        self.particles.append(Particle(bullet.rect.centerx, bullet.rect.centery, "particle", bullet.direction.x * -1 + random.uniform(-1 , 1), bullet.direction.y * -1 + random.uniform(-1 , 1), random.randint(4, 16), (random.randint(90, 170), random.randint(0, 40), random.randint(0, 10))))
+                if bullet.rect.colliderect(enemy.collision_rect):
+                    for _ in range(5):
+                        self.particles.append(Particle(bullet.rect.centerx, bullet.rect.centery, "particle", bullet.direction.x * -1 + random.uniform(-1, 1), bullet.direction.y * -1 + random.uniform(-1, 1), random.randint(4, 16), (random.randint(90, 170), random.randint(0, 40), random.randint(0, 10))))
                     self.enemies.remove(enemy)
                     self.bullets.remove(bullet)
                     log("💥 Bullet hit enemy!")
                     break
-
-            if self.player.rect.colliderect(enemy.rect) and self.immortal_time <= 0:
+            if self.player.collision_rect.colliderect(enemy.collision_rect) and self.immortal_time <= 0:
                 self.player.health -= 1
                 log(f"❤️ Player hit by enemy! Health: {self.player.health}")
                 self.immortal_time = IMMORTAL_TIME
-                for _ in range (5):
-                    self.particles.append(Particle(self.player.rect.centerx, self.player.rect.centery, "particle", random.uniform(-2, 2), random.uniform(-2, 2), random.randint(4, 16), (random.randint(90, 170), random.randint(0, 40), random.randint(0, 10))))
+                for _ in range(5):
+                    self.particles.append(Particle(self.player.collision_rect.centerx, self.player.collision_rect.centery, "particle", random.uniform(-2, 2), random.uniform(-2, 2), random.randint(4, 16), (random.randint(90, 170), random.randint(0, 40), random.randint(0, 10))))
                 if self.player.health <= 0:
                     log("💀 Player died, switching to GameOverScene")
                     pygame.mixer.stop()
@@ -196,7 +235,7 @@ class GameScene:
             self.immortal_time -= 1
 
         if not self.enemies:
-            log("🏆 All enemies defeated, switching to GameWinScene")
+            log("🏆 All enemies defeated and factories depleted, switching to GameWinScene")
             pygame.mixer.stop()
             return GameWinScene(self.screen)
 
@@ -208,6 +247,10 @@ class GameScene:
             obstacle.draw(self.screen)
         for shield in self.shields:
             shield.draw(self.screen)
+        for flag in self.flags:
+            flag.draw(self.screen)
+        for factory in self.tank_factories:
+            factory.draw(self.screen)
         for enemy in self.enemies:
             enemy.draw(self.screen)
         for bullet in self.bullets:
@@ -217,7 +260,6 @@ class GameScene:
         for particle in self.particles:
             particle.draw(self.screen)
         self.player.draw(self.screen)
-
         health_color = (0, 255, 0) if self.player.health > 2 else (255, 255, 0) if self.player.health == 2 else (255, 0, 0)
         health_text = self.font.render(f"Health: {self.player.health}", True, health_color)
         self.screen.blit(health_text, (10, 10))

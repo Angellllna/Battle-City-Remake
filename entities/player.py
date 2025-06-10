@@ -5,7 +5,7 @@ from config import PLAYER_SIZE, PLAYER_SPEED, PLAYER_HEALTH
 
 class Player:
     def __init__(self, position):
-        self.rect = pygame.Rect(position[0], position[1], PLAYER_SIZE, PLAYER_SIZE)
+        self.collision_rect = pygame.Rect(position[0], position[1], PLAYER_SIZE, PLAYER_SIZE)
         self.speed = PLAYER_SPEED
         self.health = PLAYER_HEALTH
         self.bullets = []
@@ -13,9 +13,10 @@ class Player:
 
         try:
             self.images = [
-                pygame.image.load("Battle-City-Remake/textures/tank1.png").convert_alpha(),
-                pygame.image.load("Battle-City-Remake/textures/tank2.png").convert_alpha()
+                pygame.image.load("Battle-City-Remake/textures/tank81.png").convert_alpha(),
+                pygame.image.load("Battle-City-Remake/textures/tank82.png").convert_alpha()
             ]
+            self.images = [pygame.transform.scale(img, (PLAYER_SIZE, PLAYER_SIZE)) for img in self.images]
         except pygame.error as e:
             print(f"Error loading tank images: {e}")
             self.images = [pygame.Surface((PLAYER_SIZE, PLAYER_SIZE)) for _ in range(2)]
@@ -25,7 +26,7 @@ class Player:
         self.image = self.images[self.image_index]
 
         self.animation_timer = 0
-        self.animation_delay = 200  # ms
+        self.animation_delay = 200
         self.moving = False
         self.current_angle = 0
         self.target_angle = 0
@@ -38,12 +39,27 @@ class Player:
             if new_direction.length_squared() > 0:
                 self.direction = new_direction.normalize()
                 self.target_angle = self.get_angle_from_direction(self.direction)
-            new_rect = self.rect.move(dx * self.speed, dy * self.speed)
+            new_rect = self.collision_rect.move(dx * self.speed, dy * self.speed)
             for obstacle in obstacles:
                 if obstacle.blocks_movement:
                     if new_rect.colliderect(obstacle.rect):
-                        return  # Зіткнення з перешкодами
-            self.rect = new_rect
+                        # Спробуємо ковзати вздовж перешкоди
+                        new_rect_x = self.collision_rect.move(dx * self.speed, 0)
+                        new_rect_y = self.collision_rect.move(0, dy * self.speed)
+                        can_move_x = True
+                        can_move_y = True
+                        for obs in obstacles:
+                            if obs.blocks_movement:
+                                if new_rect_x.colliderect(obs.rect):
+                                    can_move_x = False
+                                if new_rect_y.colliderect(obs.rect):
+                                    can_move_y = False
+                        if can_move_x:
+                            self.collision_rect = new_rect_x
+                        elif can_move_y:
+                            self.collision_rect = new_rect_y
+                        return
+            self.collision_rect = new_rect
         self.update()
 
     def get_angle_from_direction(self, direction):
@@ -66,18 +82,17 @@ class Player:
             self.current_angle %= 360
 
         self.image = pygame.transform.rotate(self.images[self.image_index], self.current_angle)
-        self.rect = self.image.get_rect(center=self.rect.center)
 
     def shoot(self):
         if self.direction.length_squared() == 0:
             return None
-        offset = 20  # Відстань від центру гравця
-        bullet_x = self.rect.centerx + self.direction.x * offset - 2
-        bullet_y = self.rect.centery + self.direction.y * offset - 2
+        offset = 20
+        bullet_x = self.collision_rect.centerx + self.direction.x * offset - 2
+        bullet_y = self.collision_rect.centery + self.direction.y * offset - 2
         return Bullet(bullet_x, bullet_y, self.direction.normalize())
 
     def draw(self, surface):
-        img_rect = self.image.get_rect(center=self.rect.center)
+        img_rect = self.image.get_rect(center=self.collision_rect.center)
         surface.blit(self.image, img_rect.topleft)
         for bullet in self.bullets:
             bullet.draw(surface)

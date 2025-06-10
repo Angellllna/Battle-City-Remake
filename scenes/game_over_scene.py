@@ -7,29 +7,27 @@ class GameOverScene:
     def __init__(self, screen):
         self.screen = screen
         self.font = pygame.font.SysFont("arial", 36)
-        self.title_text = self.font.render("Ви програли!", True, (255,0,0))
-        self.info_text = self.font.render("Натисніть ENTER, щоб повернутись у меню", True, (255,0,0))
-        if not pygame.mixer.music.get_busy():
-            music = pygame.mixer.music("Battle-City-Remake\sounds\lose.mp3")
-            music.play()
+        self.text = self.font.render("Game Over! Press ENTER to return to menu", True, COLOR_WHITE)
         self.next_scene = None
+        try:
+            self.music = pygame.mixer.Sound("Battle-City-Remake/sounds/lose.mp3")
+            self.music.play()
+        except pygame.error as e:
+            log(f"⚠️ Failed to load game over sound: {e}")
 
     def handle_event(self, event):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_RETURN:
-                log("🔁 Повернення у меню з Game Over сцени")
-                if not pygame.mixer.music.get_busy():
-                    music = pygame.mixer.music("Battle-City-Remake/sounds/theme.mp3")
-                    music.play()
+                log("🟢 Returning to menu from GameOverScene")
+                pygame.mixer.stop()
                 self.next_scene = MenuScene(self.screen)
-                
+
     def update(self):
         if self.next_scene:
             return self.next_scene
+        return None
 
     def draw(self):
         self.screen.fill(COLOR_BLACK)
-        title_rect = self.title_text.get_rect(center=(self.screen.get_width() // 2, self.screen.get_height() // 2 - 30))
-        info_rect = self.info_text.get_rect(center=(self.screen.get_width() // 2, self.screen.get_height() // 2 + 30))
-        self.screen.blit(self.title_text, title_rect)
-        self.screen.blit(self.info_text, info_rect)
+        text_rect = self.text.get_rect(center=(self.screen.get_width() // 2, self.screen.get_height() // 2))
+        self.screen.blit(self.text, text_rect)
