@@ -24,6 +24,8 @@ class Player:
                 pygame.image.load("textures/tank112.png").convert_alpha()
             ]
             self.images = [pygame.transform.scale(img, (PLAYER_SIZE, PLAYER_SIZE)) for img in self.images]
+            for img in self.images:
+                img.fill((230, 230, 230), special_flags=pygame.BLEND_RGBA_MULT)
         except pygame.error as e:
             print(f"Error loading tank images: {e}")
             self.images = [pygame.Surface((PLAYER_SIZE, PLAYER_SIZE)) for _ in range(2)]

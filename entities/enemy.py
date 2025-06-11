@@ -17,7 +17,7 @@ class Enemy:
         self.level = level
         self.health = level
         self.damage = level
-        self.color = (180, 140, 0)
+        self.color = (180, 180, 180)
         try:
             if self.direction == "random":
                 texture_prefix = f"tank2{self.level}"
@@ -25,16 +25,22 @@ class Enemy:
                     pygame.image.load(f"textures/{texture_prefix}1.png").convert_alpha(),
                     pygame.image.load(f"textures/{texture_prefix}2.png").convert_alpha()
                 ]
+                self.images = [pygame.transform.scale(img, (PLAYER_SIZE, PLAYER_SIZE)) for img in self.images]
+                for img in self.images:
+                    img.fill(self.color, special_flags=pygame.BLEND_RGBA_MULT)
             else:
                 self.images = [
                     pygame.image.load(f"textures/tank111.png").convert_alpha(),
                     pygame.image.load(f"textures/tank112.png").convert_alpha()
                 ]
+                self.images = [pygame.transform.scale(img, (PLAYER_SIZE, PLAYER_SIZE)) for img in self.images]
                 for img in self.images:
                     img.fill(self.color, special_flags=pygame.BLEND_RGBA_MULT)
             self.images = [pygame.transform.scale(img, (PLAYER_SIZE, PLAYER_SIZE)) for img in self.images]
+            for img in self.images:
+                img.fill(self.color, special_flags=pygame.BLEND_RGBA_MULT)
             if self.direction == "random":
-                self.color = (100, 150, 100)
+                self.color = (100, 180, 100)
                 for img in self.images:
                     img.fill(self.color, special_flags=pygame.BLEND_RGBA_MULT)
         except pygame.error as e:
@@ -514,7 +520,7 @@ class FlagChasingEnemy(Enemy):
         self.damage = 1
         self.speed = self.speed + self.level - 1
         self.choose_target_flag()
-        self.color = (100, 100, 100)
+        self.color = (180, 180, 180)
         try:
             texture_prefix = f"tank1{self.level}"
             self.images = [
