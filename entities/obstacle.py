@@ -226,21 +226,79 @@ class BushBlock(Obstacle):
             surface.blit(self.image, self.rect.topleft)
 
 
+SHIELD_TEXTURES = [
+    os.path.join("textures", "shield-1.png"),
+    os.path.join("textures", "shield-2.png"),
+    os.path.join("textures", "shield-3.png"),
+    os.path.join("textures", "shield-4.png"),
+]
+
+
 class Shield(Obstacle):
-    def __init__(self, x, y):
+    def __init__(self, x, y, move_direction="down"):
         super().__init__(
             x,
             y,
-            width=OBSTACLE_SIZE,
-            height=OBSTACLE_SIZE,
-            color=COLOR_BLUE,
+            width=32,
+            height=32,
+            color=(0, 0, 255),
             destructible=False,
             blocks_movement=False,
             blocks_bullets=True,
         )
 
+        self.images = [
+            pygame.image.load(texture).convert_alpha() for texture in SHIELD_TEXTURES
+        ]
+        self.images = [
+            pygame.transform.scale(img, (self.rect.width, self.rect.height))
+            for img in self.images
+        ]
+
+        self.SPEED = 2
+
+        self.image_index = 0
+        self.animation_timer = 0
+        self.animation_delay = 100
+
+        # Рух щита
+        self.move_direction = move_direction
+        self.direction_vector = self._get_direction_vector(move_direction)
+        self.initial_x = x
+        self.initial_y = y
+        self.move_distance = 0
+        self.max_move_distance = 100
+        self.moving_forward = True
+
+    def _get_direction_vector(self, direction):
+        directions = {"up": (0, -1), "down": (0, 1), "left": (-1, 0), "right": (1, 0)}
+        return directions.get(direction, (0, -1))
+
+    def update(self):
+        dx = self.direction_vector[0] * self.SPEED
+        dy = self.direction_vector[1] * self.SPEED
+
+        if not self.moving_forward:
+            dx = -dx
+            dy = -dy
+
+        self.rect.x += dx
+        self.rect.y += dy
+        self.move_distance += self.SPEED
+
+        if self.move_distance >= self.max_move_distance:
+            self.moving_forward = not self.moving_forward
+            self.move_distance = 0
+
     def draw(self, surface):
-        pygame.draw.rect(surface, self.color, self.rect)
+        self.update()
+
+        now = pygame.time.get_ticks()
+        if now - self.animation_timer > self.animation_delay:
+            self.image_index = (self.image_index + 1) % len(self.images)
+            self.animation_timer = now
+
+        surface.blit(self.images[self.image_index], self.rect.topleft)
 
 
 class DefendFlag:

@@ -199,31 +199,8 @@ class GameScene:
 
                     if collided:
                         if obstacle.hit(bullet):
-                            # for _ in range(5):
-                            #     self.particles.append(
-                            #         Particle(
-                            #             obstacle.rect.centerx,
-                            #             obstacle.rect.centery,
-                            #             "particle",
-                            #             random.uniform(-2, 2),
-                            #             random.uniform(-2, 2),
-                            #             random.randint(4, 16),
-                            #             (80, 80, 80),
-                            #         )
-                            #     )
                             self.obstacles.remove(obstacle)
-                        # for _ in range(5):
-                        #     self.particles.append(
-                        #         Particle(
-                        #             bullet.rect.centerx,
-                        #             bullet.rect.centery,
-                        #             "particle",
-                        #             bullet.direction.x * -1 + random.uniform(-1, 1),
-                        #             bullet.direction.y * -1 + random.uniform(-1, 1),
-                        #             random.randint(4, 16),
-                        #             (240, 100, 40),
-                        #         )
-                        #     )
+
                         self.bullets.remove(bullet)
                         log("🧱 Bullet hit obstacle")
                         break
