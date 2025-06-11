@@ -1,16 +1,12 @@
-import pygame
 import math
-from config import (
-    COLOR_BLACK,
-    COLOR_WHITE,
-    OBSTACLE_SIZE,
-    WINDOW_WIDTH,
-    WINDOW_HEIGHT,
-    MAP2,
-)
-from utils.logger import log
+
+import pygame
+
+from config import (COLOR_BLACK, COLOR_WHITE, MAP2, OBSTACLE_SIZE,
+                    WINDOW_HEIGHT, WINDOW_WIDTH)
 from entities.menu_tanks import Tank
-from entities.obstacle import Obstacle, SteelBlock, WaterBlock, BushBlock
+from entities.obstacle import BushBlock, Obstacle, SteelBlock, WaterBlock
+from utils.logger import log
 
 
 class MenuScene:

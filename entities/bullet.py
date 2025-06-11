@@ -1,5 +1,6 @@
 import pygame
-from config import COLOR_WHITE, COLOR_RED
+
+from config import COLOR_RED, COLOR_WHITE
 
 
 class Bullet:

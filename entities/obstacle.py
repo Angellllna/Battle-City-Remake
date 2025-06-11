@@ -1,14 +1,11 @@
-import pygame
-from config import OBSTACLE_SIZE, COLOR_BLUE
-from entities.enemy import (
-    Enemy,
-    ChasingEnemy,
-    RandomShootingEnemy,
-    ShootingEnemy,
-    BaseChasingShootingEnemy,
-    FlagChasingEnemy,
-)
 import random
+
+import pygame
+
+from config import COLOR_BLUE, OBSTACLE_SIZE
+from entities.enemy import (BaseChasingShootingEnemy, ChasingEnemy, Enemy,
+                            FlagChasingEnemy, RandomShootingEnemy,
+                            ShootingEnemy)
 
 
 class Obstacle:

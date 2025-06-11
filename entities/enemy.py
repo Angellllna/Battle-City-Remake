@@ -1,15 +1,11 @@
-import pygame
 import heapq
-import random
 import math
-from config import (
-    OBSTACLE_SIZE,
-    COLOR_GRAY,
-    PLAYER_SPEED,
-    WINDOW_WIDTH,
-    WINDOW_HEIGHT,
-    PLAYER_SIZE,
-)
+import random
+
+import pygame
+
+from config import (COLOR_GRAY, OBSTACLE_SIZE, PLAYER_SIZE, PLAYER_SPEED,
+                    WINDOW_HEIGHT, WINDOW_WIDTH)
 from entities.bullet import Missile
 
 

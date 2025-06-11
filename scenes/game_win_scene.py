@@ -1,4 +1,5 @@
 import pygame
+
 from config import COLOR_BLACK, COLOR_WHITE
 from scenes.menu_scene import MenuScene
 from utils.logger import log

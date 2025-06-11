@@ -1,7 +1,9 @@
-import pygame
 import math
+
+import pygame
+
+from config import PLAYER_HEALTH, PLAYER_SIZE, PLAYER_SPEED
 from entities.bullet import Bullet
-from config import PLAYER_SIZE, PLAYER_SPEED, PLAYER_HEALTH
 
 
 class Player:

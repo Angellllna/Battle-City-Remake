@@ -1,35 +1,19 @@
+import random
+
 import pygame
-from config import (
-    COLOR_BLACK,
-    WINDOW_WIDTH,
-    WINDOW_HEIGHT,
-    IMMORTAL_TIME,
-    MAP1,
-    OBSTACLE_SIZE,
-)
-from entities.player import Player
-from entities.obstacle import (
-    Obstacle,
-    SteelBlock,
-    WaterBlock,
-    BushBlock,
-    Shield,
-    DefendFlag,
-    TankFactory,
-)
-from entities.enemy import (
-    Enemy,
-    ChasingEnemy,
-    RandomShootingEnemy,
-    ShootingEnemy,
-    BaseChasingShootingEnemy,
-    FlagChasingEnemy,
-)
+
+from config import (COLOR_BLACK, IMMORTAL_TIME, MAP1, OBSTACLE_SIZE,
+                    WINDOW_HEIGHT, WINDOW_WIDTH)
 from entities.bullet import Bullet, Missile
+from entities.enemy import (BaseChasingShootingEnemy, ChasingEnemy, Enemy,
+                            FlagChasingEnemy, RandomShootingEnemy,
+                            ShootingEnemy)
+from entities.obstacle import (BushBlock, DefendFlag, Obstacle, Shield,
+                               SteelBlock, TankFactory, WaterBlock)
 from entities.particle import Particle
+from entities.player import Player
 from scenes.game_over_scene import GameOverScene
 from utils.logger import log
-import random
 
 
 class GameScene:

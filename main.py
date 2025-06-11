@@ -1,9 +1,11 @@
-import pygame
 import sys
-from config import WINDOW_WIDTH, WINDOW_HEIGHT, FPS
-from scenes.menu_scene import MenuScene
+
+import pygame
+
+from config import FPS, WINDOW_HEIGHT, WINDOW_WIDTH
 from scenes.game_over_scene import GameOverScene
 from scenes.game_win_scene import GameWinScene
+from scenes.menu_scene import MenuScene
 from utils.logger import log
 
 
