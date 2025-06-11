@@ -6,11 +6,12 @@ from config import FPS, WINDOW_HEIGHT, WINDOW_WIDTH
 from scenes.game_over_scene import GameOverScene
 from scenes.game_win_scene import GameWinScene
 from scenes.menu_scene import MenuScene
-from utils.logger import log
+from utils.logger import any_error_logger, log
 
 
 def main():
     log("🚀 Game started")
+    sys.excepthook = any_error_logger
     pygame.init()
     pygame.mixer.init()
     screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))

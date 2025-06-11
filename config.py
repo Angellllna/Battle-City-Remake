@@ -1,4 +1,5 @@
 # "wl""br""wt""bu""pl""sd""tf""e1""e2""e3""e4""e5""e6""e7""e8"
+import os
 
 MAP1 = [
     [
@@ -839,10 +840,15 @@ OBSTACLE_COLOR = COLOR_WHITE
 OBSTACLE_SIZE = 40
 
 # Гравець
+PLAYER_COLOR = COLOR_RED
 PLAYER_SIZE = OBSTACLE_SIZE * 0.9
 PLAYER_SPEED = 2
 PLAYER_HEALTH = 10
+PLAYER_NAME = "-Player-"
 
 IMMORTAL_TIME = 100
 
 VOLUME = 100
+
+LOG_TO_FILE = True  # Якщо хочеш логувати в файл, змінити на True
+LOG_FILE_PATH = os.path.join("logs", "game_log.log")
