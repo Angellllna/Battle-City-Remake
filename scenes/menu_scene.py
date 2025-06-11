@@ -2,8 +2,14 @@ import math
 
 import pygame
 
-from config import (COLOR_BLACK, COLOR_WHITE, MAP2, OBSTACLE_SIZE,
-                    WINDOW_HEIGHT, WINDOW_WIDTH)
+from config import (
+    COLOR_BLACK,
+    COLOR_WHITE,
+    MAP2,
+    OBSTACLE_SIZE,
+    WINDOW_HEIGHT,
+    WINDOW_WIDTH,
+)
 from entities.menu_tanks import Tank
 from entities.obstacle import BushBlock, Obstacle, SteelBlock, WaterBlock
 from utils.logger import log

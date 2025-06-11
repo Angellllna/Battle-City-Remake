@@ -1,15 +1,34 @@
+import os
 import random
 
 import pygame
 
-from config import (COLOR_BLACK, IMMORTAL_TIME, MAP1, OBSTACLE_SIZE,
-                    WINDOW_HEIGHT, WINDOW_WIDTH)
+from config import (
+    COLOR_BLACK,
+    IMMORTAL_TIME,
+    MAP1,
+    OBSTACLE_SIZE,
+    WINDOW_HEIGHT,
+    WINDOW_WIDTH,
+)
 from entities.bullet import Bullet, Missile
-from entities.enemy import (BaseChasingShootingEnemy, ChasingEnemy, Enemy,
-                            FlagChasingEnemy, RandomShootingEnemy,
-                            ShootingEnemy)
-from entities.obstacle import (BushBlock, DefendFlag, Obstacle, Shield,
-                               SteelBlock, TankFactory, WaterBlock)
+from entities.enemy import (
+    BaseChasingShootingEnemy,
+    ChasingEnemy,
+    Enemy,
+    FlagChasingEnemy,
+    RandomShootingEnemy,
+    ShootingEnemy,
+)
+from entities.obstacle import (
+    BushBlock,
+    DefendFlag,
+    Obstacle,
+    Shield,
+    SteelBlock,
+    TankFactory,
+    WaterBlock,
+)
 from entities.particle import Particle
 from entities.player import Player
 from scenes.game_over_scene import GameOverScene
@@ -21,10 +40,13 @@ class GameScene:
         self.screen = screen
         self.font = pygame.font.SysFont("arial", 24, bold=True)
         try:
-            self.shoot_sound = pygame.mixer.Sound("sounds/laserShoot.wav")
+            self.shoot_sound = pygame.mixer.Sound(
+                os.path.join("sounds", "laserShoot.wav")
+            )
         except pygame.error as e:
             log(f"⚠️ Failed to load shoot sound: {e}")
             self.shoot_sound = None
+
         self.immortal_time = 0
         self.particles = []
         self.flags = []
@@ -43,6 +65,7 @@ class GameScene:
                 y = (row_index - 1) * tile_size
                 if cell == "fl":
                     self.flags.append(DefendFlag(x, y))
+
         for row_index, row in enumerate(MAP1):
             for col_index, cell in enumerate(row):
                 x = (col_index - 1) * tile_size
@@ -163,33 +186,44 @@ class GameScene:
                 continue
             for obstacle in self.obstacles[:]:
                 if obstacle.blocks_bullets:
-                    if bullet.rect.colliderect(obstacle.rect):
+                    rects_to_check = [obstacle.rect]
+
+                    if hasattr(obstacle, "get_collision_rects"):
+                        rects_to_check = obstacle.get_collision_rects()
+
+                    collided = False
+                    for rect in rects_to_check:
+                        if bullet.rect.colliderect(rect):
+                            collided = True
+                            break
+
+                    if collided:
                         if obstacle.hit(bullet):
-                            for _ in range(5):
-                                self.particles.append(
-                                    Particle(
-                                        obstacle.rect.centerx,
-                                        obstacle.rect.centery,
-                                        "particle",
-                                        random.uniform(-2, 2),
-                                        random.uniform(-2, 2),
-                                        random.randint(4, 16),
-                                        (80, 80, 80),
-                                    )
-                                )
+                            # for _ in range(5):
+                            #     self.particles.append(
+                            #         Particle(
+                            #             obstacle.rect.centerx,
+                            #             obstacle.rect.centery,
+                            #             "particle",
+                            #             random.uniform(-2, 2),
+                            #             random.uniform(-2, 2),
+                            #             random.randint(4, 16),
+                            #             (80, 80, 80),
+                            #         )
+                            #     )
                             self.obstacles.remove(obstacle)
-                        for _ in range(5):
-                            self.particles.append(
-                                Particle(
-                                    bullet.rect.centerx,
-                                    bullet.rect.centery,
-                                    "particle",
-                                    bullet.direction.x * -1 + random.uniform(-1, 1),
-                                    bullet.direction.y * -1 + random.uniform(-1, 1),
-                                    random.randint(4, 16),
-                                    (240, 100, 40),
-                                )
-                            )
+                        # for _ in range(5):
+                        #     self.particles.append(
+                        #         Particle(
+                        #             bullet.rect.centerx,
+                        #             bullet.rect.centery,
+                        #             "particle",
+                        #             bullet.direction.x * -1 + random.uniform(-1, 1),
+                        #             bullet.direction.y * -1 + random.uniform(-1, 1),
+                        #             random.randint(4, 16),
+                        #             (240, 100, 40),
+                        #         )
+                        #     )
                         self.bullets.remove(bullet)
                         log("🧱 Bullet hit obstacle")
                         break

@@ -1,11 +1,17 @@
+import os
 import random
 
 import pygame
 
 from config import COLOR_BLUE, OBSTACLE_SIZE
-from entities.enemy import (BaseChasingShootingEnemy, ChasingEnemy, Enemy,
-                            FlagChasingEnemy, RandomShootingEnemy,
-                            ShootingEnemy)
+from entities.enemy import (
+    BaseChasingShootingEnemy,
+    ChasingEnemy,
+    Enemy,
+    FlagChasingEnemy,
+    RandomShootingEnemy,
+    ShootingEnemy,
+)
 
 
 class Obstacle:
@@ -35,18 +41,48 @@ class Obstacle:
             except pygame.error as e:
                 print(f"Error loading brick image: {e}")
 
+        self.segments = {"tl": True, "tr": True, "bl": True, "br": True}
+
+        # Прямокутники сегментів
+        self.offset_x = width // 2
+        self.offset_y = height // 2
+        self.segment_rects = {
+            "tl": pygame.Rect(x, y, self.offset_x, self.offset_y),
+            "tr": pygame.Rect(x + self.offset_x, y, self.offset_x, self.offset_y),
+            "bl": pygame.Rect(x, y + self.offset_y, self.offset_x, self.offset_y),
+            "br": pygame.Rect(
+                x + self.offset_x, y + self.offset_y, self.offset_x, self.offset_y
+            ),
+        }
+
     def hit(self, bullet=None):
         if self.destructible:
-            self.hp -= 1
-            if self.hp <= 0:
-                return True
+            for key, seg_rect in self.segment_rects.items():
+                if self.segments[key] and bullet.rect.colliderect(seg_rect):
+                    self.segments[key] = False
+                    break
+            return not any(self.segments.values())
         return False
 
     def draw(self, surface):
-        if self.image:
-            surface.blit(self.image, self.rect.topleft)
-        else:
-            pygame.draw.rect(surface, self.color, self.rect)
+        for key, alive in self.segments.items():
+            if alive:
+                seg_rect = self.segment_rects[key]
+                if key == "tl":
+                    area = pygame.Rect(0, 0, self.offset_x, self.offset_y)
+                elif key == "tr":
+                    area = pygame.Rect(self.offset_x, 0, self.offset_x, self.offset_y)
+                elif key == "bl":
+                    area = pygame.Rect(0, self.offset_y, self.offset_x, self.offset_y)
+                elif key == "br":
+                    area = pygame.Rect(
+                        self.offset_x, self.offset_y, self.offset_x, self.offset_y
+                    )
+                surface.blit(self.image, seg_rect.topleft, area)
+
+    def get_collision_rects(self):
+        # Повертає лише живі сегменти
+        return [r for k, r in self.segment_rects.items() if self.segments[k]]
 
 
 class SteelBlock(Obstacle):
@@ -68,9 +104,66 @@ class SteelBlock(Obstacle):
         except pygame.error as e:
             print(f"Error loading steel image: {e}")
 
+        # Іскра
+        self.spark_image = pygame.image.load(
+            os.path.join("textures", "spark.png")
+        ).convert_alpha()
+        self.spark_image = pygame.transform.scale(
+            self.spark_image, (self.rect.width, self.rect.height)
+        )
+
+        self.spark_visible = False
+        self.spark_timer = 0
+        self.spark_duration = 100  # мс
+        self.spark_offset = (0, 0)
+
+        # 🎵 Звук удару
+        self.hit_sound = pygame.mixer.Sound(os.path.join("sounds", "hit-metal.mp3"))
+
+    def hit(self, bullet=None):
+        if bullet:
+            bx, by = bullet.rect.center
+            sx, sy = self.rect.center
+
+            offset_x = bx - sx
+            offset_y = by - sy
+
+            if abs(offset_x) > abs(offset_y):
+                self.spark_offset = (
+                    (-self.rect.width // 2, 0)
+                    if offset_x < 0
+                    else (self.rect.width // 2, 0)
+                )
+            else:
+                self.spark_offset = (
+                    (0, -self.rect.height // 2)
+                    if offset_y < 0
+                    else (0, self.rect.height // 2)
+                )
+        else:
+            self.spark_offset = (0, 0)
+
+        self.spark_visible = True
+        self.spark_timer = pygame.time.get_ticks()
+
+        # ▶️ Програти звук
+        self.hit_sound.play()
+
+        return False
+
     def draw(self, surface):
-        if self.image:
-            surface.blit(self.image, self.rect.topleft)
+        surface.blit(self.image, self.rect.topleft)
+
+        if self.spark_visible:
+            now = pygame.time.get_ticks()
+            if now - self.spark_timer < self.spark_duration:
+                spark_pos = (
+                    self.rect.centerx + self.spark_offset[0] - self.rect.width // 2,
+                    self.rect.centery + self.spark_offset[1] - self.rect.height // 2,
+                )
+                surface.blit(self.spark_image, spark_pos)
+            else:
+                self.spark_visible = False
 
 
 class WaterBlock(Obstacle):
@@ -119,7 +212,9 @@ class BushBlock(Obstacle):
             blocks_bullets=False,
         )
         try:
-            self.image = pygame.image.load("textures/bush.png").convert_alpha()
+            self.image = pygame.image.load(
+                os.path.join("textures", "bush.png")
+            ).convert_alpha()
             self.image = pygame.transform.scale(
                 self.image, (self.rect.width, self.rect.height)
             )
