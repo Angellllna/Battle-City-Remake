@@ -1,10 +1,29 @@
 import pygame
 from config import OBSTACLE_SIZE, COLOR_BLUE
-from entities.enemy import Enemy, ChasingEnemy, RandomShootingEnemy, ShootingEnemy, BaseChasingShootingEnemy, FlagChasingEnemy
+from entities.enemy import (
+    Enemy,
+    ChasingEnemy,
+    RandomShootingEnemy,
+    ShootingEnemy,
+    BaseChasingShootingEnemy,
+    FlagChasingEnemy,
+)
 import random
 
+
 class Obstacle:
-    def __init__(self, x, y, width=OBSTACLE_SIZE, height=OBSTACLE_SIZE, color=(100, 0, 0), destructible=False, hp=1, blocks_movement=True, blocks_bullets=True):
+    def __init__(
+        self,
+        x,
+        y,
+        width=OBSTACLE_SIZE,
+        height=OBSTACLE_SIZE,
+        color=(100, 0, 0),
+        destructible=False,
+        hp=1,
+        blocks_movement=True,
+        blocks_bullets=True,
+    ):
         self.rect = pygame.Rect(x, y, width, height)
         self.color = color
         self.destructible = destructible
@@ -32,12 +51,22 @@ class Obstacle:
         else:
             pygame.draw.rect(surface, self.color, self.rect)
 
+
 class SteelBlock(Obstacle):
     def __init__(self, x, y):
-        super().__init__(x, y, width=OBSTACLE_SIZE, height=OBSTACLE_SIZE, color=(100, 100, 100), destructible=False)
+        super().__init__(
+            x,
+            y,
+            width=OBSTACLE_SIZE,
+            height=OBSTACLE_SIZE,
+            color=(100, 100, 100),
+            destructible=False,
+        )
         try:
             self.image = pygame.image.load("textures/steel.png").convert_alpha()
-            self.image = pygame.transform.scale(self.image, (self.rect.width, self.rect.height))
+            self.image = pygame.transform.scale(
+                self.image, (self.rect.width, self.rect.height)
+            )
             self.image.fill(self.color, special_flags=pygame.BLEND_RGBA_MULT)
         except pygame.error as e:
             print(f"Error loading steel image: {e}")
@@ -46,16 +75,27 @@ class SteelBlock(Obstacle):
         if self.image:
             surface.blit(self.image, self.rect.topleft)
 
+
 class WaterBlock(Obstacle):
     def __init__(self, x, y):
-        super().__init__(x, y, color=(0, 255, 255), destructible=False, blocks_movement=True, blocks_bullets=False)
+        super().__init__(
+            x,
+            y,
+            color=(0, 255, 255),
+            destructible=False,
+            blocks_movement=True,
+            blocks_bullets=False,
+        )
         self.images = []
         try:
             self.images = [
                 pygame.image.load("textures/water1.png").convert_alpha(),
-                pygame.image.load("textures/water2.png").convert_alpha()
+                pygame.image.load("textures/water2.png").convert_alpha(),
             ]
-            self.images = [pygame.transform.scale(img, (self.rect.width, self.rect.height)) for img in self.images]
+            self.images = [
+                pygame.transform.scale(img, (self.rect.width, self.rect.height))
+                for img in self.images
+            ]
         except pygame.error as e:
             print(f"Error loading water images: {e}")
         self.image_index = 0
@@ -70,12 +110,22 @@ class WaterBlock(Obstacle):
         if self.images:
             surface.blit(self.images[self.image_index], self.rect.topleft)
 
+
 class BushBlock(Obstacle):
     def __init__(self, x, y):
-        super().__init__(x, y, color=(34, 139, 34), destructible=False, blocks_movement=False, blocks_bullets=False)
+        super().__init__(
+            x,
+            y,
+            color=(34, 139, 34),
+            destructible=False,
+            blocks_movement=False,
+            blocks_bullets=False,
+        )
         try:
             self.image = pygame.image.load("textures/bush.png").convert_alpha()
-            self.image = pygame.transform.scale(self.image, (self.rect.width, self.rect.height))
+            self.image = pygame.transform.scale(
+                self.image, (self.rect.width, self.rect.height)
+            )
         except pygame.error as e:
             print(f"Error loading bush image: {e}")
 
@@ -83,12 +133,23 @@ class BushBlock(Obstacle):
         if self.image:
             surface.blit(self.image, self.rect.topleft)
 
+
 class Shield(Obstacle):
     def __init__(self, x, y):
-        super().__init__(x, y, width=OBSTACLE_SIZE, height=OBSTACLE_SIZE, color=COLOR_BLUE, destructible=False, blocks_movement=False, blocks_bullets=True)
+        super().__init__(
+            x,
+            y,
+            width=OBSTACLE_SIZE,
+            height=OBSTACLE_SIZE,
+            color=COLOR_BLUE,
+            destructible=False,
+            blocks_movement=False,
+            blocks_bullets=True,
+        )
 
     def draw(self, surface):
         pygame.draw.rect(surface, self.color, self.rect)
+
 
 class DefendFlag:
     def __init__(self, x, y):
@@ -97,18 +158,28 @@ class DefendFlag:
         try:
             self.images = [
                 pygame.image.load("textures/flag_GREEN1.png").convert_alpha(),
-                pygame.image.load("textures/flag_GREEN2.png").convert_alpha()
+                pygame.image.load("textures/flag_GREEN2.png").convert_alpha(),
             ]
             self.captured_images = [
                 pygame.image.load("textures/flag_RED1.png").convert_alpha(),
-                pygame.image.load("textures/flag_RED2.png").convert_alpha()
+                pygame.image.load("textures/flag_RED2.png").convert_alpha(),
             ]
-            self.images = [pygame.transform.scale(img, (OBSTACLE_SIZE, OBSTACLE_SIZE)) for img in self.images]
-            self.captured_images = [pygame.transform.scale(img, (OBSTACLE_SIZE, OBSTACLE_SIZE)) for img in self.captured_images]
+            self.images = [
+                pygame.transform.scale(img, (OBSTACLE_SIZE, OBSTACLE_SIZE))
+                for img in self.images
+            ]
+            self.captured_images = [
+                pygame.transform.scale(img, (OBSTACLE_SIZE, OBSTACLE_SIZE))
+                for img in self.captured_images
+            ]
         except pygame.error as e:
             print(f"Error loading flag images: {e}")
-            self.images = [pygame.Surface((OBSTACLE_SIZE, OBSTACLE_SIZE)) for _ in range(2)]
-            self.captured_images = [pygame.Surface((OBSTACLE_SIZE, OBSTACLE_SIZE)) for _ in range(2)]
+            self.images = [
+                pygame.Surface((OBSTACLE_SIZE, OBSTACLE_SIZE)) for _ in range(2)
+            ]
+            self.captured_images = [
+                pygame.Surface((OBSTACLE_SIZE, OBSTACLE_SIZE)) for _ in range(2)
+            ]
             for img in self.images:
                 img.fill((255, 255, 255))
             for img in self.captured_images:
@@ -158,15 +229,22 @@ class DefendFlag:
         if now - self.animation_timer > self.animation_delay:
             self.image_index = (self.image_index + 1) % len(self.images)
             self.animation_timer = now
-        image = self.captured_images[self.image_index] if self.captured else self.images[self.image_index]
+        image = (
+            self.captured_images[self.image_index]
+            if self.captured
+            else self.images[self.image_index]
+        )
         surface.blit(image, self.rect.topleft)
         if self.recapturing:
             time_held = pygame.time.get_ticks() - self.recapture_time
             progress = min(time_held / self.recapture_duration, 1.0)
             bar_width = OBSTACLE_SIZE * progress
             bar_height = 5
-            bar_rect = pygame.Rect(self.rect.x, self.rect.y + OBSTACLE_SIZE, bar_width, bar_height)
+            bar_rect = pygame.Rect(
+                self.rect.x, self.rect.y + OBSTACLE_SIZE, bar_width, bar_height
+            )
             pygame.draw.rect(surface, (0, 255, 0), bar_rect)
+
 
 class TankFactory:
     def __init__(self, x, y):
@@ -178,14 +256,19 @@ class TankFactory:
         try:
             self.images = [
                 pygame.image.load("textures/factory1.png").convert_alpha(),
-                pygame.image.load("textures/factory2.png").convert_alpha()
+                pygame.image.load("textures/factory2.png").convert_alpha(),
             ]
-            self.images = [pygame.transform.scale(img, (OBSTACLE_SIZE, OBSTACLE_SIZE)) for img in self.images]
+            self.images = [
+                pygame.transform.scale(img, (OBSTACLE_SIZE, OBSTACLE_SIZE))
+                for img in self.images
+            ]
             for img in self.images:
                 img.fill((100, 100, 100), special_flags=pygame.BLEND_RGBA_MULT)
         except pygame.error as e:
             print(f"Error loading factory images: {e}")
-            self.images = [pygame.Surface((OBSTACLE_SIZE, OBSTACLE_SIZE)) for _ in range(2)]
+            self.images = [
+                pygame.Surface((OBSTACLE_SIZE, OBSTACLE_SIZE)) for _ in range(2)
+            ]
             for img in self.images:
                 img.fill(self.color)
         self.image_index = 0
@@ -203,7 +286,11 @@ class TankFactory:
                 # Level 1: Only non-shooting Enemy and non-shooting BaseChasingShootingEnemy
                 enemy_types = [
                     (Enemy, {"direction": "random"}),
-                    (BaseChasingShootingEnemy, {"flags": flags, "can_shoot": False}) if flags else None
+                    (
+                        (BaseChasingShootingEnemy, {"flags": flags, "can_shoot": False})
+                        if flags
+                        else None
+                    ),
                 ]
             elif game_level == 2:
                 # Level 2: All enemy types with improved stats

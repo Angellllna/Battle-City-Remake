@@ -1,15 +1,25 @@
 import pygame
 import math
-from config import COLOR_BLACK, COLOR_WHITE, OBSTACLE_SIZE, WINDOW_WIDTH, WINDOW_HEIGHT, MAP2
+from config import (
+    COLOR_BLACK,
+    COLOR_WHITE,
+    OBSTACLE_SIZE,
+    WINDOW_WIDTH,
+    WINDOW_HEIGHT,
+    MAP2,
+)
 from utils.logger import log
 from entities.menu_tanks import Tank
 from entities.obstacle import Obstacle, SteelBlock, WaterBlock, BushBlock
+
 
 class MenuScene:
     def __init__(self, screen):
         self.screen = screen
         self.font = pygame.font.SysFont("arial", 36)
-        self.title_text = self.font.render("Натисніть ENTER, щоб почати", True, (0, 255, 0))
+        self.title_text = self.font.render(
+            "Натисніть ENTER, щоб почати", True, (0, 255, 0)
+        )
         self.next_scene = None
         self.tank1 = Tank(0, 560, (255, 0, 0))  # Червоний
         self.tank2 = Tank(760, 0, (0, 0, 255))  # Синій
@@ -56,6 +66,7 @@ class MenuScene:
 
     def handle_event(self, event):
         from scenes.game_scene import GameScene
+
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_RETURN:
                 log("🟢 Player started the game from menu")
@@ -66,8 +77,12 @@ class MenuScene:
         if self.next_scene:
             return self.next_scene
         # Оновлення танків і обробка зіткнень
-        bullets_to_remove1, obstacles_to_destroy1 = self.tank1.update(self.tank2, self.obstacles)
-        bullets_to_remove2, obstacles_to_destroy2 = self.tank2.update(self.tank1, self.obstacles)
+        bullets_to_remove1, obstacles_to_destroy1 = self.tank1.update(
+            self.tank2, self.obstacles
+        )
+        bullets_to_remove2, obstacles_to_destroy2 = self.tank2.update(
+            self.tank1, self.obstacles
+        )
 
         # Видалення зруйнованих перешкод
         for obstacle in set(obstacles_to_destroy1 + obstacles_to_destroy2):
@@ -85,16 +100,27 @@ class MenuScene:
         self.tank1.draw(self.screen)
         self.tank2.draw(self.screen)
         if self.logo:
-            logo_rect = self.logo.get_rect(center=(self.screen.get_width() // 2, self.screen.get_height() // 2 - 100))
+            logo_rect = self.logo.get_rect(
+                center=(
+                    self.screen.get_width() // 2,
+                    self.screen.get_height() // 2 - 100,
+                )
+            )
             self.screen.blit(self.logo, logo_rect)
             time_passed = (pygame.time.get_ticks() - self.start_ticks) / 1000.0
-            scale = self.remake_base_size + self.remake_amplitude * math.sin(self.remake_speed * time_passed)
+            scale = self.remake_base_size + self.remake_amplitude * math.sin(
+                self.remake_speed * time_passed
+            )
             remake_font = pygame.font.SysFont(self.remake_font_name, int(scale))
             remake_text = remake_font.render("Remake", True, (255, 255, 0))
             rotated_text = pygame.transform.rotate(remake_text, 45)
             offset_x = 45
             offset_y = 30
-            rotated_rect = rotated_text.get_rect(center=(logo_rect.right - offset_x, logo_rect.centery + offset_y))
+            rotated_rect = rotated_text.get_rect(
+                center=(logo_rect.right - offset_x, logo_rect.centery + offset_y)
+            )
             self.screen.blit(rotated_text, rotated_rect)
-        text_rect = self.title_text.get_rect(center=(self.screen.get_width() // 2, self.screen.get_height() // 2 + 100))
+        text_rect = self.title_text.get_rect(
+            center=(self.screen.get_width() // 2, self.screen.get_height() // 2 + 100)
+        )
         self.screen.blit(self.title_text, text_rect)

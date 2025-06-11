@@ -5,6 +5,7 @@ from utils.logger import log
 from scenes.menu_scene import *
 import random
 
+
 class Bullet:
     def __init__(self, x, y, dx, dy, color):
         self.x = x
@@ -15,7 +16,9 @@ class Bullet:
         self.speed = 5
         self.width = 4
         self.height = 4
-        self.rect = pygame.Rect(self.x - self.width // 2, self.y - self.height // 2, self.width, self.height)
+        self.rect = pygame.Rect(
+            self.x - self.width // 2, self.y - self.height // 2, self.width, self.height
+        )
 
     def move(self):
         self.x += self.dx * self.speed
@@ -24,7 +27,10 @@ class Bullet:
         self.rect.y = self.y - self.height // 2
 
     def draw(self, screen):
-        pygame.draw.circle(screen, self.color, (int(self.x), int(self.y)), self.width // 2)
+        pygame.draw.circle(
+            screen, self.color, (int(self.x), int(self.y)), self.width // 2
+        )
+
 
 class Tank:
     def __init__(self, x, y, color):
@@ -40,9 +46,12 @@ class Tank:
         try:
             self.images = [
                 pygame.image.load("textures/tank331.png").convert_alpha(),
-                pygame.image.load("textures/tank332.png").convert_alpha()
+                pygame.image.load("textures/tank332.png").convert_alpha(),
             ]
-            self.images = [pygame.transform.scale(img, (self.width, self.height)) for img in self.images]
+            self.images = [
+                pygame.transform.scale(img, (self.width, self.height))
+                for img in self.images
+            ]
             for img in self.images:
                 img.fill(self.color, special_flags=pygame.BLEND_RGBA_MULT)
         except pygame.error as e:
@@ -112,11 +121,17 @@ class Tank:
         now = pygame.time.get_ticks()
         if now - self.last_shot_time > 1000:
             dx, dy = 0, 0
-            if self.direction == "up": dy = -1
-            elif self.direction == "down": dy = 1
-            elif self.direction == "left": dx = -1
-            elif self.direction == "right": dx = 1
-            bullet = Bullet(self.x + self.width // 2, self.y + self.height // 2, dx, dy, self.color)
+            if self.direction == "up":
+                dy = -1
+            elif self.direction == "down":
+                dy = 1
+            elif self.direction == "left":
+                dx = -1
+            elif self.direction == "right":
+                dx = 1
+            bullet = Bullet(
+                self.x + self.width // 2, self.y + self.height // 2, dx, dy, self.color
+            )
             self.shots.append(bullet)
             self.last_shot_time = now
 
@@ -130,7 +145,9 @@ class Tank:
                 distance = 1
             dx /= distance
             dy /= distance
-            bullet = Bullet(self.x + self.width // 2, self.y + self.height // 2, dx, dy, self.color)
+            bullet = Bullet(
+                self.x + self.width // 2, self.y + self.height // 2, dx, dy, self.color
+            )
             self.shots.append(bullet)
             self.last_shot_time = now
 
@@ -154,7 +171,7 @@ class Tank:
             for obstacle in obstacles:
                 if bullet.rect.colliderect(obstacle.rect):
                     if obstacle.blocks_bullets:  # Перевірка blocks_bullet
-                        if hasattr(obstacle, 'hit') and obstacle.destructible:
+                        if hasattr(obstacle, "hit") and obstacle.destructible:
                             obstacle.hit(bullet)
                             if obstacle.hp <= 0:
                                 obstacles_to_destroy.append(obstacle)
@@ -190,10 +207,14 @@ class Tank:
         else:
             self.current_angle += self.rotation_speed * (1 if diff > 0 else -1)
             self.current_angle %= 360
-        self.image = pygame.transform.rotate(self.images[self.image_index], self.current_angle)
+        self.image = pygame.transform.rotate(
+            self.images[self.image_index], self.current_angle
+        )
 
     def draw(self, screen):
-        img_rect = self.image.get_rect(center=(self.x + self.width // 2, self.y + self.height // 2))
+        img_rect = self.image.get_rect(
+            center=(self.x + self.width // 2, self.y + self.height // 2)
+        )
         screen.blit(self.image, img_rect.topleft)
         for bullet in self.shots:
             bullet.draw(screen)

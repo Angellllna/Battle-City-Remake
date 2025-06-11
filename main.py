@@ -6,6 +6,7 @@ from scenes.game_over_scene import GameOverScene
 from scenes.game_win_scene import GameWinScene
 from utils.logger import log
 
+
 def main():
     log("🚀 Game started")
     pygame.init()
@@ -30,13 +31,17 @@ def main():
                 if next_scene:
                     pygame.mixer.stop()
                     current_scene = next_scene
-                    if not isinstance(current_scene, MenuScene) or not isinstance(current_scene, GameOverScene) or not isinstance(current_scene, GameWinScene):
+                    if (
+                        not isinstance(current_scene, MenuScene)
+                        or not isinstance(current_scene, GameOverScene)
+                        or not isinstance(current_scene, GameWinScene)
+                    ):
                         try:
                             pygame.mixer.music.load("sounds/mainTheme.mp3")
                             pygame.mixer.music.play(1)
                         except pygame.error as e:
                             log(f"⚠️ Failed to load main theme: {e}")
-  
+
         next_scene = current_scene.update()
         if next_scene:
             pygame.mixer.stop()
@@ -74,6 +79,7 @@ def main():
     pygame.mixer.stop()
     pygame.quit()
     sys.exit()
+
 
 if __name__ == "__main__":
     main()

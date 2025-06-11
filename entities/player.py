@@ -3,9 +3,12 @@ import math
 from entities.bullet import Bullet
 from config import PLAYER_SIZE, PLAYER_SPEED, PLAYER_HEALTH
 
+
 class Player:
     def __init__(self, position):
-        self.collision_rect = pygame.Rect(position[0], position[1], PLAYER_SIZE, PLAYER_SIZE)
+        self.collision_rect = pygame.Rect(
+            position[0], position[1], PLAYER_SIZE, PLAYER_SIZE
+        )
         self.speed = PLAYER_SPEED
         self.health = PLAYER_HEALTH
         self.bullets = []
@@ -14,9 +17,12 @@ class Player:
         try:
             self.images = [
                 pygame.image.load("textures/tank111.png").convert_alpha(),
-                pygame.image.load("textures/tank112.png").convert_alpha()
+                pygame.image.load("textures/tank112.png").convert_alpha(),
             ]
-            self.images = [pygame.transform.scale(img, (PLAYER_SIZE, PLAYER_SIZE)) for img in self.images]
+            self.images = [
+                pygame.transform.scale(img, (PLAYER_SIZE, PLAYER_SIZE))
+                for img in self.images
+            ]
         except pygame.error as e:
             print(f"Error loading tank images: {e}")
             self.images = [pygame.Surface((PLAYER_SIZE, PLAYER_SIZE)) for _ in range(2)]
@@ -65,7 +71,7 @@ class Player:
     def get_angle_from_direction(self, direction):
         angle = math.degrees(math.atan2(-direction.y, direction.x)) - 90
         return angle % 360
-    
+
     def update(self):
         now = pygame.time.get_ticks()
         if self.moving and now - self.animation_timer > self.animation_delay:
@@ -81,7 +87,9 @@ class Player:
             self.current_angle += self.rotation_speed * (1 if diff > 0 else -1)
             self.current_angle %= 360
 
-        self.image = pygame.transform.rotate(self.images[self.image_index], self.current_angle)
+        self.image = pygame.transform.rotate(
+            self.images[self.image_index], self.current_angle
+        )
 
     def shoot(self):
         if self.direction.length_squared() == 0:

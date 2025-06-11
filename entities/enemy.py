@@ -2,8 +2,16 @@ import pygame
 import heapq
 import random
 import math
-from config import OBSTACLE_SIZE, COLOR_GRAY, PLAYER_SPEED, WINDOW_WIDTH, WINDOW_HEIGHT, PLAYER_SIZE
+from config import (
+    OBSTACLE_SIZE,
+    COLOR_GRAY,
+    PLAYER_SPEED,
+    WINDOW_WIDTH,
+    WINDOW_HEIGHT,
+    PLAYER_SIZE,
+)
 from entities.bullet import Missile
+
 
 class Enemy:
     def __init__(self, x, y, direction="horizontal", level=1):
@@ -18,15 +26,22 @@ class Enemy:
             if self.direction == "random":
                 texture_prefix = f"tank2{self.level}"
                 self.images = [
-                    pygame.image.load(f"textures/{texture_prefix}1.png").convert_alpha(),
-                    pygame.image.load(f"textures/{texture_prefix}2.png").convert_alpha()
+                    pygame.image.load(
+                        f"textures/{texture_prefix}1.png"
+                    ).convert_alpha(),
+                    pygame.image.load(
+                        f"textures/{texture_prefix}2.png"
+                    ).convert_alpha(),
                 ]
             else:
                 self.images = [
                     pygame.image.load(f"textures/tank111.png").convert_alpha(),
-                    pygame.image.load(f"textures/tank112.png").convert_alpha()
+                    pygame.image.load(f"textures/tank112.png").convert_alpha(),
                 ]
-            self.images = [pygame.transform.scale(img, (PLAYER_SIZE, PLAYER_SIZE)) for img in self.images]
+            self.images = [
+                pygame.transform.scale(img, (PLAYER_SIZE, PLAYER_SIZE))
+                for img in self.images
+            ]
             if self.direction == "random":
                 for img in self.images:
                     img.fill((140, 100, 255), special_flags=pygame.BLEND_RGBA_MULT)
@@ -43,7 +58,9 @@ class Enemy:
         self.current_angle = 0
         self.target_angle = 0
         self.rotation_speed = 10
-        self.vector_direction = pygame.Vector2(1 if direction == "horizontal" else 0, 1 if direction == "vertical" else 0)
+        self.vector_direction = pygame.Vector2(
+            1 if direction == "horizontal" else 0, 1 if direction == "vertical" else 0
+        )
         self.move_type = None
         self.move_timer = 0
         self.move_duration = 300
@@ -65,8 +82,10 @@ class Enemy:
                 dy = self.speed
             new_rect = self.collision_rect.move(dx, dy)
             hit_wall = (
-                new_rect.left < 0 or new_rect.right > WINDOW_WIDTH or
-                new_rect.top < 0 or new_rect.bottom > WINDOW_HEIGHT
+                new_rect.left < 0
+                or new_rect.right > WINDOW_WIDTH
+                or new_rect.top < 0
+                or new_rect.bottom > WINDOW_HEIGHT
             )
             hit_obstacle = False
             for obstacle in obstacles:
@@ -87,7 +106,9 @@ class Enemy:
         else:
             if self.move_timer <= 0:
                 available_directions = [1, 2, 3, 4]
-                available_directions = [d for d in available_directions if d not in self.recent_directions]
+                available_directions = [
+                    d for d in available_directions if d not in self.recent_directions
+                ]
                 if not available_directions:
                     self.recent_directions.clear()
                     available_directions = [1, 2, 3, 4]
@@ -107,8 +128,10 @@ class Enemy:
                 dy = -self.speed
             new_rect = self.collision_rect.move(dx, dy)
             hit_wall = (
-                new_rect.left < 0 or new_rect.right > WINDOW_WIDTH or
-                new_rect.top < 0 or new_rect.bottom > WINDOW_HEIGHT
+                new_rect.left < 0
+                or new_rect.right > WINDOW_WIDTH
+                or new_rect.top < 0
+                or new_rect.bottom > WINDOW_HEIGHT
             )
             hit_obstacle = False
             for obstacle in obstacles:
@@ -163,7 +186,9 @@ class Enemy:
         else:
             self.current_angle += self.rotation_speed * (1 if diff > 0 else -1)
             self.current_angle %= 360
-        self.image = pygame.transform.rotate(self.images[self.image_index], self.current_angle)
+        self.image = pygame.transform.rotate(
+            self.images[self.image_index], self.current_angle
+        )
 
     def a_star_pathfinding(self, maze, start, end):
         rows, cols = len(maze), len(maze[0])
@@ -182,12 +207,18 @@ class Enemy:
                 return path[::-1]
             for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
                 neighbor = (current[0] + dx, current[1] + dy)
-                if 0 <= neighbor[0] < rows and 0 <= neighbor[1] < cols and maze[neighbor[0]][neighbor[1]] == 0:
+                if (
+                    0 <= neighbor[0] < rows
+                    and 0 <= neighbor[1] < cols
+                    and maze[neighbor[0]][neighbor[1]] == 0
+                ):
                     tentative_g_score = g_score[current] + 1
                     if neighbor not in g_score or tentative_g_score < g_score[neighbor]:
                         came_from[neighbor] = current
                         g_score[neighbor] = tentative_g_score
-                        f_score[neighbor] = tentative_g_score + self.heuristic(neighbor, end)
+                        f_score[neighbor] = tentative_g_score + self.heuristic(
+                            neighbor, end
+                        )
                         heapq.heappush(open_set, (f_score[neighbor], neighbor))
         print(f"No path found for {self.__class__.__name__} from {start} to {end}")
         return [start]
@@ -225,8 +256,12 @@ class Enemy:
         self.path = self.a_star_pathfinding(maze_matrix, start, end)
         if len(self.path) > range_to:
             next_cell = self.path[range_to]
-            dx = (next_cell[1] * tile_size + tile_size // 2) - self.collision_rect.centerx
-            dy = (next_cell[0] * tile_size + tile_size // 2) - self.collision_rect.centery
+            dx = (
+                next_cell[1] * tile_size + tile_size // 2
+            ) - self.collision_rect.centerx
+            dy = (
+                next_cell[0] * tile_size + tile_size // 2
+            ) - self.collision_rect.centery
             new_rect = self.collision_rect.copy()
             if abs(dx) > abs(dy):
                 new_rect.x += self.speed if dx > 0 else -self.speed
@@ -240,10 +275,18 @@ class Enemy:
             if not collision:
                 self.collision_rect = new_rect
                 self.moving = True
-                self.vector_direction = pygame.Vector2(dx, dy).normalize() if dx != 0 or dy != 0 else self.vector_direction
+                self.vector_direction = (
+                    pygame.Vector2(dx, dy).normalize()
+                    if dx != 0 or dy != 0
+                    else self.vector_direction
+                )
             else:
-                new_rect_x = self.collision_rect.move(self.speed if dx > 0 else -self.speed, 0)
-                new_rect_y = self.collision_rect.move(0, self.speed if dy > 0 else -self.speed)
+                new_rect_x = self.collision_rect.move(
+                    self.speed if dx > 0 else -self.speed, 0
+                )
+                new_rect_y = self.collision_rect.move(
+                    0, self.speed if dy > 0 else -self.speed
+                )
                 can_move_x = True
                 can_move_y = True
                 for obstacle in obstacles:
@@ -255,22 +298,32 @@ class Enemy:
                 if can_move_x:
                     self.collision_rect = new_rect_x
                     self.moving = True
-                    self.vector_direction = pygame.Vector2(self.speed if dx > 0 else -self.speed, 0).normalize()
+                    self.vector_direction = pygame.Vector2(
+                        self.speed if dx > 0 else -self.speed, 0
+                    ).normalize()
                 elif can_move_y:
                     self.collision_rect = new_rect_y
                     self.moving = True
-                    self.vector_direction = pygame.Vector2(0, self.speed if dy > 0 else -self.speed).normalize()
+                    self.vector_direction = pygame.Vector2(
+                        0, self.speed if dy > 0 else -self.speed
+                    ).normalize()
                 else:
                     self.moving = False
             self.target_angle = self.get_angle_from_direction(self.vector_direction)
         self.update_animation()
 
     def shoot(self):
-        return Missile(self.collision_rect.centerx - 4, self.collision_rect.centery - 4, self.vector_direction, damage=self.damage)
+        return Missile(
+            self.collision_rect.centerx - 4,
+            self.collision_rect.centery - 4,
+            self.vector_direction,
+            damage=self.damage,
+        )
 
     def draw(self, surface):
         img_rect = self.image.get_rect(center=self.collision_rect.center)
         surface.blit(self.image, img_rect.topleft)
+
 
 class ChasingEnemy(Enemy):
     def __init__(self, x, y, level=1):
@@ -280,13 +333,18 @@ class ChasingEnemy(Enemy):
             texture_prefix = f"tank3{self.level}"
             self.images = [
                 pygame.image.load(f"textures/{texture_prefix}1.png").convert_alpha(),
-                pygame.image.load(f"textures/{texture_prefix}2.png").convert_alpha()
+                pygame.image.load(f"textures/{texture_prefix}2.png").convert_alpha(),
             ]
-            self.images = [pygame.transform.scale(img, (PLAYER_SIZE, PLAYER_SIZE)) for img in self.images]
+            self.images = [
+                pygame.transform.scale(img, (PLAYER_SIZE, PLAYER_SIZE))
+                for img in self.images
+            ]
             for img in self.images:
                 img.fill((150, 50, 50), special_flags=pygame.BLEND_RGBA_MULT)
         except pygame.error as e:
-            print(f"Error loading chasing enemy tank images for level {self.level}: {e}")
+            print(
+                f"Error loading chasing enemy tank images for level {self.level}: {e}"
+            )
             self.images = [pygame.Surface((PLAYER_SIZE, PLAYER_SIZE)) for _ in range(2)]
             for img in self.images:
                 img.fill((150, 50, 50))
@@ -315,6 +373,7 @@ class ChasingEnemy(Enemy):
                 return missile
         return None
 
+
 class RandomShootingEnemy(Enemy):
     def __init__(self, x, y, level=1):
         super().__init__(x, y, direction="random", level=level)
@@ -325,13 +384,18 @@ class RandomShootingEnemy(Enemy):
             texture_prefix = f"tank2{self.level}"
             self.images = [
                 pygame.image.load(f"textures/{texture_prefix}1.png").convert_alpha(),
-                pygame.image.load(f"textures/{texture_prefix}2.png").convert_alpha()
+                pygame.image.load(f"textures/{texture_prefix}2.png").convert_alpha(),
             ]
-            self.images = [pygame.transform.scale(img, (PLAYER_SIZE, PLAYER_SIZE)) for img in self.images]
+            self.images = [
+                pygame.transform.scale(img, (PLAYER_SIZE, PLAYER_SIZE))
+                for img in self.images
+            ]
             for img in self.images:
                 img.fill((100, 150, 100), special_flags=pygame.BLEND_RGBA_MULT)
         except pygame.error as e:
-            print(f"Error loading random shooting enemy tank images for level {self.level}: {e}")
+            print(
+                f"Error loading random shooting enemy tank images for level {self.level}: {e}"
+            )
             self.images = [pygame.Surface((PLAYER_SIZE, PLAYER_SIZE)) for _ in range(2)]
             for img in self.images:
                 img.fill((100, 150, 100))
@@ -360,6 +424,7 @@ class RandomShootingEnemy(Enemy):
                 return missile
         return None
 
+
 class ShootingEnemy(Enemy):
     def __init__(self, x, y, direction="horizontal", level=1):
         super().__init__(x, y, direction=direction, level=level)
@@ -367,13 +432,18 @@ class ShootingEnemy(Enemy):
             texture_prefix = f"tank5{self.level}"
             self.images = [
                 pygame.image.load(f"textures/tank111.png").convert_alpha(),
-                pygame.image.load(f"textures/tank112.png").convert_alpha()
+                pygame.image.load(f"textures/tank112.png").convert_alpha(),
             ]
-            self.images = [pygame.transform.scale(img, (PLAYER_SIZE, PLAYER_SIZE)) for img in self.images]
+            self.images = [
+                pygame.transform.scale(img, (PLAYER_SIZE, PLAYER_SIZE))
+                for img in self.images
+            ]
             for img in self.images:
                 img.fill((200, 100, 50), special_flags=pygame.BLEND_RGBA_MULT)
         except pygame.error as e:
-            print(f"Error loading shooting enemy tank images for level {self.level}: {e}")
+            print(
+                f"Error loading shooting enemy tank images for level {self.level}: {e}"
+            )
             self.images = [pygame.Surface((PLAYER_SIZE, PLAYER_SIZE)) for _ in range(2)]
             for img in self.images:
                 img.fill((200, 100, 50))
@@ -382,7 +452,9 @@ class ShootingEnemy(Enemy):
         self.base_shoot_cooldown = 120
         self.shoot_cooldown = self.base_shoot_cooldown * (1.0 - 0.1 * (level - 1))
         self.cooldown_timer = 0
-        self.vector_direction = pygame.Vector2(1 if direction == "horizontal" else 0, 1 if direction == "vertical" else 0)
+        self.vector_direction = pygame.Vector2(
+            1 if direction == "horizontal" else 0, 1 if direction == "vertical" else 0
+        )
         self.obstacles = []
 
     def update(self, player, maze_matrix, obstacles):
@@ -402,6 +474,7 @@ class ShootingEnemy(Enemy):
                 return missile
         return None
 
+
 class BaseChasingShootingEnemy(Enemy):
     def __init__(self, x, y, flags, level=1, can_shoot=True):
         super().__init__(x, y, direction="base_chasing", level=level)
@@ -415,13 +488,18 @@ class BaseChasingShootingEnemy(Enemy):
             texture_prefix = f"tank1{self.level}"
             self.images = [
                 pygame.image.load(f"textures/{texture_prefix}1.png").convert_alpha(),
-                pygame.image.load(f"textures/{texture_prefix}2.png").convert_alpha()
+                pygame.image.load(f"textures/{texture_prefix}2.png").convert_alpha(),
             ]
-            self.images = [pygame.transform.scale(img, (PLAYER_SIZE, PLAYER_SIZE)) for img in self.images]
+            self.images = [
+                pygame.transform.scale(img, (PLAYER_SIZE, PLAYER_SIZE))
+                for img in self.images
+            ]
             for img in self.images:
                 img.fill((50, 100, 200), special_flags=pygame.BLEND_RGBA_MULT)
         except pygame.error as e:
-            print(f"Error loading base chasing enemy tank images for level {self.level}: {e}")
+            print(
+                f"Error loading base chasing enemy tank images for level {self.level}: {e}"
+            )
             self.images = [pygame.Surface((PLAYER_SIZE, PLAYER_SIZE)) for _ in range(2)]
             for img in self.images:
                 img.fill((50, 100, 200))
@@ -437,12 +515,12 @@ class BaseChasingShootingEnemy(Enemy):
         if not self.flags:
             self.target_flag = None
             return
-        min_distance = float('inf')
+        min_distance = float("inf")
         for flag in self.flags:
             if not flag.captured:
                 distance = math.sqrt(
-                    (self.collision_rect.centerx - flag.rect.centerx) ** 2 +
-                    (self.collision_rect.centery - flag.rect.centery) ** 2
+                    (self.collision_rect.centerx - flag.rect.centerx) ** 2
+                    + (self.collision_rect.centery - flag.rect.centery) ** 2
                 )
                 if distance < min_distance:
                     min_distance = distance
@@ -455,9 +533,13 @@ class BaseChasingShootingEnemy(Enemy):
         else:
             self.choose_target_flag()
             if self.target_flag:
-                self.move_toward_target(self.target_flag.rect, maze_matrix, obstacles, 0)
+                self.move_toward_target(
+                    self.target_flag.rect, maze_matrix, obstacles, 0
+                )
             else:
-                self.move_toward_target(player.collision_rect, maze_matrix, obstacles, 1)
+                self.move_toward_target(
+                    player.collision_rect, maze_matrix, obstacles, 1
+                )
         if self.can_shoot:
             if self.cooldown_timer > 0:
                 self.cooldown_timer -= 1
@@ -467,11 +549,14 @@ class BaseChasingShootingEnemy(Enemy):
                 direction = pygame.Vector2(dx, dy)
                 if direction.length_squared() > 0:
                     self.vector_direction = direction.normalize()
-                    self.target_angle = self.get_angle_from_direction(self.vector_direction)
+                    self.target_angle = self.get_angle_from_direction(
+                        self.vector_direction
+                    )
                     missile = self.shoot()
                     self.cooldown_timer = self.shoot_cooldown
                     return missile
         return None
+
 
 class FlagChasingEnemy(Enemy):
     def __init__(self, x, y, flags, level=1):
@@ -486,13 +571,18 @@ class FlagChasingEnemy(Enemy):
             texture_prefix = f"tank1{self.level}"
             self.images = [
                 pygame.image.load(f"textures/{texture_prefix}1.png").convert_alpha(),
-                pygame.image.load(f"textures/{texture_prefix}2.png").convert_alpha()
+                pygame.image.load(f"textures/{texture_prefix}2.png").convert_alpha(),
             ]
-            self.images = [pygame.transform.scale(img, (PLAYER_SIZE, PLAYER_SIZE)) for img in self.images]
+            self.images = [
+                pygame.transform.scale(img, (PLAYER_SIZE, PLAYER_SIZE))
+                for img in self.images
+            ]
             for img in self.images:
                 img.fill((100, 100, 100), special_flags=pygame.BLEND_RGBA_MULT)
         except pygame.error as e:
-            print(f"Error loading flag chasing enemy tank images for level {self.level}: {e}")
+            print(
+                f"Error loading flag chasing enemy tank images for level {self.level}: {e}"
+            )
             self.images = [pygame.Surface((PLAYER_SIZE, PLAYER_SIZE)) for _ in range(2)]
             for img in self.images:
                 img.fill((100, 100, 100))
@@ -505,12 +595,12 @@ class FlagChasingEnemy(Enemy):
         if not self.flags:
             self.target_flag = None
             return
-        min_distance = float('inf')
+        min_distance = float("inf")
         for flag in self.flags:
             if not flag.captured:
                 distance = math.sqrt(
-                    (self.collision_rect.centerx - flag.rect.centerx) ** 2 +
-                    (self.collision_rect.centery - flag.rect.centery) ** 2
+                    (self.collision_rect.centerx - flag.rect.centerx) ** 2
+                    + (self.collision_rect.centery - flag.rect.centery) ** 2
                 )
                 if distance < min_distance:
                     min_distance = distance
@@ -523,7 +613,11 @@ class FlagChasingEnemy(Enemy):
         else:
             self.choose_target_flag()
             if self.target_flag:
-                self.move_toward_target(self.target_flag.rect, maze_matrix, obstacles, 0)
+                self.move_toward_target(
+                    self.target_flag.rect, maze_matrix, obstacles, 0
+                )
             else:
-                self.move_toward_target(player.collision_rect, maze_matrix, obstacles, 1)
+                self.move_toward_target(
+                    player.collision_rect, maze_matrix, obstacles, 1
+                )
         return None

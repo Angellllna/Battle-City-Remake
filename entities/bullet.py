@@ -1,6 +1,7 @@
 import pygame
 from config import COLOR_WHITE, COLOR_RED
 
+
 class Bullet:
     def __init__(self, x, y, direction, speed=7):
         self.rect = pygame.Rect(x, y, 10, 10)
@@ -24,6 +25,7 @@ class Bullet:
             surface.blit(self.image, self.rect.topleft)
         else:
             pygame.draw.rect(surface, self.color, self.rect)
+
 
 class Missile:
     def __init__(self, x, y, direction, speed=5, damage=1):

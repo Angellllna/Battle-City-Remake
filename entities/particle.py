@@ -1,8 +1,22 @@
 import random
 import pygame
 
+
 class Particle:
-    def __init__(self, mx, my, image, speed_x=random.uniform(-2, 2), speed_y=random.uniform(-2, 2), size=random.randint(4, 16), color=(random.randint(90, 170), random.randint(0, 40), random.randint(190, 255))):
+    def __init__(
+        self,
+        mx,
+        my,
+        image,
+        speed_x=random.uniform(-2, 2),
+        speed_y=random.uniform(-2, 2),
+        size=random.randint(4, 16),
+        color=(
+            random.randint(90, 170),
+            random.randint(0, 40),
+            random.randint(190, 255),
+        ),
+    ):
         self.rect = pygame.Rect(mx, my, size, size)
         try:
             self.image = pygame.image.load(f"textures/{image}.png").convert_alpha()
@@ -22,7 +36,9 @@ class Particle:
         self.rect.w -= 0.6
 
     def draw(self, surface):
-        scaled_image = pygame.transform.scale(self.image, (int(self.rect.w), int(self.rect.h)))
+        scaled_image = pygame.transform.scale(
+            self.image, (int(self.rect.w), int(self.rect.h))
+        )
         # Apply color tint to the image
         tinted_image = scaled_image.copy()
         tinted_image.fill(self.color, special_flags=pygame.BLEND_RGBA_MULT)
