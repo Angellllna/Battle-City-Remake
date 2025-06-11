@@ -19,8 +19,12 @@ class Player:
 
         try:
             self.images = [
-                pygame.image.load("textures/tank111.png").convert_alpha(),
-                pygame.image.load("textures/tank112.png").convert_alpha(),
+                pygame.image.load(
+                    os.path.join("textures", "tank111.png")
+                ).convert_alpha(),
+                pygame.image.load(
+                    os.path.join("textures", "tank112.png")
+                ).convert_alpha(),
             ]
             self.images = [
                 pygame.transform.scale(img, (PLAYER_SIZE, PLAYER_SIZE))

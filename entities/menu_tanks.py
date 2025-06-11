@@ -47,8 +47,12 @@ class Tank:
         self.shots = []
         try:
             self.images = [
-                pygame.image.load("textures/tank331.png").convert_alpha(),
-                pygame.image.load("textures/tank332.png").convert_alpha(),
+                pygame.image.load(
+                    os.path.join("textures", "tank331.png")
+                ).convert_alpha(),
+                pygame.image.load(
+                    os.path.join("textures", "tank332.png")
+                ).convert_alpha(),
             ]
             self.images = [
                 pygame.transform.scale(img, (self.width, self.height))

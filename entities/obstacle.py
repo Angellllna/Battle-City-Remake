@@ -36,7 +36,9 @@ class Obstacle:
         self.image = None
         if self.destructible:
             try:
-                self.image = pygame.image.load("textures/brick.png").convert_alpha()
+                self.image = pygame.image.load(
+                    os.path.join("textures", "brick.png")
+                ).convert_alpha()
                 self.image = pygame.transform.scale(self.image, (width, height))
             except pygame.error as e:
                 print(f"Error loading brick image: {e}")
@@ -96,7 +98,9 @@ class SteelBlock(Obstacle):
             destructible=False,
         )
         try:
-            self.image = pygame.image.load("textures/steel.png").convert_alpha()
+            self.image = pygame.image.load(
+                os.path.join("textures", "steel.png")
+            ).convert_alpha()
             self.image = pygame.transform.scale(
                 self.image, (self.rect.width, self.rect.height)
             )
@@ -179,8 +183,12 @@ class WaterBlock(Obstacle):
         self.images = []
         try:
             self.images = [
-                pygame.image.load("textures/water1.png").convert_alpha(),
-                pygame.image.load("textures/water2.png").convert_alpha(),
+                pygame.image.load(
+                    os.path.join("textures", "water1.png")
+                ).convert_alpha(),
+                pygame.image.load(
+                    os.path.join("textures", "water2.png")
+                ).convert_alpha(),
             ]
             self.images = [
                 pygame.transform.scale(img, (self.rect.width, self.rect.height))
@@ -442,8 +450,12 @@ class TankFactory:
         self.images = []
         try:
             self.images = [
-                pygame.image.load("textures/factory1.png").convert_alpha(),
-                pygame.image.load("textures/factory2.png").convert_alpha(),
+                pygame.image.load(
+                    os.path.join("textures", "factory1.png")
+                ).convert_alpha(),
+                pygame.image.load(
+                    os.path.join("textures", "factory2.png")
+                ).convert_alpha(),
             ]
             self.images = [
                 pygame.transform.scale(img, (OBSTACLE_SIZE, OBSTACLE_SIZE))

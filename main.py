@@ -1,3 +1,4 @@
+import os
 import sys
 
 import pygame
@@ -20,7 +21,7 @@ def main():
     clock = pygame.time.Clock()
     current_scene = MenuScene(screen)
     try:
-        music = pygame.mixer.Sound("sounds/theme.mp3")
+        music = pygame.mixer.Sound(os.path.join("sounds", "theme.mp3"))
         music.play(-1)
     except pygame.error as e:
         log(f"⚠️ Failed to load menu theme: {e}")
@@ -41,7 +42,9 @@ def main():
                         or not isinstance(current_scene, GameWinScene)
                     ):
                         try:
-                            pygame.mixer.music.load("sounds/mainTheme.mp3")
+                            pygame.mixer.music.load(
+                                os.path.join("sounds", "mainTheme.mp3")
+                            )
                             pygame.mixer.music.play(1)
                         except pygame.error as e:
                             log(f"⚠️ Failed to load main theme: {e}")
@@ -52,25 +55,25 @@ def main():
             current_scene = next_scene
             if isinstance(current_scene, GameWinScene):
                 try:
-                    pygame.mixer.music.load("sounds/win.mp3")
+                    pygame.mixer.music.load(os.path.join("sounds", "win.mp3"))
                     pygame.mixer.music.play(1)
                 except pygame.error as e:
                     log(f"⚠️ Failed to load menu theme: {e}")
             elif isinstance(current_scene, GameOverScene):
                 try:
-                    pygame.mixer.music.load("sounds/lose.mp3")
+                    pygame.mixer.music.load(os.path.join("sounds", "lose.mp3"))
                     pygame.mixer.music.play(1)
                 except pygame.error as e:
                     log(f"⚠️ Failed to load menu theme: {e}")
             elif isinstance(current_scene, MenuScene):
                 try:
-                    pygame.mixer.music.load("sounds/theme.mp3")
+                    pygame.mixer.music.load(os.path.join("sounds", "theme.mp3"))
                     pygame.mixer.music.play(1)
                 except pygame.error as e:
                     log(f"⚠️ Failed to load menu theme: {e}")
             else:
                 try:
-                    pygame.mixer.music.load("sounds/mainTheme.mp3")
+                    pygame.mixer.music.load(os.path.join("sounds", "mainTheme.mp3"))
                     pygame.mixer.music.play(1)
                 except pygame.error as e:
                     log(f"⚠️ Failed to load main theme: {e}")

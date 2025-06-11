@@ -1,3 +1,4 @@
+import os
 import random
 
 import pygame
@@ -20,7 +21,9 @@ class Particle:
     ):
         self.rect = pygame.Rect(mx, my, size, size)
         try:
-            self.image = pygame.image.load(f"textures/{image}.png").convert_alpha()
+            self.image = pygame.image.load(
+                os.path.join("textures", f"{image}.png")
+            ).convert_alpha()
             self.image = pygame.transform.scale(self.image, (size, size))
         except pygame.error as e:
             print(f"Error loading particle image: {e}")

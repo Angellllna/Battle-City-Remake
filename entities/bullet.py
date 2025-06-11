@@ -1,3 +1,5 @@
+import os
+
 import pygame
 
 from config import COLOR_RED, COLOR_WHITE
@@ -9,7 +11,9 @@ class Bullet:
         self.direction = direction
         self.speed = speed
         try:
-            self.image = pygame.image.load("textures/bullet.png").convert_alpha()
+            self.image = pygame.image.load(
+                os.path.join("textures", "bullet.png")
+            ).convert_alpha()
             self.image = pygame.transform.scale(self.image, (10, 10))
             self.image.fill((255, 255, 255), special_flags=pygame.BLEND_RGBA_MULT)
         except pygame.error as e:
@@ -35,7 +39,9 @@ class Missile:
         self.speed = speed
         self.damage = damage
         try:
-            self.image = pygame.image.load("textures/bullet.png").convert_alpha()
+            self.image = pygame.image.load(
+                os.path.join("textures", "bullet.png")
+            ).convert_alpha()
             self.image = pygame.transform.scale(self.image, (10, 10))
             self.image.fill((255, 150, 150), special_flags=pygame.BLEND_RGBA_MULT)
         except pygame.error as e:

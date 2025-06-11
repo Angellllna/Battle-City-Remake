@@ -1,11 +1,18 @@
 import heapq
 import math
+import os
 import random
 
 import pygame
 
-from config import (COLOR_GRAY, OBSTACLE_SIZE, PLAYER_SIZE, PLAYER_SPEED,
-                    WINDOW_HEIGHT, WINDOW_WIDTH)
+from config import (
+    COLOR_GRAY,
+    OBSTACLE_SIZE,
+    PLAYER_SIZE,
+    PLAYER_SPEED,
+    WINDOW_HEIGHT,
+    WINDOW_WIDTH,
+)
 from entities.bullet import Missile
 
 
@@ -23,16 +30,20 @@ class Enemy:
                 texture_prefix = f"tank2{self.level}"
                 self.images = [
                     pygame.image.load(
-                        f"textures/{texture_prefix}1.png"
+                        os.path.join("textures", f"{texture_prefix}1.png")
                     ).convert_alpha(),
                     pygame.image.load(
-                        f"textures/{texture_prefix}2.png"
+                        os.path.join("textures", f"{texture_prefix}2.png")
                     ).convert_alpha(),
                 ]
             else:
                 self.images = [
-                    pygame.image.load(f"textures/tank111.png").convert_alpha(),
-                    pygame.image.load(f"textures/tank112.png").convert_alpha(),
+                    pygame.image.load(
+                        os.path.join("textures", "tank111.png")
+                    ).convert_alpha(),
+                    pygame.image.load(
+                        os.path.join("textures", "tank112.png")
+                    ).convert_alpha(),
                 ]
             self.images = [
                 pygame.transform.scale(img, (PLAYER_SIZE, PLAYER_SIZE))
@@ -328,8 +339,12 @@ class ChasingEnemy(Enemy):
         try:
             texture_prefix = f"tank3{self.level}"
             self.images = [
-                pygame.image.load(f"textures/{texture_prefix}1.png").convert_alpha(),
-                pygame.image.load(f"textures/{texture_prefix}2.png").convert_alpha(),
+                pygame.image.load(
+                    os.path.join("textures", f"{texture_prefix}1.png")
+                ).convert_alpha(),
+                pygame.image.load(
+                    os.path.join("textures", f"{texture_prefix}2.png")
+                ).convert_alpha(),
             ]
             self.images = [
                 pygame.transform.scale(img, (PLAYER_SIZE, PLAYER_SIZE))
@@ -379,8 +394,12 @@ class RandomShootingEnemy(Enemy):
         try:
             texture_prefix = f"tank2{self.level}"
             self.images = [
-                pygame.image.load(f"textures/{texture_prefix}1.png").convert_alpha(),
-                pygame.image.load(f"textures/{texture_prefix}2.png").convert_alpha(),
+                pygame.image.load(
+                    os.path.join("textures", f"{texture_prefix}1.png")
+                ).convert_alpha(),
+                pygame.image.load(
+                    os.path.join("textures", f"{texture_prefix}2.png")
+                ).convert_alpha(),
             ]
             self.images = [
                 pygame.transform.scale(img, (PLAYER_SIZE, PLAYER_SIZE))
@@ -427,8 +446,12 @@ class ShootingEnemy(Enemy):
         try:
             texture_prefix = f"tank5{self.level}"
             self.images = [
-                pygame.image.load(f"textures/tank111.png").convert_alpha(),
-                pygame.image.load(f"textures/tank112.png").convert_alpha(),
+                pygame.image.load(
+                    os.path.join("textures", "tank111.png")
+                ).convert_alpha(),
+                pygame.image.load(
+                    os.path.join("textures", "tank112.png")
+                ).convert_alpha(),
             ]
             self.images = [
                 pygame.transform.scale(img, (PLAYER_SIZE, PLAYER_SIZE))
@@ -483,8 +506,12 @@ class BaseChasingShootingEnemy(Enemy):
         try:
             texture_prefix = f"tank1{self.level}"
             self.images = [
-                pygame.image.load(f"textures/{texture_prefix}1.png").convert_alpha(),
-                pygame.image.load(f"textures/{texture_prefix}2.png").convert_alpha(),
+                pygame.image.load(
+                    os.path.join("textures", f"{texture_prefix}1.png")
+                ).convert_alpha(),
+                pygame.image.load(
+                    os.path.join("textures", f"{texture_prefix}2.png")
+                ).convert_alpha(),
             ]
             self.images = [
                 pygame.transform.scale(img, (PLAYER_SIZE, PLAYER_SIZE))
@@ -566,8 +593,12 @@ class FlagChasingEnemy(Enemy):
         try:
             texture_prefix = f"tank1{self.level}"
             self.images = [
-                pygame.image.load(f"textures/{texture_prefix}1.png").convert_alpha(),
-                pygame.image.load(f"textures/{texture_prefix}2.png").convert_alpha(),
+                pygame.image.load(
+                    os.path.join("textures", f"{texture_prefix}1.png")
+                ).convert_alpha(),
+                pygame.image.load(
+                    os.path.join("textures", f"{texture_prefix}2.png")
+                ).convert_alpha(),
             ]
             self.images = [
                 pygame.transform.scale(img, (PLAYER_SIZE, PLAYER_SIZE))
