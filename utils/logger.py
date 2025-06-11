@@ -6,6 +6,19 @@ import traceback
 from config import LOG_FILE_PATH, LOG_TO_FILE, PLAYER_NAME
 
 
+def init_log_folder():
+    import os
+
+    if LOG_TO_FILE:
+        log_folder = os.path.dirname(LOG_FILE_PATH)
+        if not os.path.exists(log_folder):
+            try:
+                os.makedirs(log_folder)
+            except Exception as e:
+                print(f"Failed to create log folder: {e}")
+                return False
+
+
 def log(message):
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     full_message = f"[{timestamp}] {message}"
