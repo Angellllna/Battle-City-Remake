@@ -249,12 +249,28 @@ class DefendFlag:
         self.captured_images = []
         try:
             self.images = [
-                pygame.image.load("textures/flag_GREEN1.png").convert_alpha(),
-                pygame.image.load("textures/flag_GREEN2.png").convert_alpha(),
+                pygame.image.load(
+                    os.path.join("textures", "flag_GREEN1.png")
+                ).convert_alpha(),
+                pygame.image.load(
+                    os.path.join("textures", "flag_GREEN2.png")
+                ).convert_alpha(),
             ]
             self.captured_images = [
-                pygame.image.load("textures/flag_RED1.png").convert_alpha(),
-                pygame.image.load("textures/flag_RED2.png").convert_alpha(),
+                pygame.image.load(
+                    os.path.join("textures", "flag_RED1.png")
+                ).convert_alpha(),
+                pygame.image.load(
+                    os.path.join("textures", "flag_RED2.png")
+                ).convert_alpha(),
+            ]
+            self.gray_images = [
+                pygame.image.load(
+                    os.path.join("textures", "flagp_CEP1.png")
+                ).convert_alpha(),
+                pygame.image.load(
+                    os.path.join("textures", "flagp_CEP2.png")
+                ).convert_alpha(),
             ]
             self.images = [
                 pygame.transform.scale(img, (OBSTACLE_SIZE, OBSTACLE_SIZE))
@@ -264,6 +280,10 @@ class DefendFlag:
                 pygame.transform.scale(img, (OBSTACLE_SIZE, OBSTACLE_SIZE))
                 for img in self.captured_images
             ]
+            self.gray_images = [
+                pygame.transform.scale(img, (OBSTACLE_SIZE, OBSTACLE_SIZE))
+                for img in self.gray_images
+            ]
         except pygame.error as e:
             print(f"Error loading flag images: {e}")
             self.images = [
@@ -272,19 +292,30 @@ class DefendFlag:
             self.captured_images = [
                 pygame.Surface((OBSTACLE_SIZE, OBSTACLE_SIZE)) for _ in range(2)
             ]
+            self.gray_images = [
+                pygame.Surface((OBSTACLE_SIZE, OBSTACLE_SIZE)) for _ in range(2)
+            ]
             for img in self.images:
                 img.fill((255, 255, 255))
             for img in self.captured_images:
                 img.fill((255, 0, 0))
+            for img in self.gray_images:
+                img.fill((128, 128, 128))
+
         self.image_index = 0
         self.animation_timer = 0
-        self.animation_delay = 400
+        self.animation_delay = 400  # мс
+
         self.rect = self.images[0].get_rect(topleft=(x, y))
+
         self.captured = False
-        self.recapture_time = 0
+
+        self.recapture_start = 0
         self.recapturing = False
         self.recapture_duration = 5000  # 5 seconds in milliseconds
+
         self.font = pygame.font.SysFont("arial", 16)
+        self.blink_toggle = False  # для перемикання між сірим і зеленим
 
     def check_capture(self, enemy_tanks):
         if self.captured:
@@ -301,34 +332,40 @@ class DefendFlag:
         if self.rect.colliderect(player.collision_rect):
             if not self.recapturing:
                 self.recapturing = True
-                self.recapture_time = pygame.time.get_ticks()
+                self.recapture_start = pygame.time.get_ticks()
                 print(f"Recapture started at ({self.rect.x}, {self.rect.y})")
             else:
-                time_held = pygame.time.get_ticks() - self.recapture_time
+                time_held = pygame.time.get_ticks() - self.recapture_start
                 if time_held >= self.recapture_duration:
                     self.captured = False
                     self.recapturing = False
-                    self.recapture_time = 0
+                    self.recapture_start = 0
                     print(f"Flag recaptured at ({self.rect.x}, {self.rect.y})")
         else:
             if self.recapturing:
                 print(f"Recapture interrupted at ({self.rect.x}, {self.rect.y})")
             self.recapturing = False
-            self.recapture_time = 0
+            self.recapture_start = 0
 
     def draw(self, surface):
         now = pygame.time.get_ticks()
+
         if now - self.animation_timer > self.animation_delay:
             self.image_index = (self.image_index + 1) % len(self.images)
             self.animation_timer = now
-        image = (
-            self.captured_images[self.image_index]
-            if self.captured
-            else self.images[self.image_index]
-        )
+            self.blink_toggle = not self.blink_toggle
+
+        if not self.recapturing and self.captured:
+            image = self.captured_images[self.image_index]
+        elif self.recapturing and self.captured and not self.blink_toggle:
+            image = self.gray_images[self.image_index]
+        else:
+            image = self.images[self.image_index]
+
         surface.blit(image, self.rect.topleft)
-        if self.recapturing:
-            time_held = pygame.time.get_ticks() - self.recapture_time
+
+        if self.recapturing and self.captured:
+            time_held = pygame.time.get_ticks() - self.recapture_start
             progress = min(time_held / self.recapture_duration, 1.0)
             bar_width = OBSTACLE_SIZE * progress
             bar_height = 5
