@@ -70,7 +70,7 @@ class Enemy:
         drop_chance = 0.4 if self.level == 1 else 0.6 if self.level == 2 else 0.7
         part = None
         if self.health <= 0 and random.random() < drop_chance:
-            part = Part(self.x, self.y)
+            part = Part(self.x + PLAYER_SIZE / 2 - OBSTACLE_SIZE // 4, self.y + PLAYER_SIZE / 2 - OBSTACLE_SIZE // 4)
         return self.health <= 0, part
 
     def move(self, obstacles):
@@ -222,19 +222,53 @@ class Enemy:
     def heuristic(self, a, b):
         return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
-    def has_line_of_sight(self, player, obstacles):
+    def has_line_of_sight(self, player, turrets, obstacles):
         start = pygame.Vector2(self.x + PLAYER_SIZE / 2, self.y + PLAYER_SIZE / 2)
-        end = pygame.Vector2(player.x + PLAYER_SIZE / 2, player.y + PLAYER_SIZE / 2)
-        steps = int(start.distance_to(end) / 5)
-        if steps == 0:
-            return True
-        direction = (end - start).normalize()
-        for i in range(steps):
-            point = start + direction * (i * 5)
-            for obstacle in obstacles:
-                if obstacle.blocks_bullets and obstacle.rect.collidepoint(point):
-                    return False
-        return True
+        # Check for player
+        player_pos = pygame.Vector2(player.x + PLAYER_SIZE / 2, player.y + PLAYER_SIZE / 2)
+        player_distance = start.distance_to(player_pos)
+        player_los = True
+        steps = int(player_distance / 5)
+        if steps > 0:
+            direction = (player_pos - start).normalize()
+            for i in range(steps):
+                point = start + direction * (i * 5)
+                for obstacle in obstacles:
+                    if obstacle.blocks_bullets and obstacle.rect.collidepoint(point):
+                        player_los = False
+                        break
+                if not player_los:
+                    break
+        # Check for turrets
+        closest_turret = None
+        min_turret_distance = float('inf')
+        turret_los = False
+        for turret in turrets:
+            turret_pos = pygame.Vector2(turret.rect.centerx, turret.rect.centery)
+            distance = start.distance_to(turret_pos)
+            if distance < min_turret_distance:
+                steps = int(distance / 5)
+                los = True
+                if steps > 0:
+                    direction = (turret_pos - start).normalize()
+                    for i in range(steps):
+                        point = start + direction * (i * 5)
+                        for obstacle in obstacles:
+                            if obstacle.blocks_bullets and obstacle.rect.collidepoint(point):
+                                los = False
+                                break
+                        if not los:
+                            break
+                if los:
+                    closest_turret = turret
+                    min_turret_distance = distance
+                    turret_los = True
+        # Return the closest target with line of sight
+        if player_los and (not turret_los or player_distance <= min_turret_distance):
+            return player, "player"
+        elif turret_los:
+            return closest_turret, "turret"
+        return None, None
 
     def move_toward_target(self, target_rect, maze_matrix, obstacles, range_to):
         tile_size = OBSTACLE_SIZE
@@ -333,21 +367,40 @@ class ChasingEnemy(Enemy):
         self.vector_direction = pygame.Vector2(0, -1)
         self.obstacles = []
 
-    def update(self, player, maze_matrix, obstacles):
+    def update(self, player, maze_matrix, obstacles, turrets):
         self.obstacles = obstacles
         self.move_toward_target(player.collision_rect, maze_matrix, obstacles, 1)
+        for turret in turrets[:]:
+            if self.collision_rect.colliderect(turret.collision_rect):
+                destroyed = turret.hit()
+                if destroyed:
+                    turrets.remove(turret)
+                    print(f"Turret destroyed by {self.__class__.__name__} at ({turret.rect.x}, {turret.rect.y})")
+                    return None  # Return early to avoid further processing
         if self.cooldown_timer > 0:
             self.cooldown_timer -= 1
-        if self.cooldown_timer == 0 and self.has_line_of_sight(player, obstacles):
-            dx = (player.x + PLAYER_SIZE / 2) - (self.x + PLAYER_SIZE / 2)
-            dy = (player.y + PLAYER_SIZE / 2) - (self.y + PLAYER_SIZE / 2)
-            direction = pygame.Vector2(dx, dy)
-            if direction.length_squared() > 0:
-                self.vector_direction = direction.normalize()
-                self.target_angle = self.get_angle_from_direction(self.vector_direction)
-                missile = self.shoot()
-                self.cooldown_timer = self.shoot_cooldown
-                return missile
+        if self.cooldown_timer == 0:
+            target, target_type = self.has_line_of_sight(player, turrets, obstacles)
+            if target and target_type == "player":
+                dx = (player.x + PLAYER_SIZE / 2) - (self.x + PLAYER_SIZE / 2)
+                dy = (player.y + PLAYER_SIZE / 2) - (self.y + PLAYER_SIZE / 2)
+                direction = pygame.Vector2(dx, dy)
+                if direction.length_squared() > 0:
+                    self.vector_direction = direction.normalize()
+                    self.target_angle = self.get_angle_from_direction(self.vector_direction)
+                    missile = self.shoot()
+                    self.cooldown_timer = self.shoot_cooldown
+                    return missile
+            elif target and target_type == "turret":
+                dx = (target.rect.centerx) - (self.x + PLAYER_SIZE / 2)
+                dy = (target.rect.centery) - (self.y + PLAYER_SIZE / 2)
+                direction = pygame.Vector2(dx, dy)
+                if direction.length_squared() > 0:
+                    self.vector_direction = direction.normalize()
+                    self.target_angle = self.get_angle_from_direction(self.vector_direction)
+                    missile = self.shoot()
+                    self.cooldown_timer = self.shoot_cooldown
+                    return missile
         return None
 
 class RandomShootingEnemy(Enemy):
@@ -378,21 +431,40 @@ class RandomShootingEnemy(Enemy):
         self.vector_direction = pygame.Vector2(0, -1)
         self.obstacles = []
 
-    def update(self, player, maze_matrix, obstacles):
+    def update(self, player, maze_matrix, obstacles, turrets):
         self.obstacles = obstacles
         self.move(obstacles)
+        for turret in turrets[:]:
+            if self.collision_rect.colliderect(turret.collision_rect):
+                destroyed = turret.hit()
+                if destroyed:
+                    turrets.remove(turret)
+                    print(f"Turret destroyed by {self.__class__.__name__} at ({turret.rect.x}, {turret.rect.y})")
+                    return None  # Return early to avoid further processing
         if self.cooldown_timer > 0:
             self.cooldown_timer -= 1
-        if self.cooldown_timer == 0 and self.has_line_of_sight(player, obstacles):
-            dx = (player.x + PLAYER_SIZE / 2) - (self.x + PLAYER_SIZE / 2)
-            dy = (player.y + PLAYER_SIZE / 2) - (self.y + PLAYER_SIZE / 2)
-            direction = pygame.Vector2(dx, dy)
-            if direction.length_squared() > 0:
-                self.vector_direction = direction.normalize()
-                self.target_angle = self.get_angle_from_direction(self.vector_direction)
-                missile = self.shoot()
-                self.cooldown_timer = self.shoot_cooldown
-                return missile
+        if self.cooldown_timer == 0:
+            target, target_type = self.has_line_of_sight(player, turrets, obstacles)
+            if target and target_type == "player":
+                dx = (player.x + PLAYER_SIZE / 2) - (self.x + PLAYER_SIZE / 2)
+                dy = (player.y + PLAYER_SIZE / 2) - (self.y + PLAYER_SIZE / 2)
+                direction = pygame.Vector2(dx, dy)
+                if direction.length_squared() > 0:
+                    self.vector_direction = direction.normalize()
+                    self.target_angle = self.get_angle_from_direction(self.vector_direction)
+                    missile = self.shoot()
+                    self.cooldown_timer = self.shoot_cooldown
+                    return missile
+            elif target and target_type == "turret":
+                dx = (target.rect.centerx) - (self.x + PLAYER_SIZE / 2)
+                dy = (target.rect.centery) - (self.y + PLAYER_SIZE / 2)
+                direction = pygame.Vector2(dx, dy)
+                if direction.length_squared() > 0:
+                    self.vector_direction = direction.normalize()
+                    self.target_angle = self.get_angle_from_direction(self.vector_direction)
+                    missile = self.shoot()
+                    self.cooldown_timer = self.shoot_cooldown
+                    return missile
         return None
 
 class ShootingEnemy(Enemy):
@@ -421,21 +493,40 @@ class ShootingEnemy(Enemy):
         self.vector_direction = pygame.Vector2(1 if direction == "horizontal" else 0, 1 if direction == "vertical" else 0)
         self.obstacles = []
 
-    def update(self, player, maze_matrix, obstacles):
+    def update(self, player, maze_matrix, obstacles, turrets):
         self.obstacles = obstacles
         self.move(obstacles)
+        for turret in turrets[:]:
+            if self.collision_rect.colliderect(turret.collision_rect):
+                destroyed = turret.hit()
+                if destroyed:
+                    turrets.remove(turret)
+                    print(f"Turret destroyed by {self.__class__.__name__} at ({turret.rect.x}, {turret.rect.y})")
+                    return None  # Return early to avoid further processing
         if self.cooldown_timer > 0:
             self.cooldown_timer -= 1
-        if self.cooldown_timer == 0 and self.has_line_of_sight(player, obstacles):
-            dx = (player.x + PLAYER_SIZE / 2) - (self.x + PLAYER_SIZE / 2)
-            dy = (player.y + PLAYER_SIZE / 2) - (self.y + PLAYER_SIZE / 2)
-            direction = pygame.Vector2(dx, dy)
-            if direction.length_squared() > 0:
-                self.vector_direction = direction.normalize()
-                self.target_angle = self.get_angle_from_direction(self.vector_direction)
-                missile = self.shoot()
-                self.cooldown_timer = self.shoot_cooldown
-                return missile
+        if self.cooldown_timer == 0:
+            target, target_type = self.has_line_of_sight(player, turrets, obstacles)
+            if target and target_type == "player":
+                dx = (player.x + PLAYER_SIZE / 2) - (self.x + PLAYER_SIZE / 2)
+                dy = (player.y + PLAYER_SIZE / 2) - (self.y + PLAYER_SIZE / 2)
+                direction = pygame.Vector2(dx, dy)
+                if direction.length_squared() > 0:
+                    self.vector_direction = direction.normalize()
+                    self.target_angle = self.get_angle_from_direction(self.vector_direction)
+                    missile = self.shoot()
+                    self.cooldown_timer = self.shoot_cooldown
+                    return missile
+            elif target and target_type == "turret":
+                dx = (target.rect.centerx) - (self.x + PLAYER_SIZE / 2)
+                dy = (target.rect.centery) - (self.y + PLAYER_SIZE / 2)
+                direction = pygame.Vector2(dx, dy)
+                if direction.length_squared() > 0:
+                    self.vector_direction = direction.normalize()
+                    self.target_angle = self.get_angle_from_direction(self.vector_direction)
+                    missile = self.shoot()
+                    self.cooldown_timer = self.shoot_cooldown
+                    return missile
         return None
 
 class BaseChasingShootingEnemy(Enemy):
@@ -486,7 +577,7 @@ class BaseChasingShootingEnemy(Enemy):
                     min_distance = distance
                     self.target_flag = flag
 
-    def update(self, player, maze_matrix, obstacles):
+    def update(self, player, maze_matrix, obstacles, turrets):
         self.obstacles = obstacles
         if self.target_flag and not self.target_flag.captured:
             self.move_toward_target(self.target_flag.rect, maze_matrix, obstacles, 0)
@@ -496,19 +587,38 @@ class BaseChasingShootingEnemy(Enemy):
                 self.move_toward_target(self.target_flag.rect, maze_matrix, obstacles, 0)
             else:
                 self.move_toward_target(player.collision_rect, maze_matrix, obstacles, 1)
+        for turret in turrets[:]:
+            if self.collision_rect.colliderect(turret.collision_rect):
+                destroyed = turret.hit()
+                if destroyed:
+                    turrets.remove(turret)
+                    print(f"Turret destroyed by {self.__class__.__name__} at ({turret.rect.x}, {turret.rect.y})")
+                    return None  # Return early to avoid further processing
         if self.can_shoot:
             if self.cooldown_timer > 0:
                 self.cooldown_timer -= 1
-            if self.cooldown_timer == 0 and self.has_line_of_sight(player, obstacles):
-                dx = (player.x + PLAYER_SIZE / 2) - (self.x + PLAYER_SIZE / 2)
-                dy = (player.y + PLAYER_SIZE / 2) - (self.y + PLAYER_SIZE / 2)
-                direction = pygame.Vector2(dx, dy)
-                if direction.length_squared() > 0:
-                    self.vector_direction = direction.normalize()
-                    self.target_angle = self.get_angle_from_direction(self.vector_direction)
-                    missile = self.shoot()
-                    self.cooldown_timer = self.shoot_cooldown
-                    return missile
+            if self.cooldown_timer == 0:
+                target, target_type = self.has_line_of_sight(player, turrets, obstacles)
+                if target and target_type == "player":
+                    dx = (player.x + PLAYER_SIZE / 2) - (self.x + PLAYER_SIZE / 2)
+                    dy = (player.y + PLAYER_SIZE / 2) - (self.y + PLAYER_SIZE / 2)
+                    direction = pygame.Vector2(dx, dy)
+                    if direction.length_squared() > 0:
+                        self.vector_direction = direction.normalize()
+                        self.target_angle = self.get_angle_from_direction(self.vector_direction)
+                        missile = self.shoot()
+                        self.cooldown_timer = self.shoot_cooldown
+                        return missile
+                elif target and target_type == "turret":
+                    dx = (target.rect.centerx) - (self.x + PLAYER_SIZE / 2)
+                    dy = (target.rect.centery) - (self.y + PLAYER_SIZE / 2)
+                    direction = pygame.Vector2(dx, dy)
+                    if direction.length_squared() > 0:
+                        self.vector_direction = direction.normalize()
+                        self.target_angle = self.get_angle_from_direction(self.vector_direction)
+                        missile = self.shoot()
+                        self.cooldown_timer = self.shoot_cooldown
+                        return missile
         return None
 
 class FlagChasingEnemy(Enemy):
@@ -555,7 +665,7 @@ class FlagChasingEnemy(Enemy):
                     min_distance = distance
                     self.target_flag = flag
 
-    def update(self, player, maze_matrix, obstacles):
+    def update(self, player, maze_matrix, obstacles, turrets):
         self.obstacles = obstacles
         if self.target_flag and not self.target_flag.captured:
             self.move_toward_target(self.target_flag.rect, maze_matrix, obstacles, 0)
@@ -565,4 +675,10 @@ class FlagChasingEnemy(Enemy):
                 self.move_toward_target(self.target_flag.rect, maze_matrix, obstacles, 0)
             else:
                 self.move_toward_target(player.collision_rect, maze_matrix, obstacles, 1)
+        for turret in turrets[:]:
+            if self.collision_rect.colliderect(turret.collision_rect):
+                destroyed = turret.hit()
+                if destroyed:
+                    turrets.remove(turret)
+                    print(f"Turret destroyed by {self.__class__.__name__} at ({turret.rect.x}, {turret.rect.y})")
         return None

@@ -1,5 +1,6 @@
-#"wl""br""wt""bu""pl""sd""tf""e1""e2""e3""e4""e5""e6""e7""e8"
+import os
 
+#"wl""br""wt""bu""pl""sd""tf""e1""e2""e3""e4""e5""e6""e7""e8"
 MAP1 = [
     ["wl", "wl", "wl", "wl", "wl", "wl", "wl", "wl", "wl", "wl", "wl", "wl", "wl", "wl", "wl", "wl", "wl", "wl", "wl", "wl", "wl", "wl"],
     ["wl", "wl", "wl", "wl", "wl", "wl", "wl", "__", "__", "wl", "wl", "wl", "wl", "__", "__", "__", "e6", "__", "__", "__", "tf", "wl"],
@@ -39,8 +40,8 @@ MAP2 = [
     ["wl", "wl", "wl", "wl", "wl", "wl", "wl", "wl", "wl", "wl", "wl", "wl", "wl", "wl", "wl", "wl", "wl", "wl", "wl", "wl", "wl", "wl"]
 ]
 # Розміри вікна
-WINDOW_WIDTH = 800
-WINDOW_HEIGHT = 600
+WINDOW_WIDTH = 880
+WINDOW_HEIGHT = 680
 
 # Частота кадрів
 FPS = 60
@@ -49,6 +50,7 @@ FPS = 60
 COLOR_BLACK = (0, 0, 0)
 COLOR_BLUE = (0, 0, 255)
 COLOR_RED = (255, 0, 0)
+COLOR_GREEN = (0, 255, 0)
 COLOR_WHITE = (255, 255, 255)
 COLOR_GRAY = (100, 100, 100)
 
@@ -57,12 +59,15 @@ OBSTACLE_COLOR = COLOR_WHITE
 OBSTACLE_SIZE = 40
 
 # Гравець
+PLAYER_COLOR = COLOR_RED
 PLAYER_SIZE = OBSTACLE_SIZE * 0.9
 PLAYER_SPEED = 2
 PLAYER_HEALTH = 10
+PLAYER_NAME = "-Player-"
 
 IMMORTAL_TIME = 100
 
 VOLUME = 100
 
-
+LOG_TO_FILE = True  # Якщо хочеш логувати в файл, змінити на True
+LOG_FILE_PATH = os.path.join("logs", "game_log.log")

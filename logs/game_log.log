@@ -1,0 +1,582 @@
+[2025-06-12 12:15:05] 🚀 Game started
+[2025-06-12 12:15:06] 🟢 Player started the game from menu
+[2025-06-12 12:15:06] 🏭 Factory spawned new enemy: Enemy (Level 1)
+[2025-06-12 12:15:06] 🏭 Factory spawned new enemy: BaseChasingShootingEnemy (Level 1)
+[2025-06-12 12:15:06] 🏭 Factory spawned new enemy: BaseChasingShootingEnemy (Level 1)
+[2025-06-12 12:15:09] 🧱 Bullet hit obstacle
+[2025-06-12 12:15:10] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 1
+[2025-06-12 12:15:11] 🧱 Bullet hit obstacle
+[2025-06-12 12:15:13] 🧱 Bullet hit obstacle
+[2025-06-12 12:15:14] 🧱 Bullet hit obstacle
+[2025-06-12 12:15:15] 🧱 Bullet hit obstacle
+[2025-06-12 12:15:15] 🧱 Bullet hit obstacle
+[2025-06-12 12:15:16] 🏭 Factory spawned new enemy: Enemy (Level 1)
+[2025-06-12 12:15:16] 🏭 Factory spawned new enemy: Enemy (Level 1)
+[2025-06-12 12:15:16] 🏭 Factory spawned new enemy: BaseChasingShootingEnemy (Level 1)
+[2025-06-12 12:15:21] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 2
+[2025-06-12 12:15:22] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 3
+[2025-06-12 12:15:25] 🏭 Factory spawned new enemy: Enemy (Level 1)
+[2025-06-12 12:15:25] 🏭 Factory spawned new enemy: Enemy (Level 1)
+[2025-06-12 12:15:25] 🏭 Factory spawned new enemy: BaseChasingShootingEnemy (Level 1)
+[2025-06-12 12:15:27] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 4
+[2025-06-12 12:15:28] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 5
+[2025-06-12 12:15:31] 🚀 Player hit by missile! Health: 9
+[2025-06-12 12:15:31] 🧱 Missile hit obstacle
+[2025-06-12 12:15:31] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 6
+[2025-06-12 12:15:32] 🧱 Bullet hit obstacle
+[2025-06-12 12:15:32] 🧱 Bullet hit obstacle
+[2025-06-12 12:15:33] 🧱 Missile hit obstacle
+[2025-06-12 12:15:34] 🧱 Bullet hit obstacle
+[2025-06-12 12:15:34] 🛡️ Missile hit shield
+[2025-06-12 12:15:34] 🚀 Player hit by missile! Health: 8
+[2025-06-12 12:15:35] 🏭 Factory spawned new enemy: BaseChasingShootingEnemy (Level 1)
+[2025-06-12 12:15:35] 🏭 Factory spawned new enemy: Enemy (Level 1)
+[2025-06-12 12:15:35] 🏭 Factory spawned new enemy: BaseChasingShootingEnemy (Level 1)
+[2025-06-12 12:15:36] 🧱 Missile hit obstacle
+[2025-06-12 12:15:37] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 7
+[2025-06-12 12:15:37] 🧱 Bullet hit obstacle
+[2025-06-12 12:15:38] 🧱 Missile hit obstacle
+[2025-06-12 12:15:38] 🧱 Missile hit obstacle
+[2025-06-12 12:15:39] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 8
+[2025-06-12 12:15:40] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 9
+[2025-06-12 12:15:40] 🧱 Missile hit obstacle
+[2025-06-12 12:15:40] 🧱 Missile hit obstacle
+[2025-06-12 12:15:41] 🧱 Bullet hit obstacle
+[2025-06-12 12:15:43] 🧱 Missile hit obstacle
+[2025-06-12 12:15:45] 🏭 Factory spawned new enemy: Enemy (Level 1)
+[2025-06-12 12:15:45] 🏭 Factory spawned new enemy: BaseChasingShootingEnemy (Level 1)
+[2025-06-12 12:15:45] 🏭 Factory spawned new enemy: BaseChasingShootingEnemy (Level 1)
+[2025-06-12 12:15:47] 🛡️ Enemy destroyed by shield. Total destroyed: 10
+[2025-06-12 12:15:51] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 11
+[2025-06-12 12:15:54] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 12
+[2025-06-12 12:15:55] 🏭 Factory spawned new enemy: BaseChasingShootingEnemy (Level 1)
+[2025-06-12 12:15:55] 🏭 Factory spawned new enemy: Enemy (Level 1)
+[2025-06-12 12:15:55] 🏭 Factory spawned new enemy: BaseChasingShootingEnemy (Level 1)
+[2025-06-12 12:15:55] 🧱 Bullet hit obstacle
+[2025-06-12 12:15:56] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 13
+[2025-06-12 12:15:56] 🧱 Bullet hit obstacle
+[2025-06-12 12:15:57] 🧱 Bullet hit obstacle
+[2025-06-12 12:15:57] 🧱 Bullet hit obstacle
+[2025-06-12 12:15:57] 🧱 Bullet hit obstacle
+[2025-06-12 12:15:58] 🧱 Bullet hit obstacle
+[2025-06-12 12:15:58] 🧱 Bullet hit obstacle
+[2025-06-12 12:15:58] 🧱 Bullet hit obstacle
+[2025-06-12 12:15:58] 🧱 Bullet hit obstacle
+[2025-06-12 12:15:59] 🧱 Bullet hit obstacle
+[2025-06-12 12:16:01] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 14
+[2025-06-12 12:16:02] ❤️ Player hit by enemy! Health: 7
+[2025-06-12 12:16:02] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 15
+[2025-06-12 12:16:05] 🏭 Factory spawned new enemy: Enemy (Level 1)
+[2025-06-12 12:16:05] 🏭 Factory spawned new enemy: Enemy (Level 1)
+[2025-06-12 12:16:05] 🏭 Factory spawned new enemy: BaseChasingShootingEnemy (Level 1)
+[2025-06-12 12:16:06] 🛡️ Enemy destroyed by shield. Total destroyed: 16
+[2025-06-12 12:16:10] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 17
+[2025-06-12 12:16:13] 🧱 Bullet hit obstacle
+[2025-06-12 12:16:14] 🧱 Bullet hit obstacle
+[2025-06-12 12:16:14] 🧱 Bullet hit obstacle
+[2025-06-12 12:16:15] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 18
+[2025-06-12 12:16:15] 🏭 Factory spawned new enemy: BaseChasingShootingEnemy (Level 2)
+[2025-06-12 12:16:15] 🏭 Factory spawned new enemy: RandomShootingEnemy (Level 2)
+[2025-06-12 12:16:15] 🏭 Factory spawned new enemy: RandomShootingEnemy (Level 2)
+[2025-06-12 12:16:16] 🧱 Bullet hit obstacle
+[2025-06-12 12:16:16] 🧱 Bullet hit obstacle
+[2025-06-12 12:16:16] 🧱 Bullet hit obstacle
+[2025-06-12 12:16:16] 🧱 Bullet hit obstacle
+[2025-06-12 12:16:17] 🧱 Bullet hit obstacle
+[2025-06-12 12:16:21] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 19
+[2025-06-12 12:16:22] 🛡️ Missile hit shield
+[2025-06-12 12:16:23] 🧱 Bullet hit obstacle
+[2025-06-12 12:16:23] 🧱 Bullet hit obstacle
+[2025-06-12 12:16:23] 🧱 Bullet hit obstacle
+[2025-06-12 12:16:24] 🧱 Missile hit obstacle
+[2025-06-12 12:16:24] 🚀 Player hit by missile! Health: 6
+[2025-06-12 12:16:24] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 20
+[2025-06-12 12:16:24] 🧱 Bullet hit obstacle
+[2025-06-12 12:16:25] 🏭 Factory spawned new enemy: ChasingEnemy (Level 2)
+[2025-06-12 12:16:25] 🏭 Factory spawned new enemy: ChasingEnemy (Level 2)
+[2025-06-12 12:16:25] 🏭 Factory spawned new enemy: RandomShootingEnemy (Level 2)
+[2025-06-12 12:16:25] 🧱 Missile hit obstacle
+[2025-06-12 12:16:25] 🧱 Missile hit obstacle
+[2025-06-12 12:16:26] 🧱 Missile hit obstacle
+[2025-06-12 12:16:27] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 21
+[2025-06-12 12:16:30] 🧱 Bullet hit obstacle
+[2025-06-12 12:16:30] 🧱 Bullet hit obstacle
+[2025-06-12 12:16:30] 🧱 Bullet hit obstacle
+[2025-06-12 12:16:30] 🧱 Bullet hit obstacle
+[2025-06-12 12:16:31] 🧱 Bullet hit obstacle
+[2025-06-12 12:16:31] 🧱 Missile hit obstacle
+[2025-06-12 12:16:32] 🧱 Bullet hit obstacle
+[2025-06-12 12:16:32] 🧱 Bullet hit obstacle
+[2025-06-12 12:16:33] 🧱 Missile hit obstacle
+[2025-06-12 12:16:34] 🚀 Player hit by missile! Health: 4
+[2025-06-12 12:16:34] 🧱 Missile hit obstacle
+[2025-06-12 12:16:34] 🧱 Bullet hit obstacle
+[2025-06-12 12:16:35] 🏭 Factory spawned new enemy: ChasingEnemy (Level 2)
+[2025-06-12 12:16:35] 🏭 Factory spawned new enemy: RandomShootingEnemy (Level 2)
+[2025-06-12 12:16:35] 🏭 Factory spawned new enemy: ChasingEnemy (Level 2)
+[2025-06-12 12:16:35] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 22
+[2025-06-12 12:16:35] 🧱 Missile hit obstacle
+[2025-06-12 12:16:40] 🧱 Missile hit obstacle
+[2025-06-12 12:16:40] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 23
+[2025-06-12 12:16:42] 🧱 Bullet hit obstacle
+[2025-06-12 12:16:42] 🧱 Bullet hit obstacle
+[2025-06-12 12:16:42] 🧱 Bullet hit obstacle
+[2025-06-12 12:16:43] 🧱 Bullet hit obstacle
+[2025-06-12 12:16:43] 🧱 Bullet hit obstacle
+[2025-06-12 12:16:43] 🧱 Bullet hit obstacle
+[2025-06-12 12:16:44] 🧱 Missile hit obstacle
+[2025-06-12 12:16:44] 🧱 Missile hit obstacle
+[2025-06-12 12:16:45] 🏭 Factory spawned new enemy: RandomShootingEnemy (Level 2)
+[2025-06-12 12:16:45] 🏭 Factory spawned new enemy: ChasingEnemy (Level 2)
+[2025-06-12 12:16:45] 🏭 Factory spawned new enemy: BaseChasingShootingEnemy (Level 2)
+[2025-06-12 12:16:45] 🧱 Missile hit obstacle
+[2025-06-12 12:16:45] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 24
+[2025-06-12 12:16:45] 🧱 Missile hit obstacle
+[2025-06-12 12:16:45] 🚀 Player hit by missile! Health: 2
+[2025-06-12 12:16:45] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 25
+[2025-06-12 12:16:46] 🧱 Bullet hit obstacle
+[2025-06-12 12:16:47] 🧱 Bullet hit obstacle
+[2025-06-12 12:16:47] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 26
+[2025-06-12 12:16:47] 🧱 Bullet hit obstacle
+[2025-06-12 12:16:53] 🛑 Game exited
+[2025-06-12 13:55:20] 🚀 Game started
+[2025-06-12 13:55:21] 🧱 Bullet hit obstacle
+[2025-06-12 13:55:21] 🧱 Bullet hit obstacle
+[2025-06-12 13:55:22] 🛑 Game exited
+[2025-06-12 13:57:56] 🚀 Game started
+[2025-06-12 13:57:58] 🟢 Player started the game from menu
+[2025-06-12 13:57:58] 🏭 Factory spawned new enemy: Enemy (Level 1)
+[2025-06-12 13:57:58] 🏭 Factory spawned new enemy: Enemy (Level 1)
+[2025-06-12 13:57:58] 🏭 Factory spawned new enemy: BaseChasingShootingEnemy (Level 1)
+[2025-06-12 13:58:01] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 1
+[2025-06-12 13:58:03] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:03] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:03] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:04] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:04] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:04] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:05] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:05] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:05] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:05] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 2
+[2025-06-12 13:58:06] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:06] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 3
+[2025-06-12 13:58:06] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:07] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:07] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:07] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:08] 🏭 Factory spawned new enemy: Enemy (Level 1)
+[2025-06-12 13:58:08] 🏭 Factory spawned new enemy: Enemy (Level 1)
+[2025-06-12 13:58:08] 🏭 Factory spawned new enemy: Enemy (Level 1)
+[2025-06-12 13:58:09] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:09] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:09] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:10] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:10] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:10] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:10] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:10] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:11] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:11] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:11] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:11] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:11] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:11] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:12] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:12] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:12] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:12] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:13] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:13] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:13] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:13] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:13] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:14] 🧱 Missile hit obstacle
+[2025-06-12 13:58:14] 🧱 Missile hit obstacle
+[2025-06-12 13:58:15] ❤️ Player hit by enemy! Health: 9
+[2025-06-12 13:58:15] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 4
+[2025-06-12 13:58:15] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:16] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 5
+[2025-06-12 13:58:17] 🏭 Factory spawned new enemy: Enemy (Level 1)
+[2025-06-12 13:58:17] 🏭 Factory spawned new enemy: Enemy (Level 1)
+[2025-06-12 13:58:17] 🏭 Factory spawned new enemy: BaseChasingShootingEnemy (Level 1)
+[2025-06-12 13:58:26] 🧱 Missile hit obstacle
+[2025-06-12 13:58:27] 🏭 Factory spawned new enemy: Enemy (Level 1)
+[2025-06-12 13:58:27] 🏭 Factory spawned new enemy: BaseChasingShootingEnemy (Level 1)
+[2025-06-12 13:58:27] 🏭 Factory spawned new enemy: BaseChasingShootingEnemy (Level 1)
+[2025-06-12 13:58:31] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 6
+[2025-06-12 13:58:32] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 7
+[2025-06-12 13:58:32] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:33] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:34] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:34] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:35] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:35] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:36] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:37] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:37] 🏭 Factory spawned new enemy: Enemy (Level 1)
+[2025-06-12 13:58:37] 🏭 Factory spawned new enemy: BaseChasingShootingEnemy (Level 1)
+[2025-06-12 13:58:37] 🏭 Factory spawned new enemy: BaseChasingShootingEnemy (Level 1)
+[2025-06-12 13:58:38] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:38] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:40] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:41] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:41] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:42] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 8
+[2025-06-12 13:58:44] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:46] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 9
+[2025-06-12 13:58:46] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:47] 🏭 Factory spawned new enemy: Enemy (Level 1)
+[2025-06-12 13:58:47] 🏭 Factory spawned new enemy: BaseChasingShootingEnemy (Level 1)
+[2025-06-12 13:58:47] 🏭 Factory spawned new enemy: BaseChasingShootingEnemy (Level 1)
+[2025-06-12 13:58:57] 🏭 Factory spawned new enemy: Enemy (Level 1)
+[2025-06-12 13:58:57] 🏭 Factory spawned new enemy: BaseChasingShootingEnemy (Level 1)
+[2025-06-12 13:58:57] 🏭 Factory spawned new enemy: BaseChasingShootingEnemy (Level 1)
+[2025-06-12 13:58:57] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 10
+[2025-06-12 13:58:58] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:58] 🧱 Bullet hit obstacle
+[2025-06-12 13:58:59] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 11
+[2025-06-12 13:58:59] 🧱 Missile hit obstacle
+[2025-06-12 13:59:00] 🧱 Bullet hit obstacle
+[2025-06-12 13:59:00] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 12
+[2025-06-12 13:59:00] ❤️ Player hit by enemy! Health: 8
+[2025-06-12 13:59:01] 🧱 Bullet hit obstacle
+[2025-06-12 13:59:01] 🧱 Bullet hit obstacle
+[2025-06-12 13:59:03] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 13
+[2025-06-12 13:59:05] 🧱 Bullet hit obstacle
+[2025-06-12 13:59:05] 🧱 Bullet hit obstacle
+[2025-06-12 13:59:05] 🧱 Bullet hit obstacle
+[2025-06-12 13:59:06] 🧱 Bullet hit obstacle
+[2025-06-12 13:59:06] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 14
+[2025-06-12 13:59:06] 🧱 Bullet hit obstacle
+[2025-06-12 13:59:07] 🧱 Bullet hit obstacle
+[2025-06-12 13:59:07] 🧱 Bullet hit obstacle
+[2025-06-12 13:59:07] 🏭 Factory spawned new enemy: RandomShootingEnemy (Level 2)
+[2025-06-12 13:59:07] 🏭 Factory spawned new enemy: ChasingEnemy (Level 2)
+[2025-06-12 13:59:07] 🏭 Factory spawned new enemy: BaseChasingShootingEnemy (Level 2)
+[2025-06-12 13:59:07] 🧱 Bullet hit obstacle
+[2025-06-12 13:59:07] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 15
+[2025-06-12 13:59:09] 🧱 Bullet hit obstacle
+[2025-06-12 13:59:09] 🧱 Bullet hit obstacle
+[2025-06-12 13:59:09] 🧱 Bullet hit obstacle
+[2025-06-12 13:59:10] 🧱 Bullet hit obstacle
+[2025-06-12 13:59:10] 🧱 Missile hit obstacle
+[2025-06-12 13:59:10] 🧱 Missile hit obstacle
+[2025-06-12 13:59:11] 🧱 Missile hit obstacle
+[2025-06-12 13:59:11] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 16
+[2025-06-12 13:59:12] 🧱 Missile hit obstacle
+[2025-06-12 13:59:16] 🧱 Bullet hit obstacle
+[2025-06-12 13:59:16] 🧱 Missile hit obstacle
+[2025-06-12 13:59:16] 🧱 Bullet hit obstacle
+[2025-06-12 13:59:17] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 17
+[2025-06-12 13:59:17] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 18
+[2025-06-12 13:59:17] 🧱 Bullet hit obstacle
+[2025-06-12 13:59:17] 🏭 Factory spawned new enemy: RandomShootingEnemy (Level 2)
+[2025-06-12 13:59:17] 🏭 Factory spawned new enemy: RandomShootingEnemy (Level 2)
+[2025-06-12 13:59:17] 🏭 Factory spawned new enemy: RandomShootingEnemy (Level 2)
+[2025-06-12 13:59:17] 🧱 Missile hit obstacle
+[2025-06-12 13:59:18] 🚀 Player hit by missile! Health: 7
+[2025-06-12 13:59:18] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 19
+[2025-06-12 13:59:18] 🧱 Bullet hit obstacle
+[2025-06-12 13:59:18] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 20
+[2025-06-12 13:59:18] 🧱 Bullet hit obstacle
+[2025-06-12 13:59:18] 🧱 Bullet hit obstacle
+[2025-06-12 13:59:18] 🧱 Bullet hit obstacle
+[2025-06-12 13:59:18] 🧱 Bullet hit obstacle
+[2025-06-12 13:59:18] 🧱 Bullet hit obstacle
+[2025-06-12 13:59:19] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 21
+[2025-06-12 13:59:19] 🧱 Missile hit obstacle
+[2025-06-12 13:59:27] 🏭 Factory spawned new enemy: ChasingEnemy (Level 2)
+[2025-06-12 13:59:27] 🏭 Factory spawned new enemy: BaseChasingShootingEnemy (Level 2)
+[2025-06-12 13:59:27] 🏭 Factory spawned new enemy: RandomShootingEnemy (Level 2)
+[2025-06-12 13:59:35] 🚀 Player hit by missile! Health: 5
+[2025-06-12 13:59:36] 🧱 Missile hit obstacle
+[2025-06-12 13:59:36] 🧱 Bullet hit obstacle
+[2025-06-12 13:59:36] 🏭 Factory spawned new enemy: ChasingEnemy (Level 2)
+[2025-06-12 13:59:36] 🏭 Factory spawned new enemy: RandomShootingEnemy (Level 2)
+[2025-06-12 13:59:36] 🏭 Factory spawned new enemy: ChasingEnemy (Level 2)
+[2025-06-12 13:59:37] 🧱 Bullet hit obstacle
+[2025-06-12 13:59:37] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 22
+[2025-06-12 13:59:37] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 23
+[2025-06-12 13:59:37] 🧱 Missile hit obstacle
+[2025-06-12 13:59:37] 🧱 Missile hit obstacle
+[2025-06-12 13:59:37] 🚀 Player hit by missile! Health: 4
+[2025-06-12 13:59:38] 🧱 Bullet hit obstacle
+[2025-06-12 13:59:41] 🧱 Missile hit obstacle
+[2025-06-12 13:59:42] 🧱 Missile hit obstacle
+[2025-06-12 13:59:42] 🧱 Bullet hit obstacle
+[2025-06-12 13:59:42] 🚀 Player hit by missile! Health: 2
+[2025-06-12 13:59:42] 🧱 Bullet hit obstacle
+[2025-06-12 13:59:43] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 24
+[2025-06-12 13:59:43] 🧱 Missile hit obstacle
+[2025-06-12 13:59:45] 🧱 Missile hit obstacle
+[2025-06-12 13:59:46] 🧱 Missile hit obstacle
+[2025-06-12 13:59:46] 🏭 Factory spawned new enemy: RandomShootingEnemy (Level 2)
+[2025-06-12 13:59:46] 🏭 Factory spawned new enemy: RandomShootingEnemy (Level 2)
+[2025-06-12 13:59:46] 🏭 Factory spawned new enemy: RandomShootingEnemy (Level 2)
+[2025-06-12 13:59:47] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 25
+[2025-06-12 13:59:56] 🏭 Factory spawned new enemy: RandomShootingEnemy (Level 2)
+[2025-06-12 13:59:56] 🏭 Factory spawned new enemy: ChasingEnemy (Level 2)
+[2025-06-12 13:59:56] 🏭 Factory spawned new enemy: ChasingEnemy (Level 2)
+[2025-06-12 14:00:00] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 26
+[2025-06-12 14:00:00] 🧱 Missile hit obstacle
+[2025-06-12 14:00:01] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 27
+[2025-06-12 14:00:01] 🧱 Missile hit obstacle
+[2025-06-12 14:00:06] 🏭 Factory spawned new enemy: RandomShootingEnemy (Level 3)
+[2025-06-12 14:00:06] 🏭 Factory spawned new enemy: ChasingEnemy (Level 3)
+[2025-06-12 14:00:06] 🏭 Factory spawned new enemy: RandomShootingEnemy (Level 3)
+[2025-06-12 14:00:09] 💥 Bullet hit enemy! Enemy health: 1
+[2025-06-12 14:00:10] 🧱 Missile hit obstacle
+[2025-06-12 14:00:10] 🧱 Missile hit obstacle
+[2025-06-12 14:00:12] 🧱 Missile hit obstacle
+[2025-06-12 14:00:13] 🧱 Bullet hit obstacle
+[2025-06-12 14:00:13] 🧱 Bullet hit obstacle
+[2025-06-12 14:00:14] 🧱 Missile hit obstacle
+[2025-06-12 14:00:15] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 28
+[2025-06-12 14:00:15] 🧱 Bullet hit obstacle
+[2025-06-12 14:00:16] 🏭 Factory spawned new enemy: RandomShootingEnemy (Level 3)
+[2025-06-12 14:00:16] 🏭 Factory spawned new enemy: ChasingEnemy (Level 3)
+[2025-06-12 14:00:16] 🏭 Factory spawned new enemy: ChasingEnemy (Level 3)
+[2025-06-12 14:00:20] 🧱 Missile hit obstacle
+[2025-06-12 14:00:20] 🧱 Bullet hit obstacle
+[2025-06-12 14:00:21] 🧱 Bullet hit obstacle
+[2025-06-12 14:00:22] 🧱 Missile hit obstacle
+[2025-06-12 14:00:22] 🧱 Missile hit obstacle
+[2025-06-12 14:00:23] 🧱 Missile hit obstacle
+[2025-06-12 14:00:24] 🧱 Bullet hit obstacle
+[2025-06-12 14:00:24] 🧱 Bullet hit obstacle
+[2025-06-12 14:00:24] 🧱 Missile hit obstacle
+[2025-06-12 14:00:24] 💥 Bullet hit enemy! Enemy health: 1
+[2025-06-12 14:00:25] 🧱 Missile hit obstacle
+[2025-06-12 14:00:26] 🚀 Player hit by missile! Health: -1
+[2025-06-12 14:00:26] 💀 Player died, switching to GameOverScene
+[2025-06-12 14:00:28] 🛑 Game exited
+[2025-06-12 14:00:50] 🚀 Game started
+[2025-06-12 14:00:51] 🟢 Player started the game from menu
+[2025-06-12 14:00:51] 🏭 Factory spawned new enemy: Enemy (Level 1)
+[2025-06-12 14:00:51] 🏭 Factory spawned new enemy: Enemy (Level 1)
+[2025-06-12 14:00:51] 🏭 Factory spawned new enemy: BaseChasingShootingEnemy (Level 1)
+[2025-06-12 14:00:54] 🧱 Bullet hit obstacle
+[2025-06-12 14:00:54] 🧱 Bullet hit obstacle
+[2025-06-12 14:00:54] 🧱 Bullet hit obstacle
+[2025-06-12 14:00:55] 🧱 Bullet hit obstacle
+[2025-06-12 14:00:55] 🧱 Bullet hit obstacle
+[2025-06-12 14:00:56] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 1
+[2025-06-12 14:00:59] 🛑 Game exited
+[2025-06-12 14:02:01] 🚀 Game started
+[2025-06-12 14:02:02] 🟢 Player started the game from menu
+[2025-06-12 14:02:02] 🏭 Factory spawned new enemy: BaseChasingShootingEnemy (Level 1)
+[2025-06-12 14:02:02] 🏭 Factory spawned new enemy: Enemy (Level 1)
+[2025-06-12 14:02:02] 🏭 Factory spawned new enemy: Enemy (Level 1)
+[2025-06-12 14:02:04] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 1
+[2025-06-12 14:02:04] 🧱 Bullet hit obstacle
+[2025-06-12 14:02:04] 🧱 Bullet hit obstacle
+[2025-06-12 14:02:05] 🧱 Bullet hit obstacle
+[2025-06-12 14:02:05] 🧱 Bullet hit obstacle
+[2025-06-12 14:02:05] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 2
+[2025-06-12 14:02:06] 🧱 Bullet hit obstacle
+[2025-06-12 14:02:06] 🧱 Bullet hit obstacle
+[2025-06-12 14:02:07] 🧱 Bullet hit obstacle
+[2025-06-12 14:02:07] 🧱 Bullet hit obstacle
+[2025-06-12 14:02:07] 🧱 Bullet hit obstacle
+[2025-06-12 14:02:07] 🧱 Bullet hit obstacle
+[2025-06-12 14:02:08] 🧱 Bullet hit obstacle
+[2025-06-12 14:02:08] 🧱 Bullet hit obstacle
+[2025-06-12 14:02:08] 🧱 Bullet hit obstacle
+[2025-06-12 14:02:09] 🧱 Bullet hit obstacle
+[2025-06-12 14:02:09] 🧱 Missile hit obstacle
+[2025-06-12 14:02:09] 🧱 Bullet hit obstacle
+[2025-06-12 14:02:09] 🧱 Bullet hit obstacle
+[2025-06-12 14:02:10] 🧱 Bullet hit obstacle
+[2025-06-12 14:02:10] 🧱 Bullet hit obstacle
+[2025-06-12 14:02:10] 🧱 Bullet hit obstacle
+[2025-06-12 14:02:12] 🏭 Factory spawned new enemy: BaseChasingShootingEnemy (Level 1)
+[2025-06-12 14:02:12] 🏭 Factory spawned new enemy: BaseChasingShootingEnemy (Level 1)
+[2025-06-12 14:02:12] 🏭 Factory spawned new enemy: Enemy (Level 1)
+[2025-06-12 14:02:12] 🧱 Bullet hit obstacle
+[2025-06-12 14:02:12] 🧱 Bullet hit obstacle
+[2025-06-12 14:02:12] 🧱 Bullet hit obstacle
+[2025-06-12 14:02:14] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 3
+[2025-06-12 14:02:15] 🧱 Bullet hit obstacle
+[2025-06-12 14:02:18] 🧱 Bullet hit obstacle
+[2025-06-12 14:02:18] 🧱 Bullet hit obstacle
+[2025-06-12 14:02:18] 🧱 Bullet hit obstacle
+[2025-06-12 14:02:19] 🧱 Bullet hit obstacle
+[2025-06-12 14:02:19] 🧱 Bullet hit obstacle
+[2025-06-12 14:02:19] 🧱 Bullet hit obstacle
+[2025-06-12 14:02:19] 🧱 Bullet hit obstacle
+[2025-06-12 14:02:20] 🧱 Bullet hit obstacle
+[2025-06-12 14:02:20] 🧱 Bullet hit obstacle
+[2025-06-12 14:02:20] 🧱 Bullet hit obstacle
+[2025-06-12 14:02:21] 🧱 Bullet hit obstacle
+[2025-06-12 14:02:21] 🧱 Bullet hit obstacle
+[2025-06-12 14:02:21] 🧱 Bullet hit obstacle
+[2025-06-12 14:02:21] 🧱 Bullet hit obstacle
+[2025-06-12 14:02:21] 🧱 Bullet hit obstacle
+[2025-06-12 14:02:22] 🏭 Factory spawned new enemy: BaseChasingShootingEnemy (Level 1)
+[2025-06-12 14:02:22] 🏭 Factory spawned new enemy: BaseChasingShootingEnemy (Level 1)
+[2025-06-12 14:02:22] 🏭 Factory spawned new enemy: BaseChasingShootingEnemy (Level 1)
+[2025-06-12 14:02:22] 🧱 Bullet hit obstacle
+[2025-06-12 14:02:23] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 4
+[2025-06-12 14:02:26] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 5
+[2025-06-12 14:02:26] 🧱 Bullet hit obstacle
+[2025-06-12 14:02:26] 🧱 Bullet hit obstacle
+[2025-06-12 14:02:28] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 6
+[2025-06-12 14:02:30] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 7
+[2025-06-12 14:02:30] 🧱 Missile hit obstacle
+[2025-06-12 14:02:31] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 8
+[2025-06-12 14:02:31] 🏭 Factory spawned new enemy: BaseChasingShootingEnemy (Level 1)
+[2025-06-12 14:02:31] 🏭 Factory spawned new enemy: Enemy (Level 1)
+[2025-06-12 14:02:31] 🏭 Factory spawned new enemy: Enemy (Level 1)
+[2025-06-12 14:02:32] 🧱 Missile hit obstacle
+[2025-06-12 14:02:33] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 9
+[2025-06-12 14:02:35] 🧱 Missile hit obstacle
+[2025-06-12 14:02:36] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 10
+[2025-06-12 14:02:39] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 11
+[2025-06-12 14:02:40] 🧱 Bullet hit obstacle
+[2025-06-12 14:02:41] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 12
+[2025-06-12 14:02:41] 🏭 Factory spawned new enemy: BaseChasingShootingEnemy (Level 1)
+[2025-06-12 14:02:41] 🏭 Factory spawned new enemy: BaseChasingShootingEnemy (Level 1)
+[2025-06-12 14:02:41] 🏭 Factory spawned new enemy: Enemy (Level 1)
+[2025-06-12 14:02:51] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 13
+[2025-06-12 14:02:51] 🏭 Factory spawned new enemy: Enemy (Level 1)
+[2025-06-12 14:02:51] 🏭 Factory spawned new enemy: Enemy (Level 1)
+[2025-06-12 14:02:51] 🏭 Factory spawned new enemy: Enemy (Level 1)
+[2025-06-12 14:02:52] 🧱 Bullet hit obstacle
+[2025-06-12 14:02:52] 🧱 Bullet hit obstacle
+[2025-06-12 14:02:52] 🧱 Missile hit obstacle
+[2025-06-12 14:02:52] 🧱 Bullet hit obstacle
+[2025-06-12 14:02:53] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 14
+[2025-06-12 14:02:55] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 15
+[2025-06-12 14:02:55] 🚀 Player hit by missile! Health: 9
+[2025-06-12 14:02:56] 🧱 Missile hit obstacle
+[2025-06-12 14:02:56] 🧱 Bullet hit obstacle
+[2025-06-12 14:02:56] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 16
+[2025-06-12 14:02:57] 🚀 Player hit by missile! Health: 8
+[2025-06-12 14:02:57] 🧱 Bullet hit obstacle
+[2025-06-12 14:02:58] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 17
+[2025-06-12 14:02:59] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 18
+[2025-06-12 14:02:59] 🚀 Player hit by missile! Health: 7
+[2025-06-12 14:02:59] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 19
+[2025-06-12 14:02:59] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 20
+[2025-06-12 14:03:00] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 21
+[2025-06-12 14:03:00] 🧱 Bullet hit obstacle
+[2025-06-12 14:03:00] 🧱 Bullet hit obstacle
+[2025-06-12 14:03:01] 🏭 Factory spawned new enemy: Enemy (Level 1)
+[2025-06-12 14:03:01] 🏭 Factory spawned new enemy: Enemy (Level 1)
+[2025-06-12 14:03:01] 🏭 Factory spawned new enemy: Enemy (Level 1)
+[2025-06-12 14:03:01] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 22
+[2025-06-12 14:03:02] ❤️ Player hit by enemy! Health: 6
+[2025-06-12 14:03:03] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 23
+[2025-06-12 14:03:03] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 24
+[2025-06-12 14:03:04] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 25
+[2025-06-12 14:03:05] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 26
+[2025-06-12 14:03:09] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 27
+[2025-06-12 14:03:11] 🏭 Factory spawned new enemy: RandomShootingEnemy (Level 2)
+[2025-06-12 14:03:11] 🏭 Factory spawned new enemy: BaseChasingShootingEnemy (Level 2)
+[2025-06-12 14:03:11] 🏭 Factory spawned new enemy: RandomShootingEnemy (Level 2)
+[2025-06-12 14:03:12] 🚀 Player hit by missile! Health: 5
+[2025-06-12 14:03:12] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 28
+[2025-06-12 14:03:12] 💥 Bullet hit enemy! Enemy health: 1
+[2025-06-12 14:03:12] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 29
+[2025-06-12 14:03:14] 🧱 Bullet hit obstacle
+[2025-06-12 14:03:15] 🧱 Bullet hit obstacle
+[2025-06-12 14:03:17] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 30
+[2025-06-12 14:03:17] 🧱 Bullet hit obstacle
+[2025-06-12 14:03:19] 🧱 Bullet hit obstacle
+[2025-06-12 14:03:19] 🧱 Bullet hit obstacle
+[2025-06-12 14:03:19] 🧱 Bullet hit obstacle
+[2025-06-12 14:03:19] 🧱 Bullet hit obstacle
+[2025-06-12 14:03:20] 🧱 Bullet hit obstacle
+[2025-06-12 14:03:20] 🧱 Bullet hit obstacle
+[2025-06-12 14:03:21] 🧱 Bullet hit obstacle
+[2025-06-12 14:03:21] 🧱 Bullet hit obstacle
+[2025-06-12 14:03:21] 🏭 Factory spawned new enemy: BaseChasingShootingEnemy (Level 2)
+[2025-06-12 14:03:21] 🏭 Factory spawned new enemy: ChasingEnemy (Level 2)
+[2025-06-12 14:03:21] 🏭 Factory spawned new enemy: RandomShootingEnemy (Level 2)
+[2025-06-12 14:03:21] 🚀 Player hit by missile! Health: 4
+[2025-06-12 14:03:22] 🧱 Missile hit obstacle
+[2025-06-12 14:03:22] 🧱 Missile hit obstacle
+[2025-06-12 14:03:22] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 31
+[2025-06-12 14:03:24] 🧱 Missile hit obstacle
+[2025-06-12 14:03:24] 🧱 Missile hit obstacle
+[2025-06-12 14:03:24] 💥 Bullet hit enemy! Enemy health: 1
+[2025-06-12 14:03:24] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 32
+[2025-06-12 14:03:24] 💥 Bullet hit enemy! Enemy health: 1
+[2025-06-12 14:03:24] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 33
+[2025-06-12 14:03:24] 🧱 Bullet hit obstacle
+[2025-06-12 14:03:25] 🧱 Bullet hit obstacle
+[2025-06-12 14:03:25] 🧱 Bullet hit obstacle
+[2025-06-12 14:03:26] 🧱 Bullet hit obstacle
+[2025-06-12 14:03:26] 🧱 Bullet hit obstacle
+[2025-06-12 14:03:26] 🧱 Bullet hit obstacle
+[2025-06-12 14:03:26] 🧱 Bullet hit obstacle
+[2025-06-12 14:03:27] 🧱 Bullet hit obstacle
+[2025-06-12 14:03:27] 🧱 Missile hit obstacle
+[2025-06-12 14:03:27] 🧱 Bullet hit obstacle
+[2025-06-12 14:03:27] 🧱 Bullet hit obstacle
+[2025-06-12 14:03:27] 🧱 Bullet hit obstacle
+[2025-06-12 14:03:27] 🧱 Bullet hit obstacle
+[2025-06-12 14:03:28] 🧱 Missile hit obstacle
+[2025-06-12 14:03:28] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 34
+[2025-06-12 14:03:28] 🧱 Bullet hit obstacle
+[2025-06-12 14:03:31] 🏭 Factory spawned new enemy: BaseChasingShootingEnemy (Level 2)
+[2025-06-12 14:03:31] 🏭 Factory spawned new enemy: RandomShootingEnemy (Level 2)
+[2025-06-12 14:03:31] 🏭 Factory spawned new enemy: BaseChasingShootingEnemy (Level 2)
+[2025-06-12 14:03:37] 🧱 Missile hit obstacle
+[2025-06-12 14:03:37] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 35
+[2025-06-12 14:03:39] 🧱 Bullet hit obstacle
+[2025-06-12 14:03:39] 🧱 Bullet hit obstacle
+[2025-06-12 14:03:39] 🧱 Bullet hit obstacle
+[2025-06-12 14:03:39] 🧱 Bullet hit obstacle
+[2025-06-12 14:03:41] 🏭 Factory spawned new enemy: BaseChasingShootingEnemy (Level 2)
+[2025-06-12 14:03:41] 🏭 Factory spawned new enemy: ChasingEnemy (Level 2)
+[2025-06-12 14:03:41] 🏭 Factory spawned new enemy: ChasingEnemy (Level 2)
+[2025-06-12 14:03:42] 🧱 Missile hit obstacle
+[2025-06-12 14:03:43] 🧱 Bullet hit obstacle
+[2025-06-12 14:03:43] 🧱 Missile hit obstacle
+[2025-06-12 14:03:44] 🧱 Bullet hit obstacle
+[2025-06-12 14:03:44] 🧱 Missile hit obstacle
+[2025-06-12 14:03:45] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 36
+[2025-06-12 14:03:48] 🧱 Missile hit obstacle
+[2025-06-12 14:03:48] 🧱 Bullet hit obstacle
+[2025-06-12 14:03:49] 🧱 Bullet hit obstacle
+[2025-06-12 14:03:49] 🚀 Player hit by missile! Health: 3
+[2025-06-12 14:03:49] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 37
+[2025-06-12 14:03:50] 🧱 Missile hit obstacle
+[2025-06-12 14:03:50] 🏭 Factory spawned new enemy: BaseChasingShootingEnemy (Level 2)
+[2025-06-12 14:03:50] 🏭 Factory spawned new enemy: RandomShootingEnemy (Level 2)
+[2025-06-12 14:03:50] 🏭 Factory spawned new enemy: RandomShootingEnemy (Level 2)
+[2025-06-12 14:03:51] 🧱 Missile hit obstacle
+[2025-06-12 14:03:51] 🧱 Missile hit obstacle
+[2025-06-12 14:03:51] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 38
+[2025-06-12 14:03:52] 🧱 Bullet hit obstacle
+[2025-06-12 14:03:52] 🚀 Player hit by missile! Health: 1
+[2025-06-12 14:03:52] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 39
+[2025-06-12 14:03:53] 🧱 Missile hit obstacle
+[2025-06-12 14:03:54] 🧱 Missile hit obstacle
+[2025-06-12 14:03:54] 🧱 Missile hit obstacle
+[2025-06-12 14:03:55] 🧱 Missile hit obstacle
+[2025-06-12 14:03:56] 🧱 Bullet hit obstacle
+[2025-06-12 14:03:56] 🧱 Bullet hit obstacle
+[2025-06-12 14:03:56] 🧱 Bullet hit obstacle
+[2025-06-12 14:03:57] 🧱 Missile hit obstacle
+[2025-06-12 14:03:57] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 40
+[2025-06-12 14:03:57] 🧱 Missile hit obstacle
+[2025-06-12 14:04:00] 🏭 Factory spawned new enemy: ChasingEnemy (Level 2)
+[2025-06-12 14:04:00] 🏭 Factory spawned new enemy: ChasingEnemy (Level 2)
+[2025-06-12 14:04:00] 🏭 Factory spawned new enemy: RandomShootingEnemy (Level 2)
+[2025-06-12 14:04:06] 🧱 Bullet hit obstacle
+[2025-06-12 14:04:06] 🧱 Missile hit obstacle
+[2025-06-12 14:04:07] 🧱 Missile hit obstacle
+[2025-06-12 14:04:07] 🧱 Missile hit obstacle
+[2025-06-12 14:04:07] 🧱 Bullet hit obstacle
+[2025-06-12 14:04:07] 🧱 Missile hit obstacle
+[2025-06-12 14:04:08] 🧱 Bullet hit obstacle
+[2025-06-12 14:04:08] 💥 Bullet hit enemy! Enemy destroyed. Total destroyed: 41
+[2025-06-12 14:04:08] 🧱 Bullet hit obstacle
+[2025-06-12 14:04:08] 🧱 Bullet hit obstacle
+[2025-06-12 14:04:10] 🧱 Missile hit obstacle
+[2025-06-12 14:04:10] 🚀 Player hit by missile! Health: -1
+[2025-06-12 14:04:10] 💀 Player died, switching to GameOverScene
+[2025-06-12 14:04:12] 🛑 Game exited

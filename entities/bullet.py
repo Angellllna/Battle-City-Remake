@@ -1,14 +1,20 @@
+import os
+
 import pygame
-from config import COLOR_WHITE, COLOR_RED
+
+from config import COLOR_RED, COLOR_WHITE
+
 
 class Bullet:
-    def __init__(self, x, y, direction, speed=7, damage=1):
+    def __init__(self, x, y, direction, speed=7, source=None):
         self.rect = pygame.Rect(x, y, 10, 10)
         self.direction = direction
         self.speed = speed
-        self.damage = damage
+        self.source = source  # Track the entity that fired the bullet
         try:
-            self.image = pygame.image.load("textures/bullet.png").convert_alpha()
+            self.image = pygame.image.load(
+                os.path.join("textures", "bullet.png")
+            ).convert_alpha()
             self.image = pygame.transform.scale(self.image, (10, 10))
             self.image.fill((255, 255, 255), special_flags=pygame.BLEND_RGBA_MULT)
         except pygame.error as e:
@@ -26,6 +32,7 @@ class Bullet:
         else:
             pygame.draw.rect(surface, self.color, self.rect)
 
+
 class Missile:
     def __init__(self, x, y, direction, speed=5, damage=1):
         self.rect = pygame.Rect(x, y, 10, 10)
@@ -33,9 +40,11 @@ class Missile:
         self.speed = speed
         self.damage = damage
         try:
-            self.image = pygame.image.load("textures/bullet.png").convert_alpha()
+            self.image = pygame.image.load(
+                os.path.join("textures", "bullet.png")
+            ).convert_alpha()
             self.image = pygame.transform.scale(self.image, (10, 10))
-            self.image.fill((255, 100, 100), special_flags=pygame.BLEND_RGBA_MULT)
+            self.image.fill((255, 150, 150), special_flags=pygame.BLEND_RGBA_MULT)
         except pygame.error as e:
             print(f"Error loading missile image: {e}")
             self.image = None

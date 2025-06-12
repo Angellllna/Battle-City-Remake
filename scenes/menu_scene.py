@@ -11,8 +11,8 @@ class MenuScene:
         self.font = pygame.font.SysFont("arial", 36)
         self.title_text = self.font.render("Натисніть ENTER, щоб почати", True, (0, 255, 0))
         self.next_scene = None
-        self.tank1 = Tank(0, 560, (255, 0, 0))  # Червоний
-        self.tank2 = Tank(760, 0, (0, 0, 255))  # Синій
+        self.tank1 = Tank(40, 600, (255, 0, 0))  # Червоний
+        self.tank2 = Tank(800, 40, (0, 0, 255))  # Синій
         if self.tank1.x < self.tank2.x:
             self.tank1.direction = "right"
             self.tank2.direction = "left"
@@ -43,8 +43,8 @@ class MenuScene:
         map_menu = MAP2
         for row_index, row in enumerate(map_menu):
             for col_index, cell in enumerate(row):
-                x = (col_index - 1) * tile_size
-                y = (row_index - 1) * tile_size
+                x = col_index * tile_size
+                y = row_index * tile_size
                 if cell == "wl":
                     self.obstacles.append(SteelBlock(x, y))
                 elif cell == "br":
