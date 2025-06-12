@@ -18,8 +18,8 @@ class Player:
         self.max_health = PLAYER_HEALTH
         self.bullets = []
         self.direction = pygame.Vector2(0, -1)
-        self.damage = 1
-        self.shoot_cooldown = 30
+        self.damage = 1.0
+        self.shoot_cooldown = 15
         self.cooldown_timer = 0
         self.turrets_count = 1
         self.shields_count = 2
@@ -56,7 +56,7 @@ class Player:
         self.current_angle = 0
         self.target_angle = 0
         self.rotation_speed = 10
-        self.upgrades = {"speed": 0, "health": 0, "damage": 0, "fire_rate": 0}
+        self.upgrades = {"speed": 0, "health": 0, "damage": 0}
 
         # Віддача
         self.recoil_offset = pygame.Vector2(0, 0)
