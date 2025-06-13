@@ -616,7 +616,7 @@ class GameScene:
         self.screen.blit(count_text, (150, 5))
 
         self.screen.blit(self.speed_icon, (220, 0))
-        count_text = self.font.render(f"{self.player.speed}", True, (0, 0, 255))
+        count_text = self.font.render(f"{round(self.player.speed, 1)}", True, (0, 0, 255))
         self.screen.blit(count_text, (260, 5))
 
         # Турелі
