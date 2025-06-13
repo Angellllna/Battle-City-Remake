@@ -1,15 +1,15 @@
 import os
 
 import pygame
-
 from config import COLOR_RED, COLOR_WHITE
 
 
 class Bullet:
-    def __init__(self, x, y, direction, speed=7):
+    def __init__(self, x, y, direction, speed=7, source=None):
         self.rect = pygame.Rect(x, y, 10, 10)
         self.direction = direction
         self.speed = speed
+        self.source = source  # Track the entity that fired the bullet
         try:
             self.image = pygame.image.load(
                 os.path.join("textures", "bullet.png")

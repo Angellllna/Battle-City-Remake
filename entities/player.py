@@ -2,7 +2,6 @@ import math
 import os
 
 import pygame
-
 from config import PLAYER_HEALTH, PLAYER_SIZE, PLAYER_SPEED
 from entities.bullet import Bullet
 
@@ -12,10 +11,19 @@ class Player:
         self.collision_rect = pygame.Rect(
             position[0], position[1], PLAYER_SIZE, PLAYER_SIZE
         )
-        self.speed = PLAYER_SPEED
+        self.base_speed = PLAYER_SPEED
+        self.speed = self.base_speed
         self.health = PLAYER_HEALTH
+        self.health = PLAYER_HEALTH
+        self.max_health = PLAYER_HEALTH
         self.bullets = []
         self.direction = pygame.Vector2(0, -1)
+        self.damage = 1.0
+        self.shoot_cooldown = 15
+        self.cooldown_timer = 0
+        self.turrets_count = 1
+        self.shields_count = 2
+        self.color = (255, 255, 0)
 
         try:
             self.images = [
@@ -30,11 +38,13 @@ class Player:
                 pygame.transform.scale(img, (PLAYER_SIZE, PLAYER_SIZE))
                 for img in self.images
             ]
+            for img in self.images:
+                img.fill(self.color, special_flags=pygame.BLEND_RGBA_MULT)
         except pygame.error as e:
             print(f"Error loading tank images: {e}")
             self.images = [pygame.Surface((PLAYER_SIZE, PLAYER_SIZE)) for _ in range(2)]
             for img in self.images:
-                img.fill((0, 255, 0))
+                img.fill(self.color)
 
         self.image_index = 0
         self.image = self.images[self.image_index]
@@ -46,6 +56,7 @@ class Player:
         self.current_angle = 0
         self.target_angle = 0
         self.rotation_speed = 10
+        self.upgrades = {"speed": 0, "health": 0, "damage": 0}
 
         # Віддача
         self.recoil_offset = pygame.Vector2(0, 0)
@@ -146,15 +157,48 @@ class Player:
             if self.engine_channel.get_busy():
                 self.engine_channel.stop()
 
+        if self.cooldown_timer > 0:
+            self.cooldown_timer -= 1
+
+    def collect_part(self, part):
+        if part.type == "turret":
+            self.turrets_count += 1
+        elif part.type == "shield":
+            self.shields_count += 1
+        else:
+            if part.type != "repair" and self.upgrades[part.type] < 10:
+                self.upgrades[part.type] += 1
+            if part.type == "speed" and self.upgrades[part.type] < 10:
+                self.speed = self.base_speed * (1.0 + 0.1 * self.upgrades["speed"])
+            elif part.type == "health":
+                if self.upgrades[part.type] <= 11:
+                    self.max_health += 2
+                self.health = min(self.health + 3, self.max_health)
+            elif part.type == "damage" and self.upgrades[part.type] < 10:
+                self.damage += 0.5
+            elif part.type == "fire_rate" and self.upgrades[part.type] < 10:
+                self.shoot_cooldown = max(10, self.shoot_cooldown - 5)
+            elif part.type == "repair":
+                self.health = self.max_health
+            print(f"Collected {part.type} part! Upgrades: {self.upgrades}")
+
     def shoot(self):
-        if self.direction.length_squared() == 0:
+        if self.direction.length_squared() == 0 or self.cooldown_timer > 0:
             return
+
+        self.cooldown_timer = self.shoot_cooldown
+
+        center_x = self.collision_rect.centerx - 5
+        center_y = self.collision_rect.centery - 5
+        offset = PLAYER_SIZE / 2
+        # Обчислюємо позицію дула
+        bullet_x = center_x + self.direction.x * offset
+        bullet_y = center_y + self.direction.y * offset
         bullet = Bullet(
-            self.collision_rect.centerx - 2,
-            self.collision_rect.centery - 2,
+            bullet_x,
+            bullet_y,
             self.direction.normalize(),
         )
-        # self.bullets.append(bullet)
 
         # Віддача
         self.recoil_offset = -self.direction.normalize() * self.recoil_amount
@@ -170,6 +214,109 @@ class Player:
 
     def draw(self, surface):
         draw_pos = pygame.Vector2(self.collision_rect.center) + self.recoil_offset
+        if self.upgrades["health"] >= 5:
+            self.images = [
+                pygame.image.load(
+                    os.path.join("textures", "tank211.png")
+                ).convert_alpha(),
+                pygame.image.load(
+                    os.path.join("textures", "tank212.png")
+                ).convert_alpha(),
+            ]
+            self.images = [
+                pygame.transform.scale(img, (PLAYER_SIZE, PLAYER_SIZE))
+                for img in self.images
+            ]
+
+        if self.upgrades["speed"] >= 5:
+            self.images = [
+                pygame.image.load(
+                    os.path.join("textures", "tank121.png")
+                ).convert_alpha(),
+                pygame.image.load(
+                    os.path.join("textures", "tank122.png")
+                ).convert_alpha(),
+            ]
+            self.images = [
+                pygame.transform.scale(img, (PLAYER_SIZE, PLAYER_SIZE))
+                for img in self.images
+            ]
+
+        if self.upgrades["speed"] >= 5 and self.upgrades["damage"] >= 5:
+            self.images = [
+                pygame.image.load(
+                    os.path.join("textures", "tank321.png")
+                ).convert_alpha(),
+                pygame.image.load(
+                    os.path.join("textures", "tank322.png")
+                ).convert_alpha(),
+            ]
+            self.images = [
+                pygame.transform.scale(img, (PLAYER_SIZE, PLAYER_SIZE))
+                for img in self.images
+            ]
+
+        if self.upgrades["speed"] >= 10:
+            self.images = [
+                pygame.image.load(
+                    os.path.join("textures", "tank131.png")
+                ).convert_alpha(),
+                pygame.image.load(
+                    os.path.join("textures", "tank132.png")
+                ).convert_alpha(),
+            ]
+            self.images = [
+                pygame.transform.scale(img, (PLAYER_SIZE, PLAYER_SIZE))
+                for img in self.images
+            ]
+
+        if self.upgrades["health"] >= 5 and self.upgrades["damage"] >= 5:
+            self.images = [
+                pygame.image.load(
+                    os.path.join("textures", "tank221.png")
+                ).convert_alpha(),
+                pygame.image.load(
+                    os.path.join("textures", "tank222.png")
+                ).convert_alpha(),
+            ]
+            self.images = [
+                pygame.transform.scale(img, (PLAYER_SIZE, PLAYER_SIZE))
+                for img in self.images
+            ]
+
+        if self.upgrades["health"] >= 10:
+            self.images = [
+                pygame.image.load(
+                    os.path.join("textures", "tank231.png")
+                ).convert_alpha(),
+                pygame.image.load(
+                    os.path.join("textures", "tank232.png")
+                ).convert_alpha(),
+            ]
+            self.images = [
+                pygame.transform.scale(img, (PLAYER_SIZE, PLAYER_SIZE))
+                for img in self.images
+            ]
+
+        if (
+            self.upgrades["health"] >= 10
+            and self.upgrades["damage"] >= 10
+            and self.upgrades["speed"] >= 10
+        ):
+            self.images = [
+                pygame.image.load(
+                    os.path.join("textures", "tank331.png")
+                ).convert_alpha(),
+                pygame.image.load(
+                    os.path.join("textures", "tank332.png")
+                ).convert_alpha(),
+            ]
+            self.images = [
+                pygame.transform.scale(img, (PLAYER_SIZE, PLAYER_SIZE))
+                for img in self.images
+            ]
+        for img in self.images:
+            img.fill(self.color, special_flags=pygame.BLEND_RGBA_MULT)
         img_rect = self.image.get_rect(center=draw_pos)
         surface.blit(self.image, img_rect.topleft)
 

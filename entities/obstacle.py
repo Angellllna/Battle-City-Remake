@@ -1,9 +1,10 @@
+import math
 import os
 import random
 
 import pygame
-
-from config import COLOR_BLUE, OBSTACLE_SIZE
+from config import COLOR_BLUE, OBSTACLE_SIZE, PLAYER_SIZE
+from entities.bullet import Bullet
 from entities.enemy import (
     BaseChasingShootingEnemy,
     ChasingEnemy,
@@ -520,3 +521,100 @@ class TankFactory:
                 if self.image_index == 0:  # Reset spawning state after one cycle
                     self.is_spawning = False
         surface.blit(self.images[self.image_index], self.rect.topleft)
+
+
+class Turret(Obstacle):
+    def __init__(self, x, y):
+        super().__init__(
+            x,
+            y,
+            width=OBSTACLE_SIZE,
+            height=OBSTACLE_SIZE,
+            color=(255, 255, 0),
+            destructible=True,
+            hp=3,
+            blocks_movement=False,
+            blocks_bullets=True,
+        )
+        self.x = self.rect.x
+        self.y = self.rect.y
+        self.collision_rect = pygame.Rect(x, y, OBSTACLE_SIZE, OBSTACLE_SIZE)
+        try:
+            self.image = pygame.image.load(
+                os.path.join("textures", "turret.png")
+            ).convert_alpha()
+            self.image = pygame.transform.scale(
+                self.image, (self.rect.width, self.rect.height)
+            )
+            self.image.fill(self.color, special_flags=pygame.BLEND_RGBA_MULT)
+        except pygame.error as e:
+            print(f"Error loading turret image: {e}")
+            self.image = pygame.Surface((self.rect.width, self.rect.height))
+            self.image.fill(self.color)
+
+        self.image = self.image.copy()
+        self.shoot_cooldown = 60
+        self.cooldown_timer = 0
+        self.damage = 1
+        self.health = 3  # Add health attribute
+
+        self.target_angle = 0
+        self.rotation_speed = 10  # швидкість обертання
+        self.current_angle = 0
+
+    def hit(self, bullet=None):
+        if self.destructible:
+            self.health -= 1
+            print(f"Turret hit! Health: {self.health}")
+            return self.health <= 0  # Return True if turret is destroyed
+        return False
+
+    def update(self, enemies, bullets):
+        self.x = self.rect.x
+        self.y = self.rect.y
+        self.collision_rect.x = self.x
+        self.collision_rect.y = self.y
+        if self.cooldown_timer > 0:
+            self.cooldown_timer -= 1
+        else:
+            target = self.find_target(enemies)
+            if target:
+                dx = (target.x + PLAYER_SIZE / 2) - (self.rect.centerx)
+                dy = (target.y + PLAYER_SIZE / 2) - (self.rect.centery)
+                direction = pygame.Vector2(dx, dy)
+                if direction.length() > 0:
+                    self.target_angle = (
+                        math.degrees(math.atan2(-direction.y, direction.x)) - 90
+                    )
+                    bullet = Bullet(
+                        self.rect.centerx,
+                        self.rect.centery,
+                        direction.normalize(),
+                        source=self,
+                    )
+                    bullets.append(bullet)
+                    self.cooldown_timer = self.shoot_cooldown
+
+        # плавне обертання
+        self.rotate_toward_target()
+
+    def rotate_toward_target(self):
+        diff = (self.target_angle - self.current_angle + 360) % 360
+        if diff > 180:
+            diff -= 360
+        if abs(diff) < self.rotation_speed:
+            self.current_angle = self.target_angle
+        else:
+            self.current_angle += self.rotation_speed * (1 if diff > 0 else -1)
+            self.current_angle %= 360
+
+    def find_target(self, enemies):
+        for enemy in enemies:
+            if self.collision_rect.colliderect(enemy.collision_rect.inflate(300, 300)):
+                return enemy
+        return None
+
+    def draw(self, surface):
+        rotated_image = pygame.transform.rotate(self.image, self.current_angle)
+        rect = rotated_image.get_rect(center=self.rect.center)
+        surface.blit(rotated_image, rect.topleft)
