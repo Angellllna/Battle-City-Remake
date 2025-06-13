@@ -1,10 +1,9 @@
-import math
 import os
 import random
-
 import pygame
-from config import COLOR_BLUE, OBSTACLE_SIZE, PLAYER_SIZE
+import math
 from entities.bullet import Bullet
+from config import COLOR_BLUE, OBSTACLE_SIZE, PLAYER_SIZE
 from entities.enemy import (
     BaseChasingShootingEnemy,
     ChasingEnemy,
@@ -13,7 +12,6 @@ from entities.enemy import (
     RandomShootingEnemy,
     ShootingEnemy,
 )
-
 
 class Obstacle:
     def __init__(
@@ -61,7 +59,7 @@ class Obstacle:
     def hit(self, bullet=None):
         if self.destructible:
             for key, seg_rect in self.segment_rects.items():
-                if self.segments[key] and bullet.rect.colliderect(seg_rect):
+                if self.segments[key] and bullet and bullet.rect.colliderect(seg_rect):
                     self.segments[key] = False
                     break
             return not any(self.segments.values())
@@ -86,7 +84,6 @@ class Obstacle:
     def get_collision_rects(self):
         # Повертає лише живі сегменти
         return [r for k, r in self.segment_rects.items() if self.segments[k]]
-
 
 class SteelBlock(Obstacle):
     def __init__(self, x, y):
@@ -170,7 +167,6 @@ class SteelBlock(Obstacle):
             else:
                 self.spark_visible = False
 
-
 class WaterBlock(Obstacle):
     def __init__(self, x, y):
         super().__init__(
@@ -234,27 +230,27 @@ class BushBlock(Obstacle):
         if self.image:
             surface.blit(self.image, self.rect.topleft)
 
-
 SHIELD_TEXTURES = [
-    os.path.join("textures", "shield-1.png"),
-    os.path.join("textures", "shield-2.png"),
-    os.path.join("textures", "shield-3.png"),
-    os.path.join("textures", "shield-4.png"),
+    os.path.join("textures", "shield1.png"),
+    os.path.join("textures", "shield2.png"),
+    os.path.join("textures", "shield3.png"),
+    os.path.join("textures", "shield4.png"),
 ]
 
-
 class Shield(Obstacle):
-    def __init__(self, x, y, move_direction="down"):
+    def __init__(self, x, y, move_direction=None):
         super().__init__(
             x,
             y,
-            width=32,
-            height=32,
-            color=(0, 0, 255),
-            destructible=False,
+            width=OBSTACLE_SIZE,
+            height=OBSTACLE_SIZE,
+            color=(0, 255, 255),
+            destructible=True,
+            hp=3,
             blocks_movement=False,
             blocks_bullets=True,
         )
+        self.health = 3  # Initialize shield with 3 HP
 
         self.images = [
             pygame.image.load(texture).convert_alpha() for texture in SHIELD_TEXTURES
@@ -263,6 +259,8 @@ class Shield(Obstacle):
             pygame.transform.scale(img, (self.rect.width, self.rect.height))
             for img in self.images
         ]
+        for img in self.images:
+            img.fill((0, 255, 255), special_flags=pygame.BLEND_RGBA_MULT)
 
         self.SPEED = 2
 
@@ -283,21 +281,29 @@ class Shield(Obstacle):
         directions = {"up": (0, -1), "down": (0, 1), "left": (-1, 0), "right": (1, 0)}
         return directions.get(direction, (0, -1))
 
+    def hit(self, bullet=None):
+        if self.destructible:
+            self.health -= 1
+            print(f"Shield hit! Health: {self.health}")
+            return self.health <= 0  # Return True if shield is destroyed
+        return False
+
     def update(self):
-        dx = self.direction_vector[0] * self.SPEED
-        dy = self.direction_vector[1] * self.SPEED
+        if self.move_direction != None:
+            dx = self.direction_vector[0] * self.SPEED
+            dy = self.direction_vector[1] * self.SPEED
 
-        if not self.moving_forward:
-            dx = -dx
-            dy = -dy
+            if not self.moving_forward:
+                dx = -dx
+                dy = -dy
 
-        self.rect.x += dx
-        self.rect.y += dy
-        self.move_distance += self.SPEED
+            self.rect.x += dx
+            self.rect.y += dy
+            self.move_distance += self.SPEED
 
-        if self.move_distance >= self.max_move_distance:
-            self.moving_forward = not self.moving_forward
-            self.move_distance = 0
+            if self.move_distance >= self.max_move_distance:
+                self.moving_forward = not self.moving_forward
+                self.move_distance = 0
 
     def draw(self, surface):
         self.update()
@@ -308,7 +314,6 @@ class Shield(Obstacle):
             self.animation_timer = now
 
         surface.blit(self.images[self.image_index], self.rect.topleft)
-
 
 class DefendFlag:
     def __init__(self, x, y):
@@ -331,14 +336,6 @@ class DefendFlag:
                     os.path.join("textures", "flag_RED2.png")
                 ).convert_alpha(),
             ]
-            self.gray_images = [
-                pygame.image.load(
-                    os.path.join("textures", "flagp_CEP1.png")
-                ).convert_alpha(),
-                pygame.image.load(
-                    os.path.join("textures", "flagp_CEP2.png")
-                ).convert_alpha(),
-            ]
             self.images = [
                 pygame.transform.scale(img, (OBSTACLE_SIZE, OBSTACLE_SIZE))
                 for img in self.images
@@ -346,10 +343,6 @@ class DefendFlag:
             self.captured_images = [
                 pygame.transform.scale(img, (OBSTACLE_SIZE, OBSTACLE_SIZE))
                 for img in self.captured_images
-            ]
-            self.gray_images = [
-                pygame.transform.scale(img, (OBSTACLE_SIZE, OBSTACLE_SIZE))
-                for img in self.gray_images
             ]
         except pygame.error as e:
             print(f"Error loading flag images: {e}")
@@ -359,15 +352,10 @@ class DefendFlag:
             self.captured_images = [
                 pygame.Surface((OBSTACLE_SIZE, OBSTACLE_SIZE)) for _ in range(2)
             ]
-            self.gray_images = [
-                pygame.Surface((OBSTACLE_SIZE, OBSTACLE_SIZE)) for _ in range(2)
-            ]
             for img in self.images:
                 img.fill((255, 255, 255))
             for img in self.captured_images:
                 img.fill((255, 0, 0))
-            for img in self.gray_images:
-                img.fill((128, 128, 128))
 
         self.image_index = 0
         self.animation_timer = 0
@@ -425,7 +413,7 @@ class DefendFlag:
         if not self.recapturing and self.captured:
             image = self.captured_images[self.image_index]
         elif self.recapturing and self.captured and not self.blink_toggle:
-            image = self.gray_images[self.image_index]
+            image = self.captured_images[self.image_index]
         else:
             image = self.images[self.image_index]
 
@@ -437,7 +425,7 @@ class DefendFlag:
             bar_width = OBSTACLE_SIZE * progress
             bar_height = 5
             bar_rect = pygame.Rect(
-                self.rect.x, self.rect.y + OBSTACLE_SIZE, bar_width, bar_height
+                self.rect.x, self.rect.y + OBSTACLE_SIZE - bar_height, bar_width, bar_height
             )
             pygame.draw.rect(surface, (0, 255, 0), bar_rect)
 
@@ -522,12 +510,10 @@ class TankFactory:
                     self.is_spawning = False
         surface.blit(self.images[self.image_index], self.rect.topleft)
 
-
 class Turret(Obstacle):
     def __init__(self, x, y):
         super().__init__(
-            x,
-            y,
+            x, y,
             width=OBSTACLE_SIZE,
             height=OBSTACLE_SIZE,
             color=(255, 255, 0),
@@ -540,12 +526,8 @@ class Turret(Obstacle):
         self.y = self.rect.y
         self.collision_rect = pygame.Rect(x, y, OBSTACLE_SIZE, OBSTACLE_SIZE)
         try:
-            self.image = pygame.image.load(
-                os.path.join("textures", "turret.png")
-            ).convert_alpha()
-            self.image = pygame.transform.scale(
-                self.image, (self.rect.width, self.rect.height)
-            )
+            self.image = pygame.image.load(os.path.join("textures", "turret.png")).convert_alpha()
+            self.image = pygame.transform.scale(self.image, (self.rect.width, self.rect.height))
             self.image.fill(self.color, special_flags=pygame.BLEND_RGBA_MULT)
         except pygame.error as e:
             print(f"Error loading turret image: {e}")
@@ -583,15 +565,8 @@ class Turret(Obstacle):
                 dy = (target.y + PLAYER_SIZE / 2) - (self.rect.centery)
                 direction = pygame.Vector2(dx, dy)
                 if direction.length() > 0:
-                    self.target_angle = (
-                        math.degrees(math.atan2(-direction.y, direction.x)) - 90
-                    )
-                    bullet = Bullet(
-                        self.rect.centerx,
-                        self.rect.centery,
-                        direction.normalize(),
-                        source=self,
-                    )
+                    self.target_angle = math.degrees(math.atan2(-direction.y, direction.x)) - 90
+                    bullet = Bullet(self.rect.centerx, self.rect.centery, direction.normalize(), source=self)
                     bullets.append(bullet)
                     self.cooldown_timer = self.shoot_cooldown
 

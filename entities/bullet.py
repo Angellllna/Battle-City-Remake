@@ -4,6 +4,9 @@ import pygame
 from config import COLOR_RED, COLOR_WHITE
 
 
+from config import COLOR_RED, COLOR_WHITE
+
+
 class Bullet:
     def __init__(self, x, y, direction, speed=7, source=None):
         self.rect = pygame.Rect(x, y, 10, 10)

@@ -1,15 +1,14 @@
 import os
 import random
-
 import pygame
 from config import (
     COLOR_BLACK,
     IMMORTAL_TIME,
     MAP1,
     OBSTACLE_SIZE,
-    PLAYER_SIZE,
     WINDOW_HEIGHT,
     WINDOW_WIDTH,
+    PLAYER_SIZE
 )
 from entities.bullet import Bullet, Missile
 from entities.enemy import (
@@ -27,15 +26,14 @@ from entities.obstacle import (
     Shield,
     SteelBlock,
     TankFactory,
-    Turret,
     WaterBlock,
+    Turret
 )
 from entities.particle import Particle
 from entities.player import Player
 from entities.powerups import Part
 from scenes.game_over_scene import GameOverScene
 from utils.logger import log
-
 
 class GameScene:
     def __init__(self, screen):
@@ -65,15 +63,15 @@ class GameScene:
         self.turrets = []
         for row_index, row in enumerate(MAP1):
             for col_index, cell in enumerate(row):
-                x = (col_index - 1) * tile_size
-                y = (row_index - 1) * tile_size
+                x = col_index * tile_size
+                y = row_index * tile_size
                 if cell == "fl":
                     self.flags.append(DefendFlag(x, y))
 
         for row_index, row in enumerate(MAP1):
             for col_index, cell in enumerate(row):
-                x = (col_index - 1) * tile_size
-                y = (row_index - 1) * tile_size
+                x = col_index * tile_size
+                y = row_index * tile_size
                 if cell == "wl":
                     self.obstacles.append(SteelBlock(x, y))
                 elif cell == "br":
@@ -116,80 +114,50 @@ class GameScene:
                         self.enemies.append(Enemy(x, y, direction="random"))
         self.bullets = []
         try:
-            self.health_icon = pygame.image.load(
-                os.path.join("textures", "health.png")
-            ).convert_alpha()
-            self.health_icon = pygame.transform.scale(
-                self.health_icon, (OBSTACLE_SIZE, OBSTACLE_SIZE)
-            )
+            self.health_icon = pygame.image.load(os.path.join("textures", "health.png")).convert_alpha()
+            self.health_icon = pygame.transform.scale(self.health_icon, (OBSTACLE_SIZE, OBSTACLE_SIZE))
             self.health_icon.fill((0, 255, 0), special_flags=pygame.BLEND_RGBA_MULT)
         except:
             self.health_icon = pygame.Surface((OBSTACLE_SIZE, OBSTACLE_SIZE))
             self.health_icon.fill((0, 255, 0))
         try:
-            self.damage_icon = pygame.image.load(
-                os.path.join("textures", "damage.png")
-            ).convert_alpha()
-            self.damage_icon = pygame.transform.scale(
-                self.damage_icon, (OBSTACLE_SIZE, OBSTACLE_SIZE)
-            )
+            self.damage_icon = pygame.image.load(os.path.join("textures", "damage.png")).convert_alpha()
+            self.damage_icon = pygame.transform.scale(self.damage_icon, (OBSTACLE_SIZE, OBSTACLE_SIZE))
             self.damage_icon.fill((255, 0, 0), special_flags=pygame.BLEND_RGBA_MULT)
         except:
             self.damage_icon = pygame.Surface((OBSTACLE_SIZE, OBSTACLE_SIZE))
             self.damage_icon.fill((255, 0, 0))
         try:
-            self.speed_icon = pygame.image.load(
-                os.path.join("textures", "speed.png")
-            ).convert_alpha()
-            self.speed_icon = pygame.transform.scale(
-                self.speed_icon, (OBSTACLE_SIZE, OBSTACLE_SIZE)
-            )
+            self.speed_icon = pygame.image.load(os.path.join("textures", "speed.png")).convert_alpha()
+            self.speed_icon = pygame.transform.scale(self.speed_icon, (OBSTACLE_SIZE, OBSTACLE_SIZE))
             self.speed_icon.fill((0, 0, 255), special_flags=pygame.BLEND_RGBA_MULT)
         except:
             self.speed_icon = pygame.Surface((OBSTACLE_SIZE, OBSTACLE_SIZE))
             self.speed_icon.fill((0, 0, 255))
         try:
-            self.turret_icon = pygame.image.load(
-                os.path.join("textures", "turret.png")
-            ).convert_alpha()
-            self.turret_icon = pygame.transform.scale(
-                self.turret_icon, (OBSTACLE_SIZE, OBSTACLE_SIZE)
-            )
+            self.turret_icon = pygame.image.load(os.path.join("textures", "turret.png")).convert_alpha()
+            self.turret_icon = pygame.transform.scale(self.turret_icon, (OBSTACLE_SIZE, OBSTACLE_SIZE))
             self.turret_icon.fill((255, 255, 0), special_flags=pygame.BLEND_RGBA_MULT)
         except:
             self.turret_icon = pygame.Surface((OBSTACLE_SIZE, OBSTACLE_SIZE))
             self.turret_icon.fill((255, 255, 0))
         try:
-            self.enemies_destroyed_icon = pygame.image.load(
-                os.path.join("textures", "enemies_destroyed.png")
-            ).convert_alpha()
-            self.enemies_destroyed_icon = pygame.transform.scale(
-                self.enemies_destroyed_icon, (OBSTACLE_SIZE, OBSTACLE_SIZE)
-            )
-            self.enemies_destroyed_icon.fill(
-                (255, 255, 255), special_flags=pygame.BLEND_RGBA_MULT
-            )
+            self.enemies_destroyed_icon = pygame.image.load(os.path.join("textures", "enemies_destroyed.png")).convert_alpha()
+            self.enemies_destroyed_icon = pygame.transform.scale(self.enemies_destroyed_icon, (OBSTACLE_SIZE, OBSTACLE_SIZE))
+            self.enemies_destroyed_icon.fill((255, 255, 255), special_flags=pygame.BLEND_RGBA_MULT)
         except:
             self.enemies_destroyed_icon = pygame.Surface((OBSTACLE_SIZE, OBSTACLE_SIZE))
             self.enemies_destroyed_icon.fill((255, 255, 255))
         try:
-            self.shield_icon = pygame.image.load(
-                os.path.join("textures", "shield1.png")
-            ).convert_alpha()
-            self.shield_icon = pygame.transform.scale(
-                self.shield_icon, (OBSTACLE_SIZE, OBSTACLE_SIZE)
-            )
+            self.shield_icon = pygame.image.load(os.path.join("textures", "shield1.png")).convert_alpha()
+            self.shield_icon = pygame.transform.scale(self.shield_icon, (OBSTACLE_SIZE, OBSTACLE_SIZE))
             self.shield_icon.fill((0, 255, 255), special_flags=pygame.BLEND_RGBA_MULT)
         except:
             self.shield_icon = pygame.Surface((OBSTACLE_SIZE, OBSTACLE_SIZE))
             self.shield_icon.fill((0, 255, 255))
         try:
-            self.time_icon = pygame.image.load(
-                os.path.join("textures", "time.png")
-            ).convert_alpha()
-            self.time_icon = pygame.transform.scale(
-                self.time_icon, (OBSTACLE_SIZE, OBSTACLE_SIZE)
-            )
+            self.time_icon = pygame.image.load(os.path.join("textures", "time.png")).convert_alpha()
+            self.time_icon = pygame.transform.scale(self.time_icon, (OBSTACLE_SIZE, OBSTACLE_SIZE))
             self.time_icon.fill((255, 255, 255), special_flags=pygame.BLEND_RGBA_MULT)
         except:
             self.time_icon = pygame.Surface((OBSTACLE_SIZE, OBSTACLE_SIZE))
@@ -209,19 +177,10 @@ class GameScene:
             if event.key == pygame.K_SPACE:
                 bullet = self.player.shoot()
                 if bullet:
+                    bullet.source = self.player  # Set player as bullet source
                     self.bullets.append(bullet)
                     for _ in range(5):
-                        self.particles.append(
-                            Particle(
-                                self.player.collision_rect.centerx,
-                                self.player.collision_rect.centery,
-                                "particle",
-                                self.player.direction[0] + random.uniform(-1, 1),
-                                self.player.direction[1] + random.uniform(-1, 1),
-                                random.randint(4, 16),
-                                (80, 80, 80),
-                            )
-                        )
+                        self.particles.append(Particle(self.player.x + PLAYER_SIZE / 2, self.player.y + PLAYER_SIZE / 2, "particle", self.player.direction[0] + random.uniform(-1, 1), self.player.direction[1] + random.uniform(-1, 1), random.randint(4, 16), (80, 80, 80)))
                     if self.shoot_sound:
                         self.shoot_sound.play()
             elif event.key == pygame.K_ESCAPE:
@@ -229,17 +188,11 @@ class GameScene:
                 log("🚪 Exit to GameOverScene on ESC")
                 return GameOverScene(self.screen)
             if event.key == pygame.K_q and self.player.turrets_count > 0:
-                turret = Turret(
-                    int((self.player.x + PLAYER_SIZE / 2) / 40) * 40,
-                    int((self.player.y + PLAYER_SIZE / 2) / 40) * 40,
-                )
+                turret = Turret(int((self.player.x + PLAYER_SIZE / 2) / 40) * 40, int((self.player.y + PLAYER_SIZE / 2) / 40) * 40)
                 self.turrets.append(turret)
                 self.player.turrets_count -= 1
             elif event.key == pygame.K_e and self.player.shields_count > 0:
-                shield = Shield(
-                    int((self.player.x + PLAYER_SIZE / 2) / 40) * 40,
-                    int((self.player.y + PLAYER_SIZE / 2) / 40) * 40,
-                )
+                shield = Shield(int((self.player.x + PLAYER_SIZE / 2) / 40) * 40, int((self.player.y + PLAYER_SIZE / 2) / 40) * 40)
                 self.shields.append(shield)
                 self.player.shields_count -= 1
 
@@ -304,28 +257,21 @@ class GameScene:
             for obstacle in self.obstacles[:]:
                 if obstacle.blocks_bullets:
                     rects_to_check = [obstacle.rect]
-
                     if hasattr(obstacle, "get_collision_rects"):
                         rects_to_check = obstacle.get_collision_rects()
-
                     collided = False
                     for rect in rects_to_check:
                         if bullet.rect.colliderect(rect):
                             collided = True
                             break
-
                     if collided:
                         if obstacle.hit(bullet):
                             self.obstacles.remove(obstacle)
-
                         self.bullets.remove(bullet)
                         log("🧱 Bullet hit obstacle")
                         break
             for turret in self.turrets[:]:
-                if (
-                    bullet.rect.colliderect(turret.collision_rect)
-                    and bullet.source != turret
-                ):
+                if bullet.rect.colliderect(turret.collision_rect) and bullet.source != turret:
                     destroyed = turret.hit(bullet)
                     self.bullets.remove(bullet)
                     if destroyed:
@@ -383,7 +329,7 @@ class GameScene:
                         log("🧱 Missile hit obstacle")
                         break
             else:
-                for shield in self.shields:
+                for shield in self.shields[:]:
                     if missile.rect.colliderect(shield.rect):
                         destroyed = shield.hit(missile)
                         for _ in range(5):
@@ -437,10 +383,8 @@ class GameScene:
                                         missile.rect.centerx,
                                         missile.rect.centery,
                                         "particle",
-                                        missile.direction.x * -1
-                                        + random.uniform(-1, 1),
-                                        missile.direction.y * -1
-                                        + random.uniform(-1, 1),
+                                        missile.direction.x * -1 + random.uniform(-1, 1),
+                                        missile.direction.y * -1 + random.uniform(-1, 1),
                                         random.randint(4, 16),
                                         (240, 100, 40),
                                     )
@@ -456,9 +400,7 @@ class GameScene:
                             and self.immortal_time <= 0
                         ):
                             self.player.health -= missile.damage
-                            log(
-                                f"🚀 Player hit by missile! Health: {self.player.health}"
-                            )
+                            log(f"🚀 Player hit by missile! Health: {self.player.health}")
                             self.immortal_time = IMMORTAL_TIME
                             for _ in range(5):
                                 self.particles.append(
@@ -466,10 +408,8 @@ class GameScene:
                                         missile.rect.centerx,
                                         missile.rect.centery,
                                         "particle",
-                                        missile.direction.x * -1
-                                        + random.uniform(-1, 1),
-                                        missile.direction.y * -1
-                                        + random.uniform(-1, 1),
+                                        missile.direction.x * -1 + random.uniform(-1, 1),
+                                        missile.direction.y * -1 + random.uniform(-1, 1),
                                         random.randint(4, 16),
                                         (240, 100, 40),
                                     )
@@ -492,19 +432,17 @@ class GameScene:
                 ),
             ):
                 maze_matrix = self.update_maze_matrix()
-                missile = enemy.update(
-                    self.player, maze_matrix, self.obstacles, self.turrets
-                )
+                missile = enemy.update(self.player, maze_matrix, self.obstacles, self.turrets)
                 if missile:
                     self.missiles.append(missile)
                     if self.shoot_sound:
                         self.shoot_sound.play()
             elif isinstance(enemy, FlagChasingEnemy):
                 maze_matrix = self.update_maze_matrix()
-                enemy.update(self.player, maze_matrix, self.obstacles)
+                enemy.update(self.player, maze_matrix, self.obstacles, self.turrets)
             else:
                 enemy.move(self.obstacles)
-            for shield in self.shields:
+            for shield in self.shields[:]:
                 if enemy.collision_rect.colliderect(shield.rect):
                     destroyed = shield.hit()
                     if destroyed:
@@ -522,10 +460,7 @@ class GameScene:
                             )
                         self.shields.remove(shield)
                         log("🛡️ Shield destroyed by enemy")
-                    part = Part(
-                        enemy.x + PLAYER_SIZE / 2 - OBSTACLE_SIZE // 4,
-                        enemy.y + PLAYER_SIZE / 2 - OBSTACLE_SIZE // 4,
-                    )
+                    part = Part(enemy.x + PLAYER_SIZE / 2 - OBSTACLE_SIZE // 4, enemy.y + PLAYER_SIZE / 2 - OBSTACLE_SIZE // 4)
                     self.destroyed_enemies += 1
                     for _ in range(5):
                         self.particles.append(
@@ -555,13 +490,12 @@ class GameScene:
                         log(f"🛠️ Enemy dropped {part.type} part")
                     if enemy in self.enemies:  # Fix: Check if enemy is still in list
                         self.enemies.remove(enemy)
-                        log(
-                            f"🛡️ Enemy destroyed by shield. Total destroyed: {self.destroyed_enemies}"
-                        )
+                        log(f"🛡️ Enemy destroyed by shield. Total destroyed: {self.destroyed_enemies}")
                     break
             for bullet in self.bullets[:]:
                 if bullet.rect.colliderect(enemy.collision_rect):
-                    if enemy.hit():
+                    destroyed, part = enemy.hit()
+                    if destroyed:
                         for _ in range(5):
                             self.particles.append(
                                 Particle(
@@ -580,6 +514,9 @@ class GameScene:
                             )
                         self.enemies.remove(enemy)
                         self.destroyed_enemies += 1
+                        if part:
+                            self.parts.append(part)
+                            log(f"🛠️ Enemy dropped {part.type} part")
                         log(
                             f"💥 Bullet hit enemy! Enemy destroyed. Total destroyed: {self.destroyed_enemies}"
                         )
@@ -665,23 +602,13 @@ class GameScene:
             particle.draw(self.screen)
         self.player.draw(self.screen)
 
-        health_color = (
-            (0, 255, 0)
-            if self.player.health > self.player.max_health * 0.5
-            else (
-                (255, 255, 0)
-                if self.player.health > self.player.max_health * 0.25
-                else (255, 0, 0)
-            )
-        )
+        health_color = (0, 255, 0) if self.player.health > self.player.max_health * 0.5 else (255, 255, 0) if self.player.health > self.player.max_health * 0.25 else (255, 0, 0)
         elapsed_time = (pygame.time.get_ticks() - self.start_time) // 1000
         minutes = elapsed_time // 60
         seconds = elapsed_time % 60
 
         self.screen.blit(self.health_icon, (0, 0))
-        count_text = self.font.render(
-            f"{self.player.health}/{self.player.max_health}", True, health_color
-        )
+        count_text = self.font.render(f"{self.player.health}/{self.player.max_health}", True, health_color)
         self.screen.blit(count_text, (40, 5))
 
         self.screen.blit(self.damage_icon, (110, 0))
@@ -689,35 +616,25 @@ class GameScene:
         self.screen.blit(count_text, (150, 5))
 
         self.screen.blit(self.speed_icon, (220, 0))
-        count_text = self.font.render(
-            f"{round(self.player.speed, 1)}", True, (0, 0, 255)
-        )
+        count_text = self.font.render(f"{round(self.player.speed, 1)}", True, (0, 0, 255))
         self.screen.blit(count_text, (260, 5))
 
         # Турелі
         self.screen.blit(self.turret_icon, (360, 0))
-        count_text = self.font.render(
-            f"x{self.player.turrets_count}", True, (255, 255, 255)
-        )
+        count_text = self.font.render(f"x{self.player.turrets_count}", True, (255, 255, 255))
         self.screen.blit(count_text, (400, 5))
 
         # Щити
         self.screen.blit(self.shield_icon, (470, 0))
-        count_text = self.font.render(
-            f"x{self.player.shields_count}", True, (255, 255, 255)
-        )
+        count_text = self.font.render(f"x{self.player.shields_count}", True, (255, 255, 255))
         self.screen.blit(count_text, (510, 5))
 
         self.screen.blit(self.enemies_destroyed_icon, (660, 0))
-        count_text = self.font.render(
-            f":{self.destroyed_enemies}", True, (255, 255, 255)
-        )
+        count_text = self.font.render(f":{self.destroyed_enemies}", True, (255, 255, 255))
         self.screen.blit(count_text, (700, 5))
 
         self.screen.blit(self.time_icon, (760, 0))
-        count_text = self.font.render(
-            f":{minutes:02d}:{seconds:02d}", True, (255, 255, 255)
-        )
+        count_text = self.font.render(f":{minutes:02d}:{seconds:02d}", True, (255, 255, 255))
         self.screen.blit(count_text, (800, 5))
         game_level = self.get_game_level()
 

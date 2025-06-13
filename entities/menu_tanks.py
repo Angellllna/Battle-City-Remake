@@ -1,5 +1,12 @@
 import math
 import random
+import os
+import pygame
+
+from config import COLOR_BLACK, COLOR_WHITE, WINDOW_HEIGHT, WINDOW_WIDTH
+from scenes.menu_scene import *
+from utils.logger import log
+
 
 import pygame
 from config import COLOR_BLACK, COLOR_WHITE, WINDOW_HEIGHT, WINDOW_WIDTH
